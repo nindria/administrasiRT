@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('full_name');
             $table->string('family_card_number');
-            $table->string('house_number');
+            $table->foreignId('no_rumah_id')->constrained('no_rumahs');
             $table->string('husband_name')->nullable();
             $table->string('husband_birth_place')->nullable();
             $table->date('husband_birth_date')->nullable();
@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('wife_birth_place')->nullable();
             $table->date('wife_birth_date')->nullable();
             $table->integer('children_count')->default(0);
-            $table->json('children_data')->nullable(); // Will store array of children
-            $table->string('other_family_members')->nullable();
+            $table->json('children_data')->nullable();
+            $table->json('other_family_members')->nullable();
             $table->string('status');
             $table->string('residence_status');
             $table->string('document_path')->nullable();
