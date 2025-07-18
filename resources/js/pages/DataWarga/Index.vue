@@ -79,12 +79,12 @@ const confirmDelete = (id: number) => {
                             </td>
                             <td class="px-6 py-4">{{ warga.children_count }}</td>
                             <td class="px-6 py-4 flex space-x-2">
-                                <Link :href="route('datawarga.show', warga.id)" as="button">
+                                <Link :href="`datawarga/${warga.id}/edit`" >
                                     <Button variant="outline" size="sm">
                                         <Eye class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Link :href="route('datawarga.edit', warga.id)" as="button">
+                                <Link :href="route('datawarga.edit', warga.id)" >
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />
                                     </Button>

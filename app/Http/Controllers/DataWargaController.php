@@ -54,35 +54,35 @@ class DataWargaController extends Controller
             'residence_status' => 'required|string|max:255',
             'document' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
         ]);
-        
+
         // Process children data
         $childrenData = [];
         if ($request->children_count > 0) {
             for ($i = 1; $i <= $request->children_count; $i++) {
-                if ($request->input('child_name_'.$i) && $request->input('child_birth_date_'.$i)) {
+                if ($request->input('child_name_' . $i) && $request->input('child_birth_date_' . $i)) {
                     $childrenData[] = [
-                        'name' => $request->input('child_name_'.$i),
-                        'birth_place' => $request->input('child_birth_place_'.$i),
-                        'birth_date' => $request->input('child_birth_date_'.$i)
+                        'name' => $request->input('child_name_' . $i),
+                        'birth_place' => $request->input('child_birth_place_' . $i),
+                        'birth_date' => $request->input('child_birth_date_' . $i)
                     ];
                 }
             }
         }
         $validated['children_data'] = $childrenData;
-        
+
         // Process family members
         $validated['other_family_members'] = $request->input('other_family_members')
             ? array_filter($request->input('other_family_members'))
             : null;
-        
+
         // Handle file upload
         if ($request->hasFile('document')) {
             $path = $request->file('document')->store('public/documents');
             $validated['document_path'] = Storage::url($path);
         }
-        
+
         DataWarga::create($validated);
-        
+
         return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil disimpan!');
     }
 
@@ -99,7 +99,11 @@ class DataWargaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $warga = DataWarga::findOrFail($id);
+        return Inertia::render('DataWarga/Edit', [
+            'warga' => $warga,
+            'noRumahs' => NoRumah::all()
+        ]);
     }
 
     /**
@@ -107,7 +111,55 @@ class DataWargaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+        'full_name' => 'required|string|max:255',
+        'family_card_number' => 'required|string|digits:16',
+        'no_rumah_id' => 'required|exists:no_rumahs,id',
+        'husband_name' => 'nullable|string|max:255',
+        'husband_birth_place' => 'nullable|string|max:255',
+        'husband_birth_date' => 'nullable|date',
+        'wife_name' => 'nullable|string|max:255',
+        'wife_birth_place' => 'nullable|string|max:255',
+        'wife_birth_date' => 'nullable|date',
+        'children_count' => 'nullable|integer|min:0',
+        'children_data' => 'nullable|array',
+        'other_family_members' => 'nullable|array',
+        'other_family_members.*' => 'nullable|string|max:255',
+        'status' => 'required|string|max:255',
+        'residence_status' => 'required|string|max:255',
+        'document' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+    ]);
+
+    // Process children data
+    $childrenData = [];
+    if ($request->children_count > 0) {
+        for ($i = 1; $i <= $request->children_count; $i++) {
+            if ($request->input('child_name_'.$i) && $request->input('child_birth_date_'.$i)) {
+                $childrenData[] = [
+                    'name' => $request->input('child_name_'.$i),
+                    'birth_place' => $request->input('child_birth_place_'.$i),
+                    'birth_date' => $request->input('child_birth_date_'.$i)
+                ];
+            }
+        }
+    }
+    $validated['children_data'] = $childrenData;
+
+    // Process other family members
+    $validated['other_family_members'] = $request->input('other_family_members')
+        ? array_filter($request->input('other_family_members'))
+        : null;
+
+    // Handle file upload
+    if ($request->hasFile('document')) {
+        $path = $request->file('document')->store('public/documents');
+        $validated['document_path'] = Storage::url($path);
+    }
+
+    $warga = DataWarga::findOrFail($id);
+    $warga->update($validated);
+
+    return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil diperbarui!');
     }
 
     /**
