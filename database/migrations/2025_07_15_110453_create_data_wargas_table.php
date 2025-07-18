@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('full_name');
             $table->string('family_card_number');
             $table->foreignId('no_rumah_id')->constrained('no_rumahs');
-            $table->string('husband_name')->nullable();
             $table->string('husband_birth_place')->nullable();
             $table->date('husband_birth_date')->nullable();
             $table->string('wife_name')->nullable();

@@ -24,7 +24,6 @@ const form = useForm<{
     full_name: string;
     family_card_number: string;
     no_rumah_id: number | null;
-    husband_name: string;
     husband_birth_place: string;
     husband_birth_date: string;
     wife_name: string;
@@ -44,7 +43,6 @@ const form = useForm<{
     full_name: '',
     family_card_number: '',
     no_rumah_id: null,
-    husband_name: '',
     husband_birth_place: '',
     husband_birth_date: '',
     wife_name: '',
@@ -138,8 +136,7 @@ function submit() {
                     </div>
 
                     <!-- Suami -->
-                    <div class="pt-4 font-semibold">Data Suami (Opsional)</div>
-                    <Input v-model="form.husband_name" placeholder="Nama Suami" />
+                    <div class="pt-4 font-semibold">Data Diri</div>
                     <Input v-model="form.husband_birth_place" placeholder="Tempat Lahir Suami" />
                     <Input type="date" v-model="form.husband_birth_date" placeholder="Tanggal Lahir Suami" />
 
