@@ -15,6 +15,7 @@ interface DataWargaType {
     husband_name: string
     husband_birth_place: string
     husband_birth_date: string
+    married_status: 'menikah' | 'belum_menikah'
     wife_name: string
     wife_birth_place: string
     wife_birth_date: string
@@ -39,6 +40,7 @@ const form = useForm({
     no_rumah_id: props.warga.no_rumah_id,
     husband_birth_place: props.warga.husband_birth_place ?? '',
     husband_birth_date: props.warga.husband_birth_date ?? '',
+    married_status: props.warga.married_status ?? 'belum_menikah',
     wife_name: props.warga.wife_name ?? '',
     wife_birth_place: props.warga.wife_birth_place ?? '',
     wife_birth_date: props.warga.wife_birth_date ?? '',
@@ -73,10 +75,20 @@ function removeFamilyMember(index: number) {
 }
 
 function submit() {
+    if (form.married_status === 'belum_menikah') {
+    form.wife_name = ''
+    form.wife_birth_place = ''
+    form.wife_birth_date = ''
+  }
+
     form.post(`/datawarga/${props.warga.id}`, {
         preserveScroll: true,
         onBefore: () => {
-            form.transform((data) => ({ ...data, _method: 'put' }))
+            form.transform((data) => ({ ...data, _method: 'put',
+                wife_name: data.married_status === 'menikah' ? data.wife_name : '',
+        wife_birth_place: data.married_status === 'menikah' ? data.wife_birth_place : '',
+        wife_birth_date: data.married_status === 'menikah' ? data.wife_birth_date : ''
+             }))
             return true
         }
     })
@@ -119,13 +131,22 @@ function submit() {
             </div>
 
             <div>
-                <label>Nama Istri:</label>
-                <input v-model="form.wife_name" type="text" class="border rounded w-full p-1" />
+                <label>Status Pernikahan:</label>
+                <select v-model="form.married_status" class="border rounded w-full p-1">
+                    <option value="belum_menikah">Belum Menikah</option>
+                    <option value="menikah">Menikah</option>
+                </select>
             </div>
+            <div v-if="form.married_status === 'menikah'">
+                <div>
+                    <label>Nama Istri:</label>
+                    <input v-model="form.wife_name" type="text" class="border rounded w-full p-1" />
+                </div>
 
-            <div>
-                <label>Tempat Lahir Istri:</label>
-                <input v-model="form.wife_birth_place" type="text" class="border rounded w-full p-1" />
+                <div>
+                    <label>Tempat Lahir Istri:</label>
+                    <input v-model="form.wife_birth_place" type="text" class="border rounded w-full p-1" />
+                </div>
             </div>
 
             <div>

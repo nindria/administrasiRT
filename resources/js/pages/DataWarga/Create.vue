@@ -26,6 +26,7 @@ const form = useForm<{
     no_rumah_id: number | null;
     husband_birth_place: string;
     husband_birth_date: string;
+    married_status: 'menikah' | 'belum_menikah';
     wife_name: string;
     wife_birth_place: string;
     wife_birth_date: string;
@@ -45,6 +46,7 @@ const form = useForm<{
     no_rumah_id: null,
     husband_birth_place: '',
     husband_birth_date: '',
+    married_status: 'belum_menikah',
     wife_name: '',
     wife_birth_place: '',
     wife_birth_date: '',
@@ -65,6 +67,15 @@ watch(() => form.children_count, (newCount) => {
     }
 });
 
+watch(() => form.married_status, (newStatus) => {
+    if (newStatus === 'belum_menikah') {
+        form.wife_name = '';
+        form.wife_birth_place = '';
+        form.wife_birth_place = '';
+        form.children_count = 0;
+    }
+});
+
 function addOtherFamilyMember() {
     form.other_family_members.push('');
 }
@@ -74,6 +85,12 @@ function removeOtherFamilyMember(index: number) {
 }
 
 function submit() {
+    if (form.married_status === 'belum_menikah') {
+        form.wife_name = '';
+        form.wife_birth_place = '';
+        form.wife_birth_date = '';
+        form.children_count = 0;
+    }
     form.post(route('datawarga.store'), {
         onSuccess: () => form.reset()
     });
@@ -97,31 +114,17 @@ function submit() {
                 <div class="grid gap-4">
 
                     <!-- Data Warga -->
-                    <div>
-                        <Label for="full_name">Nama Lengkap</Label>
-                        <Input 
-                        v-model="form.full_name"
-                        class="uppercase"
-                        @input="(e: Event) => {
-                            const target = e.target as HTMLInputElement;
-                            form.full_name = target.value.toUpperCase();
-                        }" />
-                        <InputError :message="form.errors.full_name" />
-                    </div>
+                    <div class="pt-4 font-semibold">Data Diri</div>
+
 
                     <div>
                         <Label for="family_card_number">Nomor KK</Label>
-                        <Input 
-                        v-model="form.family_card_number"
-                        type="text"
-                        maxlength="16"
-                        inputmode="numeric"
-                        pattern="[0-9]{16}"
-                        @input="(e:Event) => {
-                            const target = e.target as HTMLInputElement;
-                            target.value = target.value.replace(/\D/g,'').slice(0, 16);
-                            form.family_card_number = target.value;
-                        }" />
+                        <Input v-model="form.family_card_number" type="text" maxlength="16" inputmode="numeric"
+                            pattern="[0-9]{16}" @input="(e: Event) => {
+                                const target = e.target as HTMLInputElement;
+                                target.value = target.value.replace(/\D/g, '').slice(0, 16);
+                                form.family_card_number = target.value;
+                            }" />
                         <InputError :message="form.errors.family_card_number" />
                     </div>
 
@@ -136,26 +139,73 @@ function submit() {
                     </div>
 
                     <!-- Suami -->
-                    <div class="pt-4 font-semibold">Data Diri</div>
-                    <Input v-model="form.husband_birth_place" placeholder="Tempat Lahir Suami" />
-                    <Input type="date" v-model="form.husband_birth_date" placeholder="Tanggal Lahir Suami" />
+                     <div>
+                        <Label for="full_name">Nama Lengkap</Label>
+                        <Input v-model="form.full_name" class="uppercase" @input="(e: Event) => {
+                            const target = e.target as HTMLInputElement;
+                            form.full_name = target.value.toUpperCase();
+                        }" />
+                        <InputError :message="form.errors.full_name" />
+                    </div>
+                    <div>
+                        <Label for="husband_birth_place">Tempat Lahir</Label>
+                        <Input v-model="form.husband_birth_place" class="uppercase" @input="(e: Event) => {
+                            const target = e.target as HTMLInputElement;
+                            form.husband_birth_place = target.value.toUpperCase();
+                        }" />
+                        <InputError :message="form.errors.husband_birth_place" />
+                    </div>
+
+                    <div>
+                        <Label for="husband_birth_date">Tanggal Lahir</Label>
+                        <Input type="date" v-model="form.husband_birth_date" placeholder="Tanggal Lahir" />
+                    </div>
 
                     <!-- Istri -->
-                    <div class="pt-4 font-semibold">Data Istri (Opsional)</div>
-                    <Input v-model="form.wife_name" placeholder="Nama Istri" />
-                    <Input v-model="form.wife_birth_place" placeholder="Tempat Lahir Istri" />
-                    <Input type="date" v-model="form.wife_birth_date" placeholder="Tanggal Lahir Istri" />
+                    <div>
+                        <Label for="married_status">Status Pernikahan</Label>
+                        <select v-model="form.married_status" class="w-full border rounded">
+                            <option value="belum_menikah">Belum Menikah</option>
+                            <option value="menikah">Menikah</option>
+                        </select>
+                        <InputError :message="form.errors.married_status" />
+                    </div>
+                    <div v-if="form.married_status === 'menikah'">
+                        <div class="pt-4 font-semibold">Data Istri</div>
+                        <div>
+                            <Label for="wife_name">Nama Istri</Label>
+                            <Input v-model="form.wife_name" class="uppercase" @input="(e: Event) => {
+                                const target = e.target as HTMLInputElement;
+                                form.wife_name = target.value.toUpperCase();
+                            }" />
+                            <InputError :message="form.errors.wife_name" />
+                        </div>
+                        <div>
+                            <Label for="wife_birth_place">Tempat Lahir Istri</Label>
+                            <Input v-model="form.wife_birth_place" class="uppercase" @input="(e: Event) => {
+                                const target = e.target as HTMLInputElement;
+                                form.wife_birth_place = target.value.toUpperCase();
+                            }" />
+                            <InputError :message="form.errors.wife_birth_place" />
+                        </div>
+                        <div>
+                            <Label for="wife_birth_date">Tanggal Lahir Istri</Label>
+                            <Input type="date" v-model="form.wife_birth_date" />
+                        </div>
+                        <div class="pt-4 font-semibold">Data Anak</div>
+                        <Input type="number" min="0" v-model="form.children_count" placeholder="Jumlah Anak" />
+
+                        <div v-for="(child, index) in form.children_data" :key="index"
+                            class="grid gap-2 pl-4 border-l border-gray-300 mt-2">
+                            <Input v-model="child.name" :placeholder="`Nama Anak ke-${index + 1}`" />
+                            <Input v-model="child.birth_place" placeholder="Tempat Lahir" />
+                            <Input type="date" v-model="child.birth_date" placeholder="Tanggal Lahir" />
+                        </div>
+
+                    </div>
 
                     <!-- Anak -->
-                    <div class="pt-4 font-semibold">Data Anak</div>
-                    <Input type="number" min="0" v-model="form.children_count" placeholder="Jumlah Anak" />
 
-                    <div v-for="(child, index) in form.children_data" :key="index"
-                        class="grid gap-2 pl-4 border-l border-gray-300 mt-2">
-                        <Input v-model="child.name" :placeholder="`Nama Anak ke-${index + 1}`" />
-                        <Input v-model="child.birth_place" placeholder="Tempat Lahir" />
-                        <Input type="date" v-model="child.birth_date" placeholder="Tanggal Lahir" />
-                    </div>
 
                     <!-- Anggota Keluarga Lain -->
                     <div class="pt-4 font-semibold">Anggota Keluarga Lain</div>

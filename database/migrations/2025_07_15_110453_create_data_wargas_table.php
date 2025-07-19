@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('no_rumah_id')->constrained('no_rumahs');
             $table->string('husband_birth_place')->nullable();
             $table->date('husband_birth_date')->nullable();
+            $table->enum('married_status', ['menikah', 'belum_menikah'])->default('belum_menikah');
             $table->string('wife_name')->nullable();
             $table->string('wife_birth_place')->nullable();
             $table->date('wife_birth_date')->nullable();
