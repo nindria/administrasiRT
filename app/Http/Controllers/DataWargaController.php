@@ -63,7 +63,7 @@ class DataWargaController extends Controller
         $dataWarga = DataWarga::findOrFail($id);
 
         return Inertia::render('DataWarga/Edit', [
-            'dataWarga' => $dataWarga,
+            'warga' => $dataWarga,
             'noRumahs' => NoRumah::all()
         ]);
     }
