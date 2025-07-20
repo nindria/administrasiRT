@@ -7,6 +7,7 @@ interface ChildData {
     birth_date: string
 }
 
+
 interface DataWargaType {
     id: number
     full_name: string
@@ -76,19 +77,20 @@ function removeFamilyMember(index: number) {
 
 function submit() {
     if (form.married_status === 'belum_menikah') {
-    form.wife_name = ''
-    form.wife_birth_place = ''
-    form.wife_birth_date = ''
-  }
+        form.wife_name = ''
+        form.wife_birth_place = ''
+        form.wife_birth_date = ''
+    }
 
     form.post(`/datawarga/${props.warga.id}`, {
         preserveScroll: true,
         onBefore: () => {
-            form.transform((data) => ({ ...data, _method: 'put',
+            form.transform((data) => ({
+                ...data, _method: 'put',
                 wife_name: data.married_status === 'menikah' ? data.wife_name : '',
-        wife_birth_place: data.married_status === 'menikah' ? data.wife_birth_place : '',
-        wife_birth_date: data.married_status === 'menikah' ? data.wife_birth_date : ''
-             }))
+                wife_birth_place: data.married_status === 'menikah' ? data.wife_birth_place : '',
+                wife_birth_date: data.married_status === 'menikah' ? data.wife_birth_date : ''
+            }))
             return true
         }
     })
@@ -147,11 +149,12 @@ function submit() {
                     <label>Tempat Lahir Istri:</label>
                     <input v-model="form.wife_birth_place" type="text" class="border rounded w-full p-1" />
                 </div>
-            </div>
 
-            <div>
-                <label>Tanggal Lahir Istri:</label>
-                <input v-model="form.wife_birth_date" type="date" class="border rounded w-full p-1" />
+
+                <div>
+                    <label>Tanggal Lahir Istri:</label>
+                    <input v-model="form.wife_birth_date" type="date" class="border rounded w-full p-1" />
+                </div>
             </div>
 
             <div>

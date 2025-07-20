@@ -36,9 +36,11 @@ const form = useForm<{
         birth_place: string;
         birth_date: string;
     }>;
-    other_family_members: string[];
-    status: string;
-    residence_status: string;
+    other_family_members: Array<{
+        name: string;
+        status: string;
+    }>;
+    residence_status: 'tetap' | 'tidak_tetap';
     document: File | null;
 }>({
     full_name: '',
@@ -52,12 +54,10 @@ const form = useForm<{
     wife_birth_date: '',
     children_count: 0,
     children_data: [],
-    other_family_members: [''],
-    status: '',
-    residence_status: '',
+    other_family_members: [{ name: '', status: '' }],
+    residence_status: 'tetap',
     document: null,
 });
-
 
 watch(() => form.children_count, (newCount) => {
     const count = Number(newCount);
@@ -71,13 +71,14 @@ watch(() => form.married_status, (newStatus) => {
     if (newStatus === 'belum_menikah') {
         form.wife_name = '';
         form.wife_birth_place = '';
-        form.wife_birth_place = '';
+        form.wife_birth_date = '';
         form.children_count = 0;
+        form.children_data = [];
     }
 });
 
 function addOtherFamilyMember() {
-    form.other_family_members.push('');
+    form.other_family_members.push({ name: '', status: '' });
 }
 
 function removeOtherFamilyMember(index: number) {
@@ -90,9 +91,17 @@ function submit() {
         form.wife_birth_place = '';
         form.wife_birth_date = '';
         form.children_count = 0;
+        form.children_data = [];
     }
-    form.post(route('datawarga.store'), {
-        onSuccess: () => form.reset()
+    
+    // Transform the data before submitting
+    form.transform((data) => ({
+        ...data,
+        children_data: form.children_data.filter(child => child.name && child.birth_date),
+        other_family_members: form.other_family_members.filter(member => member.name)
+    })).post(route('datawarga.store'), {
+        onSuccess: () => form.reset(),
+        preserveScroll: true
     });
 }
 </script>
@@ -139,7 +148,7 @@ function submit() {
                     </div>
 
                     <!-- Suami -->
-                     <div>
+                    <div>
                         <Label for="full_name">Nama Lengkap</Label>
                         <Input v-model="form.full_name" class="uppercase" @input="(e: Event) => {
                             const target = e.target as HTMLInputElement;
@@ -207,28 +216,39 @@ function submit() {
                     <!-- Anak -->
 
 
-                    <!-- Anggota Keluarga Lain -->
+                    <!-- Anggota Keluarga Lain + Status -->
                     <div class="pt-4 font-semibold">Anggota Keluarga Lain</div>
-                    <div v-for="(member, index) in form.other_family_members" :key="index"
-                        class="flex items-center gap-2">
-                        <Input v-model="form.other_family_members[index]" placeholder="Nama Anggota Keluarga Lain" />
-                        <Button type="button" variant="destructive" @click="removeOtherFamilyMember(index)"
-                            v-if="form.other_family_members.length > 1">Hapus</Button>
+                    <div v-for="(member, index) in form.other_family_members" :key="index" class="grid gap-2">
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1">
+                                <Label :for="`member_name_${index}`">Nama Anggota</Label>
+                                <Input v-model="member.name" :id="`member_name_${index}`"
+                                    placeholder="Nama Anggota Keluarga" class="uppercase" @input="(e: Event) => {
+                                        const target = e.target as HTMLInputElement;
+                                        member.name = target.value.toUpperCase();
+                                    }" />
+                            </div>
+                            <div class="flex-1">
+                                <Label :for="`member_status_${index}`">Status</Label>
+                                <Input v-model="member.status" :id="`member_status_${index}`"
+                                    placeholder="Status dalam keluarga" />
+                            </div>
+                            <Button type="button" variant="destructive" @click="removeOtherFamilyMember(index)"
+                                v-if="form.other_family_members.length > 1" class="self-end mb-1">Hapus</Button>
+                        </div>
                     </div>
-                    <Button type="button" variant="secondary" class="mt-2" @click="addOtherFamilyMember">Tambah
-                        Anggota</Button>
+                    <Button type="button" variant="secondary" class="mt-2" @click="addOtherFamilyMember">
+                        Tambah Anggota
+                    </Button>
 
-                    <!-- Status -->
-                    <div>
-                        <Label for="status">Status</Label>
-                        <Input v-model="form.status" placeholder="Contoh: Kepala Keluarga" />
-                        <InputError :message="form.errors.status" />
-                    </div>
 
                     <!-- Status Tempat Tinggal -->
                     <div>
                         <Label for="residence_status">Status Tempat Tinggal</Label>
-                        <Input v-model="form.residence_status" placeholder="Contoh: Tetap / Kontrak" />
+                        <select v-model="form.residence_status" class="w-full border rounded">
+                            <option value="tetap">Tetap</option>
+                            <option value="tidak_tetap">Tidak Tetap</option>
+                        </select>
                         <InputError :message="form.errors.residence_status" />
                     </div>
 

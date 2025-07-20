@@ -13,7 +13,7 @@ interface Warga {
     no_rumah: {
         name: string;
     };
-    status: string;
+    residence_status: string;
     children_count: number;
 }
 
@@ -30,6 +30,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const { datawarga } = defineProps<Props>();
 const form = useForm({});
+
+function formatStatus(residence_status: string): string {
+  return residence_status.replaceAll('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
 
 const confirmDelete = (id: number) => {
     if (confirm('Apakah Anda yakin ingin menghapus data warga ini?')) {
@@ -74,7 +78,7 @@ const confirmDelete = (id: number) => {
                             </td>
                             <td class="px-6 py-4">
                                 <Badge>
-                                    {{ warga.status }}
+                                    {{ formatStatus (warga.residence_status) }}
                                 </Badge>
                             </td>
                             <td class="px-6 py-4">{{ warga.children_count }}</td>

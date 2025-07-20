@@ -25,7 +25,6 @@ return new class extends Migration
             $table->integer('children_count')->default(0);
             $table->json('children_data')->nullable();
             $table->json('other_family_members')->nullable();
-            $table->string('status');
             $table->string('residence_status');
             $table->string('document_path')->nullable();
             $table->timestamps();
