@@ -56,7 +56,7 @@ class DataWargaController extends Controller
         DataWarga::create($data);
 
         return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil disimpan!');
-    }   
+    }
 
     public function edit(string $id)
     {
@@ -76,6 +76,11 @@ class DataWargaController extends Controller
             $path = $request->file('document')->store('public/documents');
             $validated['document_path'] = Storage::url($path);
         }
+        $validated['children_count'] = count($validated['children_data'] ?? []);
+        // Ubah array menjadi JSON
+        $validated['children_data'] = json_encode($validated['children_data'] ?? []);
+        $validated['other_family_members'] = json_encode($validated['other_family_members'] ?? []);
+
 
         $dataWarga = DataWarga::findOrFail($id);
         $dataWarga->update($validated);
@@ -87,13 +92,23 @@ class DataWargaController extends Controller
     {
         $dataWarga = DataWarga::findOrFail($id);
 
-        if ($dataWarga->document_path) {
-            Storage::delete(str_replace('/storage/', 'public/', $dataWarga->document_path));
+        try {
+            // More robust document path handling
+            if ($dataWarga->getRawOriginal('document_path')) {
+                $path = str_replace('/storage/', 'public/', $dataWarga->getRawOriginal('document_path'));
+                if (Storage::exists($path)) {
+                    Storage::delete($path);
+                }
+            }
+
+            $dataWarga->delete();
+
+            return redirect()->route('datawarga.index')
+                ->with('success', 'Data warga berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal menghapus data warga: ' . $e->getMessage());
         }
-
-        $dataWarga->delete();
-
-        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil dihapus!');
     }
 
     private function validateForm(Request $request): array

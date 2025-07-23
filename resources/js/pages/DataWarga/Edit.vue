@@ -9,19 +9,6 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-vue-next';
 import { watch } from 'vue';
 
-interface ChildData {
-    [key: string]: string | undefined;
-    name: string;
-    birth_place: string;
-    birth_date: string;
-}
-
-interface FamilyMember {
-    [key: string]: string | undefined;
-    name: string;
-    status: string;
-}
-
 interface Props {
     warga: {
         id: number;
@@ -35,9 +22,15 @@ interface Props {
         wife_birth_place: string;
         wife_birth_date: string;
         children_count: number;
-        children_data?: ChildData[];
-        other_family_members?: FamilyMember[];
-        status: string;
+        children_data: Array<{
+            name: string;
+            birth_place: string;
+            birth_date: string;
+        }>;
+        other_family_members: Array<{
+            name: string;
+            status: string;
+        }>;
         residence_status: 'tetap' | 'tidak_tetap';
         document_path: string | null;
     };
@@ -63,20 +56,47 @@ const form = useForm({
     wife_name: props.warga.wife_name,
     wife_birth_place: props.warga.wife_birth_place,
     wife_birth_date: props.warga.wife_birth_date,
-    children_count: props.warga.children_count,
-    children_data: props.warga.children_data || [],
-    other_family_members: props.warga.other_family_members && props.warga.other_family_members.length > 0
-        ? [...props.warga.other_family_members]
-        : [{ name: '', status: '' }],
-    status: props.warga.status,
+    children_count: props.warga.children_count || 0,
+    children_data: parseChildrenData(props.warga.children_data),
+    other_family_members: parseFamilyMembers(props.warga.other_family_members),
+
     residence_status: props.warga.residence_status,
     document: null as File | null
 });
 
-watch(() => form.children_count, (newCount) => {
-    const count = Number(newCount);
-    form.children_data = form.children_data || [];
+function parseChildrenData(data: any): Array<{ name: string, birth_place: string, birth_date: string }> {
+    if (Array.isArray(data)) return [...data];
+    if (typeof data === 'string') {
+        try {
+            return JSON.parse(data) || [];
+        } catch {
+            return [];
+        }
+    }
+    return [];
+}
 
+function parseFamilyMembers(data: any): Array<{ name: string, status: string }> {
+    if (Array.isArray(data)) return data.map(member => ({
+        name: member.name || '',
+        status: member.status || ''
+    }));
+    if (typeof data === 'string') {
+        try {
+            const parsed = JSON.parse(data);
+            return Array.isArray(parsed) ? parsed.map(member => ({
+                name: member.name || '',
+                status: member.status || ''
+            })) : [];
+        } catch {
+            return [{ name: '', status: '' }];
+        }
+    }
+    return [{ name: '', status: '' }];
+}
+
+watch(() => form.children_count, (newCount) => {
+    const count = Math.max(0, Math.min(99, Number(newCount) || 0));
     if (count > form.children_data.length) {
         for (let i = form.children_data.length; i < count; i++) {
             form.children_data.push({ name: '', birth_place: '', birth_date: '' });
@@ -86,25 +106,40 @@ watch(() => form.children_count, (newCount) => {
     }
 });
 
-watch(() => form.married_status, (newStatus) => {
-    if (newStatus === 'belum_menikah') {
+watch(() => form.married_status, (newStatus, oldStatus) => {
+    // Only reset if changing from 'menikah' to 'belum_menikah'
+    if (newStatus === 'belum_menikah' && oldStatus === 'menikah') {
         form.wife_name = '';
         form.wife_birth_place = '';
         form.wife_birth_date = '';
         form.children_count = 0;
         form.children_data = [];
     }
+    // When changing back to 'menikah', restore children count if needed
+    if (newStatus === 'menikah' && oldStatus === 'belum_menikah') {
+        form.children_count = props.warga.children_data?.length || 0;
+        form.children_data = Array.isArray(props.warga.children_data)
+            ? [...props.warga.children_data]
+            : [];
+    }
 });
 
 function addOtherFamilyMember() {
-    form.other_family_members = form.other_family_members || [];
     form.other_family_members.push({ name: '', status: '' });
 }
 
 function removeOtherFamilyMember(index: number) {
-    if (form.other_family_members) {
-        form.other_family_members.splice(index, 1);
-    }
+    form.other_family_members.splice(index, 1);
+}
+
+function handleChildrenCountInput(e: Event) {
+    const target = e.target as HTMLInputElement;
+    // Ensure only numbers between 0-99
+    let value = target.value.replace(/\D/g, '');
+    value = value.slice(0, 2); // Limit to 2 digits
+    const numValue = Math.min(99, parseInt(value) || 0);
+    form.children_count = numValue;
+    target.value = numValue.toString(); // Update input with cleaned value
 }
 
 function submit() {
@@ -116,15 +151,16 @@ function submit() {
         form.children_data = [];
     }
 
+    form.children_count = form.children_data.length;
     form.transform((data) => ({
         ...data,
-        children_data: (form.children_data || []).filter(child => child.name && child.birth_date),
-        other_family_members: (form.other_family_members || []).filter(member => member.name),
+        children_data: form.children_data.filter((child: { name: string; birth_date: string }) => child.name && child.birth_date),
+        other_family_members: form.other_family_members.filter((member: { name: string }) => member.name),
         _method: 'put'
     })).post(`/datawarga/${props.warga.id}`, {
         onSuccess: () => form.reset(),
         preserveScroll: true
-    });
+    })
 }
 </script>
 
@@ -194,16 +230,6 @@ function submit() {
                         <InputError :message="form.errors.husband_birth_date" />
                     </div>
 
-                    <!-- Status Keluarga -->
-                    <div>
-                        <Label for="status">Status dalam Keluarga</Label>
-                        <select v-model="form.status" class="w-full border rounded">
-                            <option value="Kepala Keluarga">Kepala Keluarga</option>
-                            <option value="Anggota Keluarga">Anggota Keluarga</option>
-                        </select>
-                        <InputError :message="form.errors.status" />
-                    </div>
-
                     <!-- Istri -->
                     <div>
                         <Label for="married_status">Status Pernikahan</Label>
@@ -241,7 +267,8 @@ function submit() {
                         <div class="pt-4 font-semibold">Data Anak</div>
                         <div>
                             <Label for="children_count">Jumlah Anak</Label>
-                            <Input type="number" min="0" v-model="form.children_count" />
+                            <Input type="number" min="0" v-model.number="form.children_count"
+                                @input="handleChildrenCountInput" />
                         </div>
 
                         <div v-for="(child, index) in form.children_data" :key="index"
@@ -267,17 +294,11 @@ function submit() {
                         <div class="flex items-center gap-2">
                             <div class="flex-1">
                                 <Label :for="`member_name_${index}`">Nama Anggota</Label>
-                                <Input v-model="member.name" :id="`member_name_${index}`" class="uppercase" @input="(e: Event) => {
-                                    const target = e.target as HTMLInputElement;
-                                    member.name = target.value.toUpperCase();
-                                }" />
+                                <Input v-model="member.name" :id="`member_name_${index}`" class="uppercase" />
                             </div>
                             <div class="flex-1">
                                 <Label :for="`member_status_${index}`">Status</Label>
-                                <Input v-model="member.status" :id="`member_status_${index}`" class="uppercase" @input="(e: Event) => {
-                                    const target = e.target as HTMLInputElement;
-                                    member.status = target.value.toUpperCase();
-                                }" />
+                                <Input v-model="member.status" :id="`member_status_${index}`" />
                             </div>
                             <Button type="button" variant="destructive" @click="removeOtherFamilyMember(index)"
                                 class="self-end mb-1">

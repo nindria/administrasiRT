@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 interface Warga {
     id: number;
     full_name: string;
-    family_card_number: string;
+    wife_name: string;
     no_rumah: {
         name: string;
     };
@@ -59,9 +59,9 @@ const confirmDelete = (id: number) => {
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-6 py-3">Nama Lengkap</th>
-                            <th scope="col" class="px-6 py-3">No. KK</th>
                             <th scope="col" class="px-6 py-3">No. Rumah</th>
+                            <th scope="col" class="px-6 py-3">Nama Lengkap</th>
+                            <th scope="col" class="px-6 py-3">Nama Istri</th>                            
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Jumlah Anak</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
@@ -69,13 +69,14 @@ const confirmDelete = (id: number) => {
                     </thead>
                     <tbody>
                         <tr v-for="warga in datawarga" :key="warga.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <td class="px-6 py-4">{{ warga.full_name }}</td>
-                            <td class="px-6 py-4">{{ warga.family_card_number }}</td>
                             <td class="px-6 py-4">
                                 <Badge variant="outline">
                                     {{ warga.no_rumah.name }}
                                 </Badge>
                             </td>
+                            <td class="px-6 py-4">{{ warga.full_name }}</td>
+                            <td class="px-6 py-4">{{ warga.wife_name }}</td>
+                            
                             <td class="px-6 py-4">
                                 <Badge>
                                     {{ formatStatus (warga.residence_status) }}
