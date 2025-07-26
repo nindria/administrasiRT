@@ -48,7 +48,9 @@ class DataWarga extends Model
 
     public function noRumah(): BelongsTo
     {
-        return $this->belongsTo(NoRumah::class);
+        return $this->belongsTo(NoRumah::class)->withDefault([
+            'name' => '-'
+        ]);
     }
 
     public function getAgeGroup($birthDate)

@@ -21,7 +21,10 @@ Route::resource('datawarga', DataWargaController::class);
 
 Route::resource('dataipl', DataIplController::class);
 
-Route::resource('verifikasiwarga', VerifikasiWargaController::class);
+Route::resource('verifikasiwarga', VerifikasiWargaController::class)->only([
+    'index', 'show'
+]);
+
 Route::post('verifikasiwarga/{id}/verify', [VerifikasiWargaController::class, 'verify'])
     ->name('verifikasiwarga.verify');
     

@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('data_wargas', function (Blueprint $table) {
             $table->id();
-            $table->enum('verification_status', ['pending', 'verified', 'rejected'])
-                ->default('pending');
             $table->string('full_name');
             $table->string('family_card_number');
             $table->foreignId('no_rumah_id')->constrained('no_rumahs');
@@ -29,6 +27,7 @@ return new class extends Migration
             $table->json('other_family_members')->nullable();
             $table->string('residence_status');
             $table->string('document_path')->nullable();
+            $table->string('verification_status')->default('pending');
             $table->foreignId('verified_by')->nullable()->constrained('users');
             $table->timestamp('verified_at')->nullable();
             $table->text('rejection_reason')->nullable();

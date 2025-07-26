@@ -15,10 +15,15 @@ class VerifikasiWargaController extends Controller
     public function index()
     {
         return Inertia::render('VerifikasiWarga/Index', [
-            'pendingWargas' => DataWarga::where('verification_status', 'pending')
-                ->with('noRumah')
+            'allWargas' => DataWarga::with(['noRumah:id,name', 'verifier:id,name'])
+                ->orderByRaw("FIELD(verification_status, 'pending', 'verified', 'rejected')")
                 ->latest()
                 ->get(),
+            'verificationStatuses' => [
+                'pending' => 'Pending',
+                'verified' => 'Verified',
+                'rejected' => 'Rejected'
+                ]
         ]);
     }
 
@@ -43,9 +48,9 @@ class VerifikasiWargaController extends Controller
      */
     public function show(string $id)
     {
-        $warga = DataWarga::with('noRumah')->findOrFail($id);
+        $warga = DataWarga::with(['noRumah:id,name', 'verifier:id,name'])->findOrFail($id);
 
-        return Inertia::render('VerifikasiWarga/Show', [ // Pastikan sesuai dengan folder structure
+        return Inertia::render('VerifikasiWarga/Show', [
             'warga' => $warga,
             'verificationStatuses' => [
                 'pending' => 'Pending',
@@ -93,7 +98,7 @@ class VerifikasiWargaController extends Controller
             'verified_by' => Auth::id(),
             'verified_at' => now(),
             'rejection_reason' => $validated['status'] === 'rejected'
-                ? $validated ['rejection_reason']
+                ? $validated['rejection_reason']
                 : null
         ]);
 
@@ -107,18 +112,19 @@ class VerifikasiWargaController extends Controller
 
     public function bulkVerify(Request $request)
     {
-        $request->validate([
+       $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'exists:data_wargas,id',
-            'status' => 'required|in:verified,rejected'
+            'status' => 'required|in:verified,rejected',
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255'
         ]);
 
-        DataWarga::whereIn('id', $request->input ('ids'))->update([
-            'verification_status' => $request->input('status'),
+        DataWarga::whereIn('id', $validated['ids'])->update([
+            'verification_status' => $validated['status'],
             'verified_by' => Auth::id(),
             'verified_at' => now(),
-            'rejection_reason' => $request->input('status') === 'rejected'
-                ? 'Bulk rejection'
+            'rejection_reason' => $validated['status'] === 'rejected'
+                ? $validated['rejection_reason']
                 : null
         ]);
 

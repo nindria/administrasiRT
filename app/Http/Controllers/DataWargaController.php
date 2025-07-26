@@ -28,7 +28,6 @@ class DataWargaController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validateForm($request);
-
         // Handle file upload
         $documentPath = null;
         if ($request->hasFile('document')) {
@@ -50,7 +49,8 @@ class DataWargaController extends Controller
             'children_data' => json_encode($validated['children_data'] ?? []),
             'other_family_members' => json_encode($validated['other_family_members'] ?? []),
             'residence_status' => $validated['residence_status'],
-            'document_path' => $documentPath
+            'document_path' => $documentPath,
+            'verification_status' => 'pending'
         ];
 
         DataWarga::create($data);
