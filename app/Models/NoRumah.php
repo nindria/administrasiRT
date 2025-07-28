@@ -9,4 +9,9 @@ class NoRumah extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function iplPayments()
+    {
+        return $this->hasMany(DataIpl::class);
+    }
 }

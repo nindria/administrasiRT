@@ -19,7 +19,7 @@ Route::resource('norumah', NoRumahController::class);
 
 Route::resource('datawarga', DataWargaController::class);
 
-Route::resource('dataipl', DataIplController::class);
+Route::resource('dataipl', DataIplController::class)->middleware('auth');
 
 Route::resource('verifikasiwarga', VerifikasiWargaController::class)->only([
     'index', 'show'

@@ -239,7 +239,7 @@ function submit() {
                     </div>
                     <Button type="button" variant="secondary" class="mt-2" @click="addOtherFamilyMember">
                         Tambah Anggota
-                    </Button>
+                    </Button>                                                                                                           
 
 
                     <!-- Status Tempat Tinggal -->

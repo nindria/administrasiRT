@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('data_ipls', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('no_rumah_id')->constrained('no_rumahs');
+            $table->decimal('amount', 10, 2);
+            $table->date('payment_date');
+            $table->enum('payment_method', ['cash', 'transfer'])->default('transfer');
+            $table->string('receipt_path')->nullable();
+            $table->text('notes')->nullable();
+            $table->enum('status', ['ok', 'reject', 'pending'])->default('pending');
+            $table->foreignId('recorded_by')->constrained('users');
             $table->timestamps();
         });
     }
