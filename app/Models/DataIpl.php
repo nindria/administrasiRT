@@ -14,8 +14,22 @@ class DataIpl extends Model
         'receipt_path',
         'notes',
         'status',
-        'recorded_by'
+        'recorded_by',
+        'verification_status',
+        'rejection_reason',
+        'verified_by',
+        'verified_at'
     ];
+
+    public function verifiedBy()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('verification_status', 'pending');
+    }
 
     public function noRumah() 
     {

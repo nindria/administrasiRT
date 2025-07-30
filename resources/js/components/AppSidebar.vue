@@ -40,6 +40,11 @@ const mainNavItems: NavItem[] = [
         icon: CreditCard,
     },
     {
+        title: 'Verifikasi Ipl',
+        href: '/verifikasiipl',
+        icon: BadgeCheck ,
+    },
+    {
         title: 'Event',
         href: '/event',
         icon: CalendarClock,
