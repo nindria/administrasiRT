@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class NoRumah extends Model
+class KartuKeluarga extends Model
 {
-    protected $fillable = [
-        'name',
+    protected $fillable =[
+        'no_kk',
+        'nama_kepala_keluarga',
+        'no_rumah',
     ];
 
     public function iplPayments()

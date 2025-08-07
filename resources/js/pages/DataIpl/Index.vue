@@ -24,7 +24,7 @@ interface IplPayment {
   amount: number;
   payment_date: string;
   payment_method: string;
-  status: 'ok' | 'pending' | 'reject';
+  status: 'verified' | 'pending' | 'reject';
 }
 
 const { iplPayments } = defineProps({
@@ -33,9 +33,9 @@ const { iplPayments } = defineProps({
     required: true
   }
 });
-const statusClasses = (status: 'ok' | 'pending' | 'reject') => {
+const statusClasses = (status: 'verified' | 'pending' | 'reject') => {
   return {
-    'bg-green-100 text-green-800': status === 'ok',
+    'bg-green-100 text-green-800': status === 'verified',
     'bg-yellow-100 text-yellow-800': status === 'pending',
     'bg-red-100 text-red-800': status === 'reject'
   };
@@ -50,9 +50,9 @@ const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString('id-ID', options);
 };
 
-const getStatusLabel = (status: 'ok' | 'pending' | 'reject'): string => {
+const getStatusLabel = (status: 'verified' | 'pending' | 'reject'): string => {
   return {
-    ok: 'Ok',
+    verified: 'verified',
     pending: 'Menunggu Verifikasi',
     reject: 'Ditolak'
   }[status];

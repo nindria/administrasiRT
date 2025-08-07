@@ -13,19 +13,24 @@ return new class extends Migration
     {
         Schema::create('data_ipls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('no_rumah_id')->constrained('no_rumahs');
+            $table->string('no_rumah_id');
+            $table->foreign('no_rumah_id')->references('id_rumah')->on('lokasis')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->date('payment_date');
             $table->enum('payment_method', ['cash', 'transfer'])->default('transfer');
             $table->string('receipt_path')->nullable();
             $table->text('notes')->nullable();
-            $table->enum('status', ['ok', 'reject', 'pending'])->default('pending');
+
+            // Verification fields (moved from separate migration)
+            $table->string('status')->default('pending');
             $table->foreignId('recorded_by')->constrained('users');
-            $table->enum('verification_status', ['ok', 'reject', 'pending'])->default('pending');
+            $table->string('verification_status')->default('pending');
             $table->text('rejection_reason')->nullable();
             $table->foreignId('verified_by')->nullable()->constrained('users');
             $table->timestamp('verified_at')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

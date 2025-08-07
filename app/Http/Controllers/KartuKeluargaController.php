@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NoRumah;
+
+use App\Models\KartuKeluarga;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 
-class NoRumahController extends Controller
+class KartuKeluargaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $norumah = NoRumah::get();
-        return Inertia::render('NoRumah/Index',[
-            'norumah' => $norumah
+        $kartukeluarga = KartuKeluarga::get();
+        return Inertia::render('KartuKeluarga/Index',[
+            'kartukeluarga' => $kartukeluarga
         ]);
     }
 
@@ -37,7 +38,7 @@ class NoRumahController extends Controller
             'name' => 'required',
         ]);
 
-        NoRumah::create([
+        KartuKeluarga::create([
             'name' => $request->name,
         ]);
 
@@ -56,7 +57,7 @@ class NoRumahController extends Controller
      */
     public function edit(string $id)
     {
-        $rumah = NoRumah::find($id);
+        $rumah = KartuKeluarga::find($id);
         return Inertia::render('NoRumah/Edit',[
             'rumah' => $rumah
         ]);
@@ -71,7 +72,7 @@ class NoRumahController extends Controller
             'name' => 'required',
         ]);
 
-        $rumah = NoRumah::find($id);
+        $rumah = KartuKeluarga::find($id);
         $rumah->name = $request->name;
         $rumah->save();
         return redirect()->route('norumah.index');
@@ -82,7 +83,7 @@ class NoRumahController extends Controller
      */
     public function destroy(string $id)
     {
-        $rumah = NoRumah::find($id);
+        $rumah = KartuKeluarga::find($id);
         $rumah->delete();
         return redirect()->route('norumah.index');
     }

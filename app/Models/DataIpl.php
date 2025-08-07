@@ -33,7 +33,7 @@ class DataIpl extends Model
 
     public function noRumah() 
     {
-        return $this->belongsTo(NoRumah::class);
+        return $this->belongsTo(NoRumah::class, 'no_rumah_id');
     }
 
     public function recordedBy() 

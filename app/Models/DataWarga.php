@@ -48,7 +48,7 @@ class DataWarga extends Model
 
     public function noRumah(): BelongsTo
     {
-        return $this->belongsTo(NoRumah::class)->withDefault([
+        return $this->belongsTo(Lokasi::class)->withDefault([
             'name' => '-'
         ]);
     }

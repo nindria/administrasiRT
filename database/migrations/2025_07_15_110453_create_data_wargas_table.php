@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('full_name');
             $table->string('family_card_number');
-            $table->foreignId('no_rumah_id')->constrained('no_rumahs');
+            $table->string('no_rumah_id');
+            $table->foreign('no_rumah_id')->references('id_rumah')->on('lokasis')->onDelete('cascade');
             $table->string('husband_birth_place')->nullable();
             $table->date('husband_birth_date')->nullable();
             $table->enum('married_status', ['menikah', 'belum_menikah'])->default('belum_menikah');
@@ -42,7 +43,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('data_wargas');
         Schema::table('data_wargas', function (Blueprint $table) {
-        $table->dropColumn(['verification_status', 'verified_by', 'verified_at', 'rejection_reason']);
-    });
+            $table->dropColumn(['verification_status', 'verified_by', 'verified_at', 'rejection_reason']);
+        });
     }
 };

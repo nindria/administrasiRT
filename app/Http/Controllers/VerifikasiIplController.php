@@ -15,48 +15,19 @@ class VerifikasiIplController extends Controller
     public function index()
     {
         return Inertia::render('VerifikasiIpl/Index', [
-            'allIpls' => DataIpl::with(['noRumah:id,name', 'verifiedBy:id,name'])
-                ->orderByRaw("FIELD(verification_status, 'pending', 'ok', 'rejected')")
+            'pendingIpls' => DataIpl::with(['noRumah', 'recordedBy'])
+                ->pending()
                 ->latest()
                 ->get(),
             'verificationStatuses' => [
-                'pending' => 'Pending',
-                'ok' => 'ok',
-                'rejected' => 'Rejected'
+                'pending' => 'Menunggu Verifikasi',
+                'verified' => 'Terverifikasi',
+                'rejected' => 'Ditolak'
             ]
         ]);
     }
 
-    // In your VerifikasiIplController.php
-    public function verify(Request $request, string $id)
-    {
-        $validated = $request->validate([
-            'status' => 'required|in:ok,rejected',
-            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255'
-        ]);
 
-        $ipl = DataIpl::findOrFail($id);
-
-        $ipl->update([
-            'verification_status' => $validated['status'],
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-            'rejection_reason' => $validated['status'] === 'rejected'
-                ? $validated['rejection_reason']
-                : null
-        ]);
-
-        return redirect()
-            ->route('verifikasiipl.index')
-            ->with('toast', [
-                'message' => 'Status verifikasi IPL diperbarui',
-                'type' => 'success'
-            ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
@@ -73,16 +44,17 @@ class VerifikasiIplController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DataIpl $id)
+    public function show( $id)
     {
-        $ipl = DataIpl::with(['noRumah:id,name', 'verifiedBy:id,name'])->findOrFail($id);
+        $ipl = DataIpl::with(['noRumah', 'recordedBy', 'verifiedBy'])
+            ->findOrFail($id);
 
         return Inertia::render('VerifikasiIpl/Show', [
             'ipl' => $ipl,
             'verificationStatuses' => [
-                'pending' => 'Pending',
-                'verified' => 'Verified',
-                'rejected' => 'Rejected'
+                'pending' => 'Menunggu Verifikasi',
+                'verified' => 'Terverifikasi',
+                'rejected' => 'Ditolak'
             ]
         ]);
     }
@@ -109,5 +81,25 @@ class VerifikasiIplController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function verify(Request $request, DataIpl $ipl)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,verified,rejected',
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255'
+        ]);
+
+        $updateData = [
+            'status' => $validated['status'],
+            'verified_at' => $validated['status'] === 'verified' ? now() : null,
+            'verified_by' => $validated['status'] === 'verified' ? Auth::id() : null,
+            'rejection_reason' => $validated['status'] === 'rejected' ? $validated['rejection_reason'] : null
+        ];
+
+        $ipl->update($updateData);
+
+        return redirect()->route('verifikasiipl.index')
+            ->with('success', 'Status verifikasi berhasil diperbarui');
     }
 }

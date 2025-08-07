@@ -47,7 +47,7 @@ class DataIplController extends Controller
             'payment_method' => 'required|in:cash,transfer',
             'receipt_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'notes' => 'nullable|string',
-            'status' => 'required|in:ok,reject,pending'
+            'status' => 'required|in:verified,reject,pending'
         ]);
 
         if ($request->hasFile('receipt_path')) {
@@ -99,7 +99,7 @@ class DataIplController extends Controller
             'payment_method' => 'required|in:cash,transfer',
             'receipt_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'notes' => 'nullable|string',
-            'status' => 'required|in:ok,reject,pending',
+            'status' => 'required|in:verified,reject,pending',
         ]);
 
         if ($request->hasFile('receipt_path')) {

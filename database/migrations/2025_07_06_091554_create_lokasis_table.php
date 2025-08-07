@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('no_rumahs', function (Blueprint $table) {
-            $table->id();
+        Schema::create('lokasis', function (Blueprint $table) {
+            $table->string ('id_rumah')->primary()->unique();
+            $table->string('kode_perumahan')->default('GBJ2'); 
+            $table->string('jalan');
+            $table->string('blok', 5);
+            $table->string('nomor', 5);
             $table->string('name');
             $table->timestamps();
         });
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('no_rumahs');
+        Schema::dropIfExists('lokasis');
     }
 };

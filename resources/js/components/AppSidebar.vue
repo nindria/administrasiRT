@@ -19,9 +19,16 @@ const mainNavItems: NavItem[] = [
         href: '/users',
         icon: Users,
     },
+
     {
-        title: 'No Rumah',
-        href: '/norumah',
+        title: 'Kartu Keluarga',
+        href: '/kartukeluarga',
+        icon: House,
+    },
+
+    {
+        title: 'Lokasi',
+        href: '/lokasi',
         icon: House,
     },
     {

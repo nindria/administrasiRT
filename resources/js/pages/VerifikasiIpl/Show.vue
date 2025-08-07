@@ -1,138 +1,164 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3';
 import { Link, useForm } from '@inertiajs/vue3';
 
+interface Rumah {
+    id: number;
+    name: string;
+}
+
+interface User {
+    id: number;
+    name: string;
+}
+
 interface Ipl {
-  verified_by: any;
-  id: number;
-  bulan: string;
-  tahun: number;
-  nominal: number;
-  no_rumah?: {
-    name: string;
-  };
-  verification_status: 'pending' | 'ok' | 'rejected';
-  verifier?: {
-    name: string;
-  };
-  verified_at?: string;
-  rejection_reason?: string;
+    id: number;
+    no_rumah?: Rumah | null;
+    amount?: number | null;
+    payment_date?: string | null;
+    payment_method?: string | null;
+    recorded_by?: User | null;
+    created_at?: string | null;
+    status?: string | null;
+    rejection_reason?: string | null;
 }
 
-interface Props {
-  ipl: Ipl;
-  verificationStatuses: {
-    pending: string;
-    ok: string;
-    rejected: string;
-  };
-}
-
-const props = defineProps<Props>();
+const props = defineProps<{
+    ipl: Ipl;
+    verificationStatuses: Record<string, string>;
+}>();
 
 const form = useForm({
-  status: props.ipl.verification_status,
-  rejection_reason: props.ipl.rejection_reason || null
+    status: props.ipl?.status ?? 'pending',
+    rejection_reason: props.ipl?.rejection_reason ?? null
 });
 
-const statusClasses = (status: 'pending' | 'ok' | 'rejected') => {
-  return {
-    'bg-yellow-100 text-yellow-800': status === 'pending',
-    'bg-green-100 text-green-800': status === 'ok',
-    'bg-red-100 text-red-800': status === 'rejected'
-  };
+const submitForm = () => {
+    form.put(route('verifikasiipl.verify', props.ipl?.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Optional success handling
+        },
+        onError: (errors) => {
+            console.error('Verification error:', errors);
+        }
+    });
 };
 
-const formatDate = (dateString?: string): string => {
-  if (!dateString) return '-';
-  return new Date(dateString).toLocaleDateString('id-ID', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+const formatDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return '-';
+    try {
+        const options: Intl.DateTimeFormatOptions = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return new Date(dateString).toLocaleDateString('id-ID', options);
+    } catch {
+        return '-';
+    }
+};
+
+// Safe property accessors
+const getSafeValue = {
+    rumahName: (rumah: Rumah | null | undefined): string => rumah?.name ?? '-',
+    userName: (user: User | null | undefined): string => user?.name ?? '-',
+    amount: (amount: number | null | undefined): string => {
+        if (amount === null || amount === undefined) return '0';
+        return amount.toLocaleString('id-ID');
+    },
+    paymentMethod: (method: string | null | undefined): string => method ?? '-'
 };
 </script>
 
 <template>
-  <AppLayout>
-    <div class="px-4 py-6 sm:px-6 lg:px-8">
-      <div class="max-w-4xl mx-auto">
-        <div class="bg-white shadow-sm sm:rounded-lg">
-          <div class="p-6 bg-white border-b border-gray-200">
-            <h1 class="text-2xl font-bold mb-6">Verifikasi Data IPL</h1>
+    <Head title="Verifikasi IPL" />
 
-            <div class="space-y-4 mb-6">
-              <p><strong>No Rumah:</strong> {{ ipl.no_rumah?.name || '-' }}</p>
-              <p><strong>Bulan:</strong> {{ ipl.bulan }}</p>
-              <p><strong>Tahun:</strong> {{ ipl.tahun }}</p>
-              <p><strong>Nominal:</strong> Rp {{ ipl.nominal.toLocaleString() }}</p>
+    <AppLayout>
+        <template #header>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                Verifikasi Pembayaran IPL
+            </h2>
+        </template>
+
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-white border-b border-gray-200">
+                        <h1 class="mb-6 text-2xl font-bold">Verifikasi Data IPL</h1>
+
+                        <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
+                            <div>
+                                <h3 class="mb-4 text-lg font-medium">Data Pembayaran</h3>
+                                <div class="space-y-3">
+                                    <p><strong>No Rumah:</strong> {{ getSafeValue.rumahName(ipl?.no_rumah) }}</p>
+                                    <p><strong>Jumlah:</strong> Rp {{ getSafeValue.amount(ipl?.amount) }}</p>
+                                    <p><strong>Tanggal Bayar:</strong> {{ formatDate(ipl?.payment_date) }}</p>
+                                    <p><strong>Metode Pembayaran:</strong> {{ getSafeValue.paymentMethod(ipl?.payment_method) }}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="mb-4 text-lg font-medium">Data Pencatatan</h3>
+                                <div class="space-y-3">
+                                    <p><strong>Dicatat Oleh:</strong> {{ getSafeValue.userName(ipl?.recorded_by) }}</p>
+                                    <p><strong>Tanggal Catat:</strong> {{ formatDate(ipl?.created_at) }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form @submit.prevent="submitForm">
+                            <div class="mb-4">
+                                <label class="block mb-1 text-sm font-medium text-gray-700">
+                                    Status Verifikasi
+                                </label>
+                                <select v-model="form.status"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    @change="form.rejection_reason = null">
+                                    <option v-for="(label, value) in verificationStatuses" 
+                                            :value="value"
+                                            :key="value">
+                                        {{ label }}
+                                    </option>
+                                </select>
+                                <p v-if="form.errors.status" class="mt-1 text-sm text-red-600">
+                                    {{ form.errors.status }}
+                                </p>
+                            </div>
+
+                            <div class="mb-4" v-if="form.status === 'rejected'">
+                                <label class="block mb-1 text-sm font-medium text-gray-700">
+                                    Alasan Penolakan
+                                </label>
+                                <textarea v-model="form.rejection_reason"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    rows="3"
+                                    required></textarea>
+                                <p v-if="form.errors.rejection_reason" class="mt-1 text-sm text-red-600">
+                                    {{ form.errors.rejection_reason }}
+                                </p>
+                            </div>
+
+                            <div class="flex justify-end space-x-4">
+                                <Link :href="route('verifikasiipl.index')"
+                                    class="px-4 py-2 text-gray-800 bg-gray-300 rounded-md hover:bg-gray-400">
+                                    Kembali
+                                </Link>
+                                <button type="submit"
+                                    class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 disabled:opacity-50"
+                                    :disabled="form.processing">
+                                    <span v-if="form.processing">Memproses...</span>
+                                    <span v-else>Simpan</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <div v-if="ipl.verification_status !== 'pending'" class="mb-6 p-4 bg-gray-50 rounded-md">
-              <h3 class="text-lg font-medium mb-2">Status Verifikasi Saat Ini</h3>
-              <div class="space-y-2">
-                <p><strong>Status:</strong> 
-                  <span :class="statusClasses(ipl.verification_status)" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                    {{ verificationStatuses[ipl.verification_status] }}
-                  </span>
-                </p>
-                <p><strong>Diverifikasi oleh:</strong> {{ ipl.verified_by?.name || '-' }}</p>
-                <p><strong>Pada tanggal:</strong> {{ formatDate(ipl.verified_at) }}</p>
-                <p v-if="ipl.rejection_reason"><strong>Alasan penolakan:</strong> {{ ipl.rejection_reason }}</p>
-              </div>
-            </div>
-
-            <form @submit.prevent="form.post(route('verifikasiipl.verify', ipl.id))">
-              <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Ubah Status Verifikasi
-                </label>
-                <select
-                  v-model="form.status"
-                  class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  @change="form.rejection_reason = null"
-                >
-                  <option 
-                    v-for="(label, value) in verificationStatuses" 
-                    :value="value"
-                    :key="value"
-                  >
-                    {{ label }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="mb-4" v-if="form.status === 'rejected'">
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alasan Penolakan
-                </label>
-                <textarea
-                  v-model="form.rejection_reason"
-                  class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  rows="3"
-                  required
-                ></textarea>
-              </div>
-
-              <div class="flex justify-end space-x-4">
-                <Link
-                  :href="route('verifikasiipl.index')"
-                  class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-                >
-                  Kembali
-                </Link>
-                <button
-                  type="submit"
-                  class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50"
-                  :disabled="form.processing"
-                >
-                  Simpan Perubahan
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
-      </div>
-    </div>
-  </AppLayout>
+    </AppLayout>
 </template>
