@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kartu_keluargas', function (Blueprint $table) {         
-            $table->string('no_kk')->primary()->unique();
+        Schema::create('kartu_keluargas', function (Blueprint $table) {
+            $table->string('no_kk', 20)->primary();
             $table->string('nama_kepala_keluarga');
-            $table->string('no_rumah');
+            $table->string('id_rumah', 10);
+            $table->foreign('id_rumah')->references('id_rumah')->on('lokasis');
             $table->timestamps();
         });
     }

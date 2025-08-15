@@ -12,12 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lokasis', function (Blueprint $table) {
-            $table->string ('id_rumah')->primary()->unique();
-            $table->string('kode_perumahan')->default('GBJ2'); 
-            $table->string('jalan');
-            $table->string('blok', 5);
-            $table->string('nomor', 5);
-            $table->string('name');
+            $table->string('id_rumah', 10)->primary(); // GBJ21A101 format
+            $table->string('perumahan', 5); // GBJ2
+            $table->string('jalan', 20); // 1
+            $table->string('blok', 5); // A1
+            $table->string('nomor', 5); // 01
             $table->timestamps();
         });
     }

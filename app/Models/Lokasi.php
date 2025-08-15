@@ -17,7 +17,10 @@ class Lokasi extends Model
         'nomor',
         'name',
     ];
-
+    public function dataWarga()
+    {
+        return $this->hasMany(DataWarga::class, 'no_rumah_id', 'id_rumah');
+    }
     public function iplPayments()
     {
         return $this->hasMany(DataIpl::class);

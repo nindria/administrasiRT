@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataWarga;
-use App\Models\NoRumah;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -13,58 +13,69 @@ class DataWargaController extends Controller
     public function index()
     {
         return Inertia::render('DataWarga/Index', [
-            'datawarga' => DataWarga::with('noRumah')->latest()->get(),
-            'noRumahs' => NoRumah::all()
+            'datawarga' => DataWarga::with('Lokasi')->latest()->get(),
+            'Lokasis' => Lokasi::all()
         ]);
     }
 
     public function create()
     {
         return Inertia::render('DataWarga/Create', [
-            'noRumahs' => NoRumah::all()
+            'Lokasis' => Lokasi::all()
         ]);
     }
 
     public function store(Request $request)
     {
-        $validated = $this->validateForm($request);
-        // Handle file upload
-        $documentPath = null;
-        if ($request->hasFile('document')) {
-            $documentPath = $request->file('document')->store('documents');
-        }
+        $request->validate([
+            // Lokasi
+            'kode_perumahan' => 'required|string', // GBJ2
+            'jalan' => 'required|string',
+            'blok' => 'required|string',
+            'nomor' => 'required|string',
+            'name' => 'required|string', // Pemilik rumah
 
-        // Format data untuk disimpan
-        $data = [
-            'full_name' => $validated['full_name'],
-            'family_card_number' => $validated['family_card_number'],
-            'no_rumah_id' => $validated['no_rumah_id'],
-            'husband_birth_place' => $validated['husband_birth_place'] ?? null,
-            'husband_birth_date' => $validated['husband_birth_date'] ?? null,
-            'married_status' => $validated['married_status'],
-            'wife_name' => $validated['married_status'] === 'menikah' ? $validated['wife_name'] : null,
-            'wife_birth_place' => $validated['married_status'] === 'menikah' ? $validated['wife_birth_place'] : null,
-            'wife_birth_date' => $validated['married_status'] === 'menikah' ? $validated['wife_birth_date'] : null,
-            'children_count' => count($validated['children_data'] ?? []),
-            'children_data' => json_encode($validated['children_data'] ?? []),
-            'other_family_members' => json_encode($validated['other_family_members'] ?? []),
-            'residence_status' => $validated['residence_status'],
-            'document_path' => $documentPath,
-            'verification_status' => 'pending'
-        ];
+            // Data Warga
+            'nik' => 'required|string|unique:data_wargas,nik',
+            'full_name' => 'required|string',
+            'family_card_number' => 'required|string',
+            'residence_status' => 'required|string',
+        ]);
 
-        DataWarga::create($data);
+        // Generate ID Rumah unik
+        $id_rumah = strtoupper($request->kode_perumahan . $request->jalan . $request->blok . $request->nomor);
 
-        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil disimpan!');
+        // Simpan ke tabel lokasi (lokasis)
+        $lokasi = Lokasi::firstOrCreate(
+            ['id_rumah' => $id_rumah],
+            [
+                'kode_perumahan' => strtoupper($request->kode_perumahan),
+                'jalan' => $request->jalan,
+                'blok' => strtoupper($request->blok),
+                'nomor' => $request->nomor,
+                'name' => $request->name,
+            ]
+        );
+
+        // Simpan ke tabel data warga
+        DataWarga::create([
+            'nik' => $request->nik,
+            'full_name' => $request->full_name,
+            'family_card_number' => $request->family_card_number,
+            'no_rumah_id' => $id_rumah,
+            'residence_status' => $request->residence_status,
+        ]);
+
+        return redirect()->route('datawarga.index')->with('success', 'Data warga dan lokasi berhasil disimpan.');
     }
 
-    public function edit(string $id)
+    public function edit(string $nik)
     {
-        $dataWarga = DataWarga::findOrFail($id);
+        $dataWarga = DataWarga::findOrFail($nik);
 
+        $warga = DataWarga::with('lokasi')->where('nik', $nik)->firstOrFail();
         return Inertia::render('DataWarga/Edit', [
-            'warga' => $dataWarga,
-            'noRumahs' => NoRumah::all()
+            'warga' => $warga,
         ]);
     }
 

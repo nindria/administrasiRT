@@ -11,26 +11,15 @@ class DataWarga extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'nik';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+
     protected $fillable = [
+        'nik',
         'full_name',
-        'family_card_number',
-        'no_rumah_id',
-        'husband_birth_place',
-        'husband_birth_date',
-        'married_status',
-        'wife_name',
-        'wife_birth_place',
-        'wife_birth_date',
-        'children_count',
-        'children_data',
-        'other_family_members',
-        'status',
-        'residence_status',
-        'document_path',
-        'verification_status',
-        'rejection_reason',
-        'verified_by',
-        'verified_at'
+        'no_rumah_id'
     ];
 
     protected $casts = [
@@ -46,11 +35,9 @@ class DataWarga extends Model
         return $this->belongsTo(User::class, 'verified_by');
     }
 
-    public function noRumah(): BelongsTo
+    public function lokasi()
     {
-        return $this->belongsTo(Lokasi::class)->withDefault([
-            'name' => '-'
-        ]);
+        return $this->belongsTo(Lokasi::class, 'no_rumah_id', 'id_rumah');
     }
 
     public function getAgeGroup($birthDate)

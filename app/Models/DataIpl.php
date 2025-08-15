@@ -31,9 +31,9 @@ class DataIpl extends Model
         return $query->where('verification_status', 'pending');
     }
 
-    public function noRumah() 
+    public function Lokasi() 
     {
-        return $this->belongsTo(NoRumah::class, 'no_rumah_id');
+        return $this->belongsTo(Lokasi::class, 'no_rumah_id');
     }
 
     public function recordedBy() 

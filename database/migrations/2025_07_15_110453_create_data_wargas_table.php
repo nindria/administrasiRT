@@ -12,26 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_wargas', function (Blueprint $table) {
-            $table->id();
-            $table->string('full_name');
-            $table->string('family_card_number');
-            $table->string('no_rumah_id');
-            $table->foreign('no_rumah_id')->references('id_rumah')->on('lokasis')->onDelete('cascade');
-            $table->string('husband_birth_place')->nullable();
-            $table->date('husband_birth_date')->nullable();
-            $table->enum('married_status', ['menikah', 'belum_menikah'])->default('belum_menikah');
-            $table->string('wife_name')->nullable();
-            $table->string('wife_birth_place')->nullable();
-            $table->date('wife_birth_date')->nullable();
-            $table->integer('children_count')->default(0);
-            $table->json('children_data')->nullable();
-            $table->json('other_family_members')->nullable();
-            $table->string('residence_status');
-            $table->string('document_path')->nullable();
-            $table->string('verification_status')->default('pending');
-            $table->foreignId('verified_by')->nullable()->constrained('users');
-            $table->timestamp('verified_at')->nullable();
-            $table->text('rejection_reason')->nullable();
+            $table->string('nik', 20)->primary();
+            $table->string('no_kk', 20);
+            $table->string('nama');
+            $table->date('tanggal_lahir');
+            $table->string('tempat_lahir');
+            $table->enum('status', ['Kepala Keluarga', 'Istri', 'Anak']);
+            $table->foreign('no_kk')->references('no_kk')->on('kartu_keluargas');
             $table->timestamps();
         });
     }
