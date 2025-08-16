@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\KartuKeluarga;
+use App\Models\Rumah;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,9 +16,9 @@ class KartuKeluargaController extends Controller
      */
     public function index()
     {
-        $kartukeluarga = KartuKeluarga::get();
-        return Inertia::render('KartuKeluarga/Index',[
-            'kartukeluarga' => $kartukeluarga
+        $kk = KartuKeluarga::with('rumah')->latest()->paginate(10);
+        return Inertia::render('KartuKeluarga/Index', [
+            'kk' => $kk
         ]);
     }
 
@@ -26,7 +27,10 @@ class KartuKeluargaController extends Controller
      */
     public function create()
     {
-        return Inertia::render('NoRumah/Create');
+        $rumahs = Rumah::all();
+        return Inertia::render('KartuKeluarga/Create', [
+            'rumahs' => $rumahs
+        ]);
     }
 
     /**
@@ -34,15 +38,18 @@ class KartuKeluargaController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
+        $validated = $request->validate([
+            'no_kk' => 'required|string|unique:kartu_keluargas',
+            'nik_kepala_keluarga' => 'required|string',
+            'nama_kepala_keluarga' => 'required|string',
+            'jumlah_anggota' => 'required|integer|min:1',
+            'foto_ktp_kepala_keluarga' => 'nullable|string',
+            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
         ]);
 
-        KartuKeluarga::create([
-            'name' => $request->name,
-        ]);
+        KartuKeluarga::create($validated);
 
-        return redirect()->route('norumah.index');
+        return redirect()->route('kk.index')->with('success', 'Kartu Keluarga berhasil ditambahkan');
     }
     /**
      * Display the specified resource.
@@ -57,9 +64,11 @@ class KartuKeluargaController extends Controller
      */
     public function edit(string $id)
     {
-        $rumah = KartuKeluarga::find($id);
-        return Inertia::render('NoRumah/Edit',[
-            'rumah' => $rumah
+        $kk = KartuKeluarga::findOrFail($id);
+        $rumahs = Rumah::all();
+        return Inertia::render('KartuKeluarga/Edit', [
+            'kk' => $kk,
+            'rumahs' => $rumahs
         ]);
     }
 
@@ -68,14 +77,18 @@ class KartuKeluargaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => 'required',
+        $kk = KartuKeluarga::findOrFail($id);
+        $validated = $request->validate([
+            'nik_kepala_keluarga' => 'required|string',
+            'nama_kepala_keluarga' => 'required|string',
+            'jumlah_anggota' => 'required|integer|min:1',
+            'foto_ktp_kepala_keluarga' => 'nullable|string',
+            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
         ]);
 
-        $rumah = KartuKeluarga::find($id);
-        $rumah->name = $request->name;
-        $rumah->save();
-        return redirect()->route('norumah.index');
+        $kk->update($validated);
+
+        return redirect()->route('kk.index')->with('success', 'Kartu Keluarga berhasil diperbarui');
     }
 
     /**
@@ -83,8 +96,7 @@ class KartuKeluargaController extends Controller
      */
     public function destroy(string $id)
     {
-        $rumah = KartuKeluarga::find($id);
-        $rumah->delete();
-        return redirect()->route('norumah.index');
+        KartuKeluarga::destroy($id);
+        return redirect()->route('kk.index')->with('success', 'Kartu Keluarga berhasil dihapus');
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('data_ipls', function (Blueprint $table) {
             $table->id();
             $table->string('no_rumah_id');
-            $table->foreign('no_rumah_id')->references('id_rumah')->on('lokasis')->onDelete('cascade');
+            $table->foreign('no_rumah_id')->references('id_rumah')->on('rumahs')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->date('payment_date');
             $table->enum('payment_method', ['cash', 'transfer'])->default('transfer');

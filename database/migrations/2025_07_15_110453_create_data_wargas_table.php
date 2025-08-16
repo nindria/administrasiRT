@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_wargas', function (Blueprint $table) {
-            $table->string('nik', 20)->primary();
-            $table->string('no_kk', 20);
-            $table->string('nama');
-            $table->date('tanggal_lahir');
+            $table->string('nik')->primary();
+            $table->string('full_name');
             $table->string('tempat_lahir');
+            $table->date('tanggal_lahir');
             $table->enum('status', ['Kepala Keluarga', 'Istri', 'Anak']);
-            $table->foreign('no_kk')->references('no_kk')->on('kartu_keluargas');
+            $table->string('no_kk');
+            $table->string('id_rumah');
+            $table->foreign('no_kk')->references('no_kk')->on('kartu_keluargas')->cascadeOnDelete();
+            $table->foreign('id_rumah')->references('id_rumah')->on('rumahs')->cascadeOnDelete();
             $table->timestamps();
         });
     }

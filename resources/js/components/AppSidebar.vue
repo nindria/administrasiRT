@@ -27,8 +27,8 @@ const mainNavItems: NavItem[] = [
     },
 
     {
-        title: 'Lokasi',
-        href: '/lokasi',
+        title: 'Rumah',
+        href: '/rumah',
         icon: House,
     },
     {

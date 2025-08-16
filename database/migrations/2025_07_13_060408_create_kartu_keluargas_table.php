@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kartu_keluargas', function (Blueprint $table) {
-            $table->string('no_kk', 20)->primary();
+            $table->string('no_kk')->primary();
+            $table->string('nik_kepala_keluarga');
             $table->string('nama_kepala_keluarga');
-            $table->string('id_rumah', 10);
-            $table->foreign('id_rumah')->references('id_rumah')->on('lokasis');
+            $table->unsignedInteger('jumlah_anggota');
+            $table->string('foto_ktp_kepala_keluarga')->nullable();
+            $table->string('id_rumah');
+            $table->foreign('id_rumah')->references('id_rumah')->on('rumahs')->cascadeOnDelete();
             $table->timestamps();
         });
     }

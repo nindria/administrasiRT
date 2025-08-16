@@ -4,7 +4,7 @@ use App\Http\Controllers\DataIplController;
 use App\Http\Controllers\DataWargaController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\KartuKeluargaController;
-use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\RumahController;
 use App\Http\Controllers\VerifikasiIplController;
 use App\Http\Controllers\VerifikasiWargaController;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +20,7 @@ Route::get('dashboard', function () {
 
 Route::resource('kartukeluarga', KartuKeluargaController::class);
 
-Route::resource('lokasi', LokasiController::class);
+Route::resource('rumah', RumahController::class);
 
 Route::resource('datawarga', DataWargaController::class);
 
