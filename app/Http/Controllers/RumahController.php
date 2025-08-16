@@ -40,7 +40,19 @@ class RumahController extends Controller
             'nomor' => 'required|string',
         ]);
 
-        Rumah::create($validated);
+        $id_rumah = strtoupper(
+            $validated['perumahan'] .
+                $validated['jalan'] .
+                $validated['blok'] .
+                str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
+        );
+        Rumah::create([
+            'id_rumah'  => $id_rumah,
+            'perumahan' => strtoupper($validated['perumahan']),
+            'jalan'     => $validated['jalan'],
+            'blok'      => strtoupper($validated['blok']),
+            'nomor'     => $validated['nomor'],
+        ]);
 
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil ditambahkan');
     }
@@ -79,8 +91,20 @@ class RumahController extends Controller
             'blok' => 'required|string',
             'nomor' => 'required|string',
         ]);
-
-        $rumah->update($validated);
+        
+        $id_rumah = strtoupper(
+            $validated['perumahan'] .
+                $validated['jalan'] .
+                $validated['blok'] .
+                str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
+        );
+        Rumah::update([
+            'id_rumah'  => $id_rumah,
+            'perumahan' => strtoupper($validated['perumahan']),
+            'jalan'     => $validated['jalan'],
+            'blok'      => strtoupper($validated['blok']),
+            'nomor'     => $validated['nomor'],
+        ]);
 
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil diperbarui');
     }

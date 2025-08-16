@@ -10,8 +10,27 @@ class Rumah extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id_rumah', 'perumahan', 'jalan', 'blok', 'nomor'];
+    protected $fillable = [
+        'id_rumah',
+        'perumahan',
+        'jalan',
+        'blok',
+        'nomor'
+    ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->id_rumah = strtoupper(
+                $model->perumahan .
+                $model->jalan .
+                $model->blok .
+                str_pad($model->nomor, 2, '0', STR_PAD_LEFT)
+            );
+        });
+    }
     public function kartuKeluargas()
     {
         return $this->hasMany(KartuKeluarga::class, 'id_rumah', 'id_rumah');
