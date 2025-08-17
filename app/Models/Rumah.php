@@ -15,7 +15,8 @@ class Rumah extends Model
         'perumahan',
         'jalan',
         'blok',
-        'nomor'
+        'nomor',
+        'nik_kepala',
     ];
 
     protected static function boot()

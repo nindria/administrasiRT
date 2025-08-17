@@ -38,7 +38,8 @@ class DataWargaController extends Controller
             'tempat_lahir' => 'required|string',
             'status' => 'required|in:anak,istri,kepala keluarga',
             'no_kk' => 'required|string|exists:kartu_keluargas,no_kk',
-            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
+            'id_rumah' => 'required|string|exists:rumahs,id_rumah',
+            
         ]);
 
         DataWarga::create($validated);

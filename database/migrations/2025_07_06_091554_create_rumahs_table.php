@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('jalan', 20);
             $table->string('blok', 5);
             $table->string('nomor', 5);
+            $table->string('nik_kepala');
             $table->timestamps();
         });
     }

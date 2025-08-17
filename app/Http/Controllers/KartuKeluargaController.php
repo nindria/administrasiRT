@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\DataWarga;
 use App\Models\KartuKeluarga;
 use App\Models\Rumah;
 use Illuminate\Http\Request;
@@ -27,10 +28,8 @@ class KartuKeluargaController extends Controller
      */
     public function create()
     {
-        $rumahs = Rumah::all();
-        return Inertia::render('KartuKeluarga/Create', [
-            'rumahs' => $rumahs
-        ]);
+        $wargas = DataWarga::all(); // untuk pilih kepala keluarga
+        return Inertia::render('KartuKeluarga/Create', compact('wargas'));
     }
 
     /**
@@ -40,7 +39,7 @@ class KartuKeluargaController extends Controller
     {
         $validated = $request->validate([
             'no_kk' => 'required|string|unique:kartu_keluargas',
-            'nik_kepala_keluarga' => 'required|string',
+            'nik_kepala' => 'required|string|exists:data_wargas,nik',
             'nama_kepala_keluarga' => 'required|string',
             'jumlah_anggota' => 'required|integer|min:1',
             'foto_ktp_kepala_keluarga' => 'nullable|string',
@@ -54,9 +53,10 @@ class KartuKeluargaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $no_kk)
     {
-        //
+        $kk = KartuKeluarga::with(['kepalaKeluarga', 'anggota'])->findOrFail($no_kk);
+        return Inertia::render('KartuKeluarga/Show', compact('kk'));
     }
 
     /**

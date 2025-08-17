@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('full_name');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
+            $table->string('agama');
             $table->enum('status', ['Kepala Keluarga', 'Istri', 'Anak']);
             $table->string('no_kk');
             $table->string('id_rumah');
-            $table->foreign('no_kk')->references('no_kk')->on('kartu_keluargas')->cascadeOnDelete();
-            $table->foreign('id_rumah')->references('id_rumah')->on('rumahs')->cascadeOnDelete();
             $table->timestamps();
         });
     }

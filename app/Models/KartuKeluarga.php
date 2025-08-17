@@ -12,17 +12,17 @@ class KartuKeluarga extends Model
 
     protected $fillable = [
         'no_kk',
-        'nik_kepala_keluarga',
+        'nik_kepala',
         'nama_kepala_keluarga',
         'jumlah_anggota',
         'foto_ktp_kepala_keluarga',
-        'id_rumah'
+        // 'id_rumah'
     ];
 
-    public function rumah()
-    {
-        return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
-    }
+    // public function rumah()
+    // {
+    //     return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
+    // }
 
     public function dataWargas()
     {

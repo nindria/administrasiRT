@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('kartu_keluargas', function (Blueprint $table) {
             $table->string('no_kk')->primary();
-            $table->string('nik_kepala_keluarga');
             $table->string('nama_kepala_keluarga');
             $table->unsignedInteger('jumlah_anggota');
             $table->string('foto_ktp_kepala_keluarga')->nullable();
-            $table->string('id_rumah');
-            $table->foreign('id_rumah')->references('id_rumah')->on('rumahs')->cascadeOnDelete();
+            
+            $table->string('nik_kepala');
+            
+            // $table->string('id_rumah');
+            // $table->foreign('id_rumah')->references('id_rumah')->on('rumahs')->cascadeOnDelete();
             $table->timestamps();
         });
     }
