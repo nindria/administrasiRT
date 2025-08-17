@@ -13,20 +13,26 @@ class DataWargaController extends Controller
 {
     public function index()
     {
-        $wargas = DataWarga::with(['kartuKeluarga', 'rumah'])->latest()->paginate(10);
-        return Inertia::render('DataWarga/Index', [
-            'wargas' => $wargas
-        ]);
+        $wargas = DataWarga::with('rumah')->latest()->paginate(10);
+
+        $wargas->through(function ($warga) {
+            if ($warga->rumah && $warga->rumah->count() > 0) {
+                // Mengambil semua blok rumah dan menggabungkannya menjadi string
+                $warga->blok = $warga->rumah->map(function ($rumah) {
+                    return  $rumah->blok;
+                })->implode(', ');
+            } else {
+                $warga->blok = ['-'];
+            }
+            return $warga;
+        });
+
+        return Inertia::render('DataWarga/Index', ['wargas' => $wargas]);
     }
 
     public function create()
     {
-        $kks = KartuKeluarga::all();
-        $rumahs = Rumah::all();
-        return Inertia::render('DataWarga/Create', [
-            'kks' => $kks,
-            'rumahs' => $rumahs
-        ]);
+        return Inertia::render('DataWarga/Create');
     }
 
     public function store(Request $request)
@@ -37,13 +43,11 @@ class DataWargaController extends Controller
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required|string',
             'status' => 'required|in:anak,istri,kepala keluarga',
-            'no_kk' => 'required|string|exists:kartu_keluargas,no_kk',
-            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
         ]);
 
         DataWarga::create($validated);
 
-        return redirect()->route('warga.index')->with('success', 'Data warga berhasil ditambahkan');
+        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil ditambahkan');
     }
 
     public function edit(string $id)
@@ -54,7 +58,7 @@ class DataWargaController extends Controller
         return Inertia::render('DataWarga/Edit', [
             'warga' => $warga,
             'kks' => $kks,
-            'rumahs' => $rumahs
+            'noRumahs' => $rumahs
         ]);
     }
 
@@ -66,20 +70,16 @@ class DataWargaController extends Controller
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required|string',
             'status' => 'required|in:anak,istri,kepala keluarga',
-            'no_kk' => 'required|string|exists:kartu_keluargas,no_kk',
-            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
         ]);
 
         $warga->update($validated);
 
-        return redirect()->route('warga.index')->with('success', 'Data warga berhasil diperbarui');
+        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil diperbarui');
     }
 
     public function destroy(string $id)
     {
         DataWarga::destroy($id);
-        return redirect()->route('warga.index')->with('success', 'Data warga berhasil dihapus');
+        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil dihapus');
     }
-
-    
 }

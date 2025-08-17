@@ -12,10 +12,11 @@ class Rumah extends Model
 
     protected $fillable = [
         'id_rumah',
+        'nik', // -> foreign key 
         'perumahan',
         'jalan',
         'blok',
-        'nomor'
+        'nomor',
     ];
 
     protected static function boot()
@@ -25,19 +26,25 @@ class Rumah extends Model
         static::creating(function ($model) {
             $model->id_rumah = strtoupper(
                 $model->perumahan .
-                $model->jalan .
-                $model->blok .
-                str_pad($model->nomor, 2, '0', STR_PAD_LEFT)
+                    $model->jalan .
+                    $model->blok .
+                    str_pad($model->nomor, 2, '0', STR_PAD_LEFT)
             );
         });
     }
-    public function kartuKeluargas()
+
+    // public function dataWarga()
+    // {
+    //     return $this->hasMany(DataWarga::class, 'id_rumah', 'id_rumah');
+    // }
+
+    public function dataWarga()
     {
-        return $this->hasMany(KartuKeluarga::class, 'id_rumah', 'id_rumah');
+        return $this->belongsTo(DataWarga::class, 'nik', 'nik');
     }
 
-    public function dataWargas()
-    {
-        return $this->hasMany(DataWarga::class, 'id_rumah', 'id_rumah');
-    }
+    // public function kartuKeluarga()
+    // {
+    //     return $this->hasOne(KartuKeluarga::class, 'id_rumah', 'id_rumah');
+    // }
 }

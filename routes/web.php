@@ -48,6 +48,6 @@ Route::resource('verifikasiipl', VerifikasiIplController::class)->only([
 
 Route::put('/verifikasiipl/{ipl}/verify', [VerifikasiIplController::class, 'verify'])
     ->name('verifikasiipl.verify');
-    
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

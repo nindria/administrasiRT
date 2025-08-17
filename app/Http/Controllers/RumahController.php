@@ -33,8 +33,8 @@ class RumahController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_rumah' => 'required|string|unique:rumahs',
             'perumahan' => 'required|string',
+            'nik'       => 'required|string|exists:data_wargas,nik',
             'jalan' => 'required|string',
             'blok' => 'required|string',
             'nomor' => 'required|string',
@@ -48,6 +48,7 @@ class RumahController extends Controller
         );
         Rumah::create([
             'id_rumah'  => $id_rumah,
+            'nik'       => $validated['nik'],
             'perumahan' => strtoupper($validated['perumahan']),
             'jalan'     => $validated['jalan'],
             'blok'      => strtoupper($validated['blok']),
@@ -86,20 +87,24 @@ class RumahController extends Controller
     {
         $rumah = Rumah::findOrFail($id);
         $validated = $request->validate([
+            'nik' => 'required|string|exists:data_wargas,nik',
             'perumahan' => 'required|string',
             'jalan' => 'required|string',
             'blok' => 'required|string',
             'nomor' => 'required|string',
         ]);
-        
+
         $id_rumah = strtoupper(
+
             $validated['perumahan'] .
                 $validated['jalan'] .
                 $validated['blok'] .
                 str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
         );
-        Rumah::update([
+
+        $rumah->update([
             'id_rumah'  => $id_rumah,
+            'nik'       => $validated['nik'],
             'perumahan' => strtoupper($validated['perumahan']),
             'jalan'     => $validated['jalan'],
             'blok'      => strtoupper($validated['blok']),

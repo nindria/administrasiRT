@@ -12,20 +12,23 @@ class KartuKeluarga extends Model
 
     protected $fillable = [
         'no_kk',
-        'nik_kepala_keluarga',
-        'nama_kepala_keluarga',
+        'nik', // -> foreign key 
         'jumlah_anggota',
         'foto_ktp_kepala_keluarga',
-        'id_rumah'
     ];
 
-    public function rumah()
+    // public function rumah()
+    // {
+    //     return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
+    // }
+
+    public function dataWargaKepalaKeluarga()
     {
-        return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
+        return $this->belongsTo(DataWarga::class, 'nik', 'nik')->where('status', 'Kepala Keluarga');
     }
 
-    public function dataWargas()
-    {
-        return $this->hasMany(DataWarga::class, 'no_kk', 'no_kk');
-    }
+    // public function dataWarga()
+    // {
+    //     return $this->hasOne(DataWarga::class, 'no_kk', 'no_kk');
+    // }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class DataWarga extends Model
@@ -19,17 +20,15 @@ class DataWarga extends Model
         'tempat_lahir',
         'tanggal_lahir',
         'status',
-        'no_kk',
-        'id_rumah'
     ];
 
     public function rumah()
     {
-        return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
+        return $this->hasMany(Rumah::class, 'nik', 'nik');
     }
 
-    public function kartuKeluarga()
-    {
-        return $this->belongsTo(KartuKeluarga::class, 'no_kk', 'no_kk');
-    }
+    // public function kartuKeluarga()
+    // {
+    //     return $this->belongsTo(KartuKeluarga::class, 'no_kk', 'no_kk');
+    // }
 }

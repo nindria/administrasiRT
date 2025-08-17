@@ -40,11 +40,9 @@ class KartuKeluargaController extends Controller
     {
         $validated = $request->validate([
             'no_kk' => 'required|string|unique:kartu_keluargas',
-            'nik_kepala_keluarga' => 'required|string',
-            'nama_kepala_keluarga' => 'required|string',
+            'nik' => 'required|exists:data_wargas,nik',
             'jumlah_anggota' => 'required|integer|min:1',
             'foto_ktp_kepala_keluarga' => 'nullable|string',
-            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
         ]);
 
         KartuKeluarga::create($validated);
@@ -79,11 +77,9 @@ class KartuKeluargaController extends Controller
     {
         $kk = KartuKeluarga::findOrFail($id);
         $validated = $request->validate([
-            'nik_kepala_keluarga' => 'required|string',
-            'nama_kepala_keluarga' => 'required|string',
+            'nik' => 'required|exists:data_wargas,nik',
             'jumlah_anggota' => 'required|integer|min:1',
             'foto_ktp_kepala_keluarga' => 'nullable|string',
-            'id_rumah' => 'required|string|exists:rumahs,id_rumah'
         ]);
 
         $kk->update($validated);

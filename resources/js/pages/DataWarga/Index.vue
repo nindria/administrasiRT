@@ -7,18 +7,18 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 interface Warga {
-    id: number;
+    nik: string;
     full_name: string;
-    wife_name: string;
-    no_rumah: {
-        name: string;
-    };
-    residence_status: string;
-    children_count: number;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    status: string;
+    blok: Array<string>;
 }
 
 interface Props {
-    datawarga: Warga[];
+    wargas: {
+        data: Warga[];
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,16 +28,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const { datawarga } = defineProps<Props>();
+const { wargas } = defineProps<Props>();
+
 const form = useForm({});
+// function formatStatus(residence_status: string): string {
+//     return residence_status.replaceAll('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+// }
 
-function formatStatus(residence_status: string): string {
-    return residence_status.replaceAll('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-}
-
-const confirmDelete = (id: number) => {
+const confirmDelete = (nik: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data warga ini?')) {
-        form.delete(route('datawarga.destroy', id));
+        form.delete(route('datawarga.destroy', nik));
     }
 };
 </script>
@@ -63,42 +63,45 @@ const confirmDelete = (id: number) => {
                 <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-6 py-3">No. Rumah</th>
-                            <th scope="col" class="px-6 py-3">Nama Lengkap</th>
-                            <th scope="col" class="px-6 py-3">Nama Istri</th>
+                            <th scope="col" class="px-6 py-3">NIK</th>
+                            <th scope="col" class="px-6 py-3">Nama</th>
+                            <th scope="col" class="px-6 py-3">Tempat Lahir</th>
+                            <th scope="col" class="px-6 py-3">Tanggal Lahir</th>
                             <th scope="col" class="px-6 py-3">Status</th>
-                            <th scope="col" class="px-6 py-3">Jumlah Anak</th>
+                            <th scope="col" class="px-6 py-3">Blok Rumah</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="warga in datawarga" :key="warga.id" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <tr v-for="warga in wargas.data" :key="warga.nik" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
                             <td class="px-6 py-4">
                                 <Badge variant="outline">
-                                    {{ warga.no_rumah.name }}
+                                    {{ warga.nik }}
                                 </Badge>
                             </td>
                             <td class="px-6 py-4">{{ warga.full_name }}</td>
-                            <td class="px-6 py-4">{{ warga.wife_name }}</td>
+                            <td class="px-6 py-4">{{ warga.tempat_lahir }}</td>
+                            <td class="px-6 py-4">{{ warga.tanggal_lahir }}</td>
 
                             <td class="px-6 py-4">
                                 <Badge>
-                                    {{ formatStatus(warga.residence_status) }}
+                                    {{ warga.status }}
                                 </Badge>
                             </td>
-                            <td class="px-6 py-4">{{ warga.children_count }}</td>
+
+                            <td class="px-6 py-4">{{ warga.blok }}</td>
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="`datawarga/${warga.id}/edit`">
+                                <Link :href="`datawarga/${warga.nik}/edit`">
                                     <Button variant="outline" size="sm">
                                         <Eye class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Link :href="route('datawarga.edit', warga.id)">
+                                <Link :href="route('datawarga.edit', warga.nik)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Button variant="destructive" size="sm" @click="confirmDelete(warga.id)">
+                                <Button variant="destructive" size="sm" @click="confirmDelete(warga.nik)">
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
                             </td>
