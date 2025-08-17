@@ -14,15 +14,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const form = useForm<{
+<<<<<<< HEAD
     id_rumah: string;
     nik: string;
+=======
+    // id_rumah: string;
+>>>>>>> 136d5f610fcae3381083deb22f8526b628fb8c20
     perumahan: string;
     jalan: string;
     blok: string;
     nomor: string;
 }>({
+<<<<<<< HEAD
     id_rumah: '',
     nik: '',
+=======
+    // id_rumah: '',
+>>>>>>> 136d5f610fcae3381083deb22f8526b628fb8c20
     perumahan: '',
     jalan: '',
     blok: '',
@@ -44,6 +52,7 @@ function submit() {
             <h1 class="text-2xl font-bold">Tambah Data Rumah</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
+<<<<<<< HEAD
                     <BaseInput label="NIK" name="nik" v-model:value="form.nik" placeholder="Ketik NIKmu" :message="form.errors.nik" />
                     <BaseInput
                         label="Nama Perumahan"
@@ -61,6 +70,33 @@ function submit() {
                     />
                     <BaseInput label="Blok" name="blok" v-model:value="form.blok" placeholder="Ketik blok rumahmu" :message="form.errors.blok" />
                     <BaseInput label="Nomor" name="nomor" v-model:value="form.nomor" placeholder="Ketik nomor rumahmu" :message="form.errors.nomor" />
+=======
+                    <!-- <div class="grid gap-2">
+                        <Label for="name">ID Rumah</Label>
+                        <Input id="name" type="text" class="mt-1 block w-full" v-model="form.id_rumah" placeholder="Ketik id rumahmu" />
+                        <InputError class="mt-2" :message="form.errors.id_rumah" />
+                    </div> -->
+                    <div class="grid gap-2">
+                        <Label for="name">Nama Perumahan</Label>
+                        <Input value="GBJ2" disabled id="name" type="text" class="mt-1 block w-full" v-model="form.perumahan" placeholder="Ketik nama perumahanmu" />
+                        <InputError class="mt-2" :message="form.errors.perumahan" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="jalan">Nama Jalan</Label>
+                        <Input id="jalan" type="text" class="mt-1 block w-full" v-model="form.jalan" placeholder="Ketik nama jalanmu" />
+                        <InputError class="mt-2" :message="form.errors.jalan" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="blok">Blok</Label>
+                        <Input id="blok" type="text" class="mt-1 block w-full" v-model="form.blok" placeholder="Ketik blok rumahmu" />
+                        <InputError class="mt-2" :message="form.errors.blok" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="nomor">Nomor</Label>
+                        <Input id="nomor" type="text" class="mt-1 block w-full" v-model="form.nomor" placeholder="Ketik nomor rumahmu" />
+                        <InputError class="mt-2" :message="form.errors.nomor" />
+                    </div>
+>>>>>>> 136d5f610fcae3381083deb22f8526b628fb8c20
 
                     <div class="flex justify-end gap-2">
                         <Link href="/rumah"

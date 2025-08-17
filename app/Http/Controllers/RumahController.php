@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataWarga;
 use App\Models\Rumah;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,7 +25,8 @@ class RumahController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Rumah/Create');
+        $wargas = DataWarga::where('status', 'Kepala Keluarga')->get();
+        return Inertia::render('Rumah/Create', compact('wargas'));
     }
 
     /**
@@ -32,6 +34,7 @@ class RumahController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $validated = $request->validate([
             'perumahan' => 'required|string',
             'nik'       => 'required|string|exists:data_wargas,nik',
@@ -61,12 +64,10 @@ class RumahController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id_rumah)
     {
-        $lokasi = Rumah::find($id);
-        return Inertia::render('lokasi/Edit', [
-            'lokasi' => $lokasi
-        ]);
+        $rumah = Rumah::with(['kepalaKeluarga', 'penghuni'])->findOrFail($id_rumah);
+        return Inertia::render('Rumah/Show', compact('rumah'));
     }
 
     /**

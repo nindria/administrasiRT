@@ -21,6 +21,10 @@ class KartuKeluarga extends Model
     // {
     //     return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
     // }
+    // public function rumah()
+    // {
+    //     return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
+    // }
 
     public function dataWargaKepalaKeluarga()
     {
