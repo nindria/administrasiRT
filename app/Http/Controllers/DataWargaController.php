@@ -22,7 +22,7 @@ class DataWargaController extends Controller
                     return  $rumah->blok;
                 })->implode(', ');
             } else {
-                $warga->blok = ['-'];
+                $warga->blok = '-';
             }
             return $warga;
         });

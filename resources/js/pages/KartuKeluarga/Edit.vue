@@ -1,36 +1,37 @@
 <script setup lang="ts">
 import BaseInput from '@/components/form/BaseInput.vue';
+import BaseSelect from '@/components/form/BaseSelect.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ChevronLeft } from 'lucide-vue-next';
 
-defineProps<{
+const props = defineProps<{
+    kk: {
+        no_kk: string;
+        nik: string;
+        jumlah_anggota: string;
+        foto_ktp_kepala_keluarga: string;
+    };
     wargas: Array<{ nik: string; full_name: string; status: string }>;
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Create',
-        href: '/kartukeluarga/create',
+        title: 'Edit',
+        href: '/kartukeluarga/edit',
     },
 ];
 
-const form = useForm<{
-    no_kk: string;
-    nik: string;
-    jumlah_anggota: string;
-    foto_ktp_kepala_keluarga: string;
-}>({
-    no_kk: '',
-    nik: '',
-    jumlah_anggota: '',
-    foto_ktp_kepala_keluarga: '',
+const form = useForm({
+    nik: props.kk.nik,
+    jumlah_anggota: props.kk.jumlah_anggota,
+    foto_ktp_kepala_keluarga: props.kk.foto_ktp_kepala_keluarga || '',
 });
 
 function submit() {
-    form.post(route('kk.store'), {
+    form.put(route('kk.update', props.kk.no_kk), {
         onSuccess: () => form.reset(),
         preserveScroll: true,
     });
@@ -42,30 +43,12 @@ function submit() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Tambah Kartu Keluarga</h1>
+            <h1 class="text-2xl font-bold">Edit Kartu Keluarga</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
-                    <BaseInput
-                        label="Nomor KK"
-                        name="no_kk"
-                        v-model:value="form.no_kk"
-                        :message="form.errors.no_kk"
-                        type="text"
-                        maxlength="16"
-                        placeholder="Masukkan Nomor KK"
-                    />
+                    <BaseInput label="Nomor KK" name="no_kk" :value="kk.no_kk" :disabled="true" type="text" maxlength="16" />
 
-                    <BaseInput
-                        label="NIK Kepala Keluarga"
-                        name="nik"
-                        v-model:value="form.nik"
-                        :message="form.errors.nik"
-                        type="text"
-                        maxlength="16"
-                        placeholder="Masukkan NIK Kepala Keluarga"
-                    />
-
-                    <!-- <BaseSelect
+                    <BaseSelect
                         label="Kepala Keluarga"
                         name="nik"
                         v-model:value="form.nik"
@@ -76,7 +59,7 @@ function submit() {
                                 .map((warga) => ({ value: warga.nik, label: `${warga.nik} - ${warga.full_name}` }))
                         "
                         placeholder="Pilih Kepala Keluarga"
-                    /> -->
+                    />
 
                     <BaseInput
                         label="Jumlah Anggota"
@@ -107,7 +90,7 @@ function submit() {
                                 Back
                             </Button></Link
                         >
-                        <Button class="w-24" type="submit" :disabled="form.processing">Submit</Button>
+                        <Button class="w-24" type="submit" :disabled="form.processing">Update</Button>
                     </div>
                 </div>
             </form>
