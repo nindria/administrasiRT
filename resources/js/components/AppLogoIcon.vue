@@ -13,6 +13,6 @@ defineProps<Props>();
 </script>
 
 <template>
-        <img src="/storage/avatar.png" alt="Avatar" class="w-32 h-auto" />
+        <img src="public/avatar.png" alt="Avatar" class="w-32 h-auto" />
 
 </template>
