@@ -13,6 +13,5 @@ defineProps<Props>();
 </script>
 
 <template>
-        <img src="public/avatar.png" alt="Avatar" class="w-32 h-auto" />
-
+    <img src="/avatar.png" alt="Avatar" class="h-auto w-32 bg-transparent" />
 </template>

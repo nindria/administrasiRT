@@ -44,7 +44,13 @@ function submit() {
             <h1 class="text-2xl font-bold">Tambah Data Rumah</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
-                    <BaseInput label="NIK" name="nik" v-model:value="form.nik" placeholder="Ketik NIKmu" :message="form.errors.nik" />
+                    <BaseInput
+                        label="NIK Kepala Keluarga"
+                        name="nik"
+                        v-model:value="form.nik"
+                        placeholder="Ketik NIK kepala keluarga"
+                        :message="form.errors.nik"
+                    />
                     <BaseInput
                         label="Nama Perumahan"
                         name="perumahan"
