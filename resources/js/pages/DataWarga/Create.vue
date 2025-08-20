@@ -59,6 +59,8 @@ function submit() {
                         :message="form.errors.nik"
                         type="text"
                         maxlength="16"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        inputmode="numeric"
                         placeholder="Masukkan NIK"
                     />
 

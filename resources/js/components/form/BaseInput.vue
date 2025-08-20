@@ -11,6 +11,9 @@
             :onclick="$attrs.onclick || undefined"
             :placeholder="$attrs.placeholder"
             @blur="$attrs.onblur || undefined"
+            :maxlength="$attrs.maxlength"
+            :oninput="$attrs.oninput || undefined"
+            :inputmode="$attrs.inputmode"
         />
         <InputError :message="message" />
     </div>
