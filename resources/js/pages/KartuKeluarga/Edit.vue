@@ -8,7 +8,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ChevronLeft } from 'lucide-vue-next';
 
 const props = defineProps<{
-    kk: {
+    kartukeluarga: {
         no_kk: string;
         nik: string;
         jumlah_anggota: string;
@@ -25,13 +25,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const form = useForm({
-    nik: props.kk.nik,
-    jumlah_anggota: props.kk.jumlah_anggota,
-    foto_ktp_kepala_keluarga: props.kk.foto_ktp_kepala_keluarga || '',
+    nik: props.kartukeluarga.nik,
+    jumlah_anggota: props.kartukeluarga.jumlah_anggota,
+    foto_ktp_kepala_keluarga: props.kartukeluarga.foto_ktp_kepala_keluarga || '',
 });
 
 function submit() {
-    form.put(route('kk.update', props.kk.no_kk), {
+    form.put(route('kartukeluarga.update', props.kartukeluarga.no_kk), {
         onSuccess: () => form.reset(),
         preserveScroll: true,
     });
@@ -46,7 +46,7 @@ function submit() {
             <h1 class="text-2xl font-bold">Edit Kartu Keluarga</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
-                    <BaseInput label="Nomor KK" name="no_kk" :value="kk.no_kk" :disabled="true" type="text" maxlength="16" />
+                    <BaseInput label="Nomor KK" name="no_kk" :value="kartukeluarga.no_kk" :disabled="true" type="text" maxlength="16" />
 
                     <BaseSelect
                         label="Kepala Keluarga"

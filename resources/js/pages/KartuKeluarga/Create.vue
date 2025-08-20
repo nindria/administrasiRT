@@ -30,7 +30,7 @@ const form = useForm<{
 });
 
 function submit() {
-    form.post(route('kk.store'), {
+    form.post(route('kartukeluarga.store'), {
         onSuccess: () => form.reset(),
         preserveScroll: true,
     });

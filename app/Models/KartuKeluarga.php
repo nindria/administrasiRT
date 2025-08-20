@@ -21,9 +21,9 @@ class KartuKeluarga extends Model
     {
         return $this->belongsTo(Rumah::class, 'nik', 'nik');
     }
-   
 
-    public function dataWargaKepalaKeluarga()
+
+    public function dataWarga()
     {
         return $this->belongsTo(DataWarga::class, 'nik', 'nik')->where('status', 'Kepala Keluarga');
     }

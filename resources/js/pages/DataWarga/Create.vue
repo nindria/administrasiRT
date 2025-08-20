@@ -18,21 +18,27 @@ const breadcrumbs: BreadcrumbItem[] = [
 // Status kepala keluarga untuk menampilkan form KK
 const isKepalaKeluarga = ref(false);
 
-const form = useForm({
-    // Data Warga
+// Form untuk data warga (semua status)
+const wargaForm = useForm({
     nik: '',
     full_name: '',
     tempat_lahir: '',
     tanggal_lahir: '',
     status: '',
+});
 
-    // Data Kartu Keluarga
+// Form untuk data kartu keluarga (hanya kepala keluarga)
+const kkForm = useForm({
     no_kk: '',
+    nik: '', // akan diisi dari wargaForm.nik setelah warga disimpan
     jumlah_anggota: '1',
     foto_ktp_kepala_keluarga: '',
+});
 
-    // Data Rumah
-    perumahan: '',
+// Form untuk data rumah (hanya kepala keluarga)
+const rumahForm = useForm({
+    nik: '', // akan diisi dari wargaForm.nik setelah warga disimpan
+    perumahan: 'GBJ2',
     jalan: '',
     blok: '',
     nomor: '',
@@ -40,16 +46,56 @@ const form = useForm({
 
 // Watch perubahan status untuk menampilkan/menyembunyikan form KK
 watch(
-    () => form.status,
+    () => wargaForm.status,
     (newValue) => {
         isKepalaKeluarga.value = newValue === 'kepala keluarga';
     },
 );
 
-function submit() {
-    form.post(route('datawarga.store'), {
-        onSuccess: () => form.reset(),
+async function submit() {
+    // Simpan data warga terlebih dahulu
+    await wargaForm.post(route('datawarga.store'), {
         preserveScroll: true,
+        onSuccess: async () => {
+            // Jika status kepala keluarga, kirim data KK dan Rumah
+            if (isKepalaKeluarga.value) {
+                // Set NIK dari data warga yang baru disimpan
+                kkForm.nik = wargaForm.nik;
+                rumahForm.nik = wargaForm.nik;
+
+                // Kirim data KK
+                try {
+                    // Kirim data Rumah
+                    await rumahForm.post(route('rumah.store'), {
+                        preserveScroll: true,
+                        onSuccess: async () => {
+                            await kkForm.post(route('kartukeluarga.store'), {
+                                preserveScroll: true,
+                                onSuccess: () => kkForm.reset(),
+                                onError: (errors) => {
+                                    console.error('Error menyimpan data KK:', errors);
+
+                                    alert('Error menyimpan data KK: ' + JSON.stringify(errors));
+                                },
+                            });
+
+                            rumahForm.reset();
+                        },
+                        onError: (errors) => {
+                            console.error('Error menyimpan data Rumah:', errors);
+                        },
+                    });
+
+                    // Reset semua form setelah semua berhasil
+                    wargaForm.reset();
+                } catch (error) {
+                    console.error('Terjadi kesalahan:', error);
+                }
+            } else {
+                // Reset hanya form warga jika bukan kepala keluarga
+                wargaForm.reset();
+            }
+        },
     });
 }
 </script>
@@ -69,8 +115,8 @@ function submit() {
                             <BaseInput
                                 label="NIK"
                                 name="nik"
-                                v-model:value="form.nik"
-                                :message="form.errors.nik"
+                                v-model:value="wargaForm.nik"
+                                :message="wargaForm.errors.nik"
                                 type="text"
                                 maxlength="16"
                                 inputmode="numeric"
@@ -81,24 +127,24 @@ function submit() {
                             <BaseInput
                                 label="Nama Lengkap"
                                 name="full_name"
-                                v-model:value="form.full_name"
-                                :message="form.errors.full_name"
+                                v-model:value="wargaForm.full_name"
+                                :message="wargaForm.errors.full_name"
                                 placeholder="Masukkan nama lengkap"
                             />
 
                             <BaseInput
                                 label="Tempat Lahir"
                                 name="tempat_lahir"
-                                v-model:value="form.tempat_lahir"
-                                :message="form.errors.tempat_lahir"
+                                v-model:value="wargaForm.tempat_lahir"
+                                :message="wargaForm.errors.tempat_lahir"
                                 placeholder="Masukkan tempat lahir"
                             />
 
                             <BaseInput
                                 label="Tanggal Lahir"
                                 name="tanggal_lahir"
-                                v-model:value="form.tanggal_lahir"
-                                :message="form.errors.tanggal_lahir"
+                                v-model:value="wargaForm.tanggal_lahir"
+                                :message="wargaForm.errors.tanggal_lahir"
                                 type="date"
                                 onclick="this.showPicker()"
                             />
@@ -106,8 +152,8 @@ function submit() {
                             <BaseSelect
                                 label="Status"
                                 name="status"
-                                v-model:value="form.status"
-                                :message="form.errors.status"
+                                v-model:value="wargaForm.status"
+                                :message="wargaForm.errors.status"
                                 :options="[
                                     { value: 'kepala keluarga', label: 'Kepala Keluarga' },
                                     { value: 'istri', label: 'Istri' },
@@ -125,8 +171,8 @@ function submit() {
                             <BaseInput
                                 label="Nomor KK"
                                 name="no_kk"
-                                v-model:value="form.no_kk"
-                                :message="form.errors.no_kk"
+                                v-model:value="kkForm.no_kk"
+                                :message="kkForm.errors.no_kk"
                                 type="text"
                                 maxlength="16"
                                 placeholder="Masukkan Nomor KK"
@@ -135,8 +181,8 @@ function submit() {
                             <BaseInput
                                 label="Jumlah Anggota"
                                 name="jumlah_anggota"
-                                v-model:value="form.jumlah_anggota"
-                                :message="form.errors.jumlah_anggota"
+                                v-model:value="kkForm.jumlah_anggota"
+                                :message="kkForm.errors.jumlah_anggota"
                                 type="number"
                                 min="1"
                                 placeholder="Masukkan Jumlah Anggota"
@@ -145,8 +191,8 @@ function submit() {
                             <BaseInput
                                 label="Foto KTP Kepala Keluarga"
                                 name="foto_ktp_kepala_keluarga"
-                                v-model:value="form.foto_ktp_kepala_keluarga"
-                                :message="form.errors.foto_ktp_kepala_keluarga"
+                                v-model:value="kkForm.foto_ktp_kepala_keluarga"
+                                :message="kkForm.errors.foto_ktp_kepala_keluarga"
                                 type="text"
                                 placeholder="Masukkan URL Foto KTP"
                             />
@@ -160,30 +206,31 @@ function submit() {
                             <BaseInput
                                 label="Nama Perumahan"
                                 name="perumahan"
-                                v-model:value="form.perumahan"
+                                v-model:value="rumahForm.perumahan"
                                 placeholder="Ketik nama perumahanmu"
-                                :message="form.errors.perumahan"
+                                :message="rumahForm.errors.perumahan"
+                                disabled
                             />
                             <BaseInput
                                 label="Nama Jalan"
                                 name="jalan"
-                                v-model:value="form.jalan"
+                                v-model:value="rumahForm.jalan"
                                 placeholder="Ketik nama jalanmu"
-                                :message="form.errors.jalan"
+                                :message="rumahForm.errors.jalan"
                             />
                             <BaseInput
                                 label="Blok"
                                 name="blok"
-                                v-model:value="form.blok"
+                                v-model:value="rumahForm.blok"
                                 placeholder="Ketik blok rumahmu"
-                                :message="form.errors.blok"
+                                :message="rumahForm.errors.blok"
                             />
                             <BaseInput
                                 label="Nomor"
                                 name="nomor"
-                                v-model:value="form.nomor"
+                                v-model:value="rumahForm.nomor"
                                 placeholder="Ketik nomor rumahmu"
-                                :message="form.errors.nomor"
+                                :message="rumahForm.errors.nomor"
                             />
                         </div>
                     </div>
@@ -198,7 +245,9 @@ function submit() {
                                 Back
                             </Button></Link
                         >
-                        <Button class="w-24" type="submit" :disabled="form.processing">Submit</Button>
+                        <Button class="w-24" type="submit" :disabled="wargaForm.processing || kkForm.processing || rumahForm.processing"
+                            >Submit</Button
+                        >
                     </div>
                 </div>
             </form>

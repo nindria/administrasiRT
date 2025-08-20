@@ -17,9 +17,9 @@ class KartuKeluargaController extends Controller
      */
     public function index()
     {
-        $kk = KartuKeluarga::with('rumah')->latest()->paginate(10);
+        $kartukeluarga = KartuKeluarga::with('dataWarga')->latest()->paginate(10);
         return Inertia::render('KartuKeluarga/Index', [
-            'kk' => $kk
+            'kartukeluarga' => $kartukeluarga
         ]);
     }
 
@@ -36,7 +36,9 @@ class KartuKeluargaController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
+
     {
+
         $validated = $request->validate([
             'no_kk' => 'required|string|unique:kartu_keluargas',
             'nik' => 'required|exists:data_wargas,nik',
@@ -44,17 +46,18 @@ class KartuKeluargaController extends Controller
             'foto_ktp_kepala_keluarga' => 'nullable|string',
         ]);
 
+
         KartuKeluarga::create($validated);
 
-        return redirect()->route('kk.index')->with('success', 'Kartu Keluarga berhasil ditambahkan');
+        return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil ditambahkan');
     }
     /**
      * Display the specified resource.
      */
     public function show(string $no_kk)
     {
-        $kk = KartuKeluarga::with(['kepalaKeluarga', 'anggota'])->findOrFail($no_kk);
-        return Inertia::render('KartuKeluarga/Show', compact('kk'));
+        $kartukeluarga = KartuKeluarga::with(['dataWarga', 'datawarga'])->findOrFail($no_kk);
+        return Inertia::render('KartuKeluarga/Show', compact('kartukeluarga'));
     }
 
     /**
@@ -62,10 +65,10 @@ class KartuKeluargaController extends Controller
      */
     public function edit(string $id)
     {
-        $kk = KartuKeluarga::findOrFail($id);
+        $kartukeluarga = KartuKeluarga::findOrFail($id);
         $rumahs = Rumah::all();
         return Inertia::render('KartuKeluarga/Edit', [
-            'kk' => $kk,
+            'kartukeluarga' => $kartukeluarga,
             'rumahs' => $rumahs
         ]);
     }
@@ -75,16 +78,16 @@ class KartuKeluargaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $kk = KartuKeluarga::findOrFail($id);
+        $kartukeluarga = KartuKeluarga::findOrFail($id);
         $validated = $request->validate([
             'nik' => 'required|exists:data_wargas,nik',
             'jumlah_anggota' => 'required|integer|min:1',
             'foto_ktp_kepala_keluarga' => 'nullable|string',
         ]);
 
-        $kk->update($validated);
+        $kartukeluarga->update($validated);
 
-        return redirect()->route('kk.index')->with('success', 'Kartu Keluarga berhasil diperbarui');
+        return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil diperbarui');
     }
 
     /**
@@ -93,6 +96,6 @@ class KartuKeluargaController extends Controller
     public function destroy(string $id)
     {
         KartuKeluarga::destroy($id);
-        return redirect()->route('kk.index')->with('success', 'Kartu Keluarga berhasil dihapus');
+        return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil dihapus');
     }
 }

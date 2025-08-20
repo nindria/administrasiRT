@@ -48,7 +48,7 @@ class RumahController extends Controller
                 $validated['blok'] .
                 str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
         );
-        
+
         // Cek apakah ID rumah sudah ada
         $existingRumah = Rumah::find($id_rumah);
         if ($existingRumah) {
@@ -60,7 +60,7 @@ class RumahController extends Controller
                 $counter++;
             }
         }
-        
+
         Rumah::create([
             'id_rumah'  => $id_rumah,
             'nik'       => $validated['nik'],
