@@ -50,6 +50,63 @@ class DataWargaController extends Controller
         return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil ditambahkan');
     }
 
+    public function storeMultiple(Request $request)
+    {
+        $validated = $request->validate([
+            'warga' => 'required|array',
+            'warga.*.nik' => 'required|string|unique:data_wargas,nik',
+            'warga.*.full_name' => 'required|string',
+            'warga.*.tanggal_lahir' => 'required|date',
+            'warga.*.tempat_lahir' => 'required|string',
+            'warga.*.status' => 'required|in:anak,istri,kepala keluarga',
+            'kk' => 'sometimes|array',
+            'kk.no_kk' => 'sometimes|string',
+            'kk.jumlah_anggota' => 'sometimes|integer|min:1',
+            'kk.foto_ktp_kepala_keluarga' => 'sometimes|string',
+            'rumah' => 'sometimes|array',
+            'rumah.perumahan' => 'sometimes|string',
+            'rumah.jalan' => 'sometimes|string',
+            'rumah.blok' => 'sometimes|string',
+            'rumah.nomor' => 'sometimes|string',
+        ]);
+
+        // Create all warga entries
+        $wargaEntries = [];
+        foreach ($validated['warga'] as $wargaData) {
+            $warga = DataWarga::create($wargaData);
+            $wargaEntries[] = $warga;
+        }
+
+        // Handle KK creation if provided
+        if (isset($validated['kk']) && !empty($validated['kk']['no_kk'])) {
+            $kepalaKeluarga = collect($wargaEntries)->firstWhere('status', 'kepala keluarga');
+            if ($kepalaKeluarga) {
+                KartuKeluarga::create([
+                    'no_kk' => $validated['kk']['no_kk'],
+                    'nik' => $kepalaKeluarga->nik,
+                    'jumlah_anggota' => $validated['kk']['jumlah_anggota'] ?? 1,
+                    'foto_ktp_kepala_keluarga' => $validated['kk']['foto_ktp_kepala_keluarga'] ?? null,
+                ]);
+            }
+        }
+
+        // Handle Rumah creation if provided
+        if (isset($validated['rumah']) && !empty($validated['rumah']['jalan'])) {
+            $kepalaKeluarga = collect($wargaEntries)->firstWhere('status', 'kepala keluarga');
+            if ($kepalaKeluarga) {
+                Rumah::create([
+                    'nik' => $kepalaKeluarga->nik,
+                    'perumahan' => $validated['rumah']['perumahan'] ?? 'GBJ2',
+                    'jalan' => $validated['rumah']['jalan'],
+                    'blok' => $validated['rumah']['blok'] ?? null,
+                    'nomor' => $validated['rumah']['nomor'] ?? null,
+                ]);
+            }
+        }
+
+        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil ditambahkan');
+    }
+
     public function edit(string $id)
     {
         $warga = DataWarga::findOrFail($id);

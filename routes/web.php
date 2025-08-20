@@ -23,6 +23,7 @@ Route::resource('kartukeluarga', KartuKeluargaController::class);
 Route::resource('rumah', RumahController::class);
 
 Route::resource('datawarga', DataWargaController::class);
+Route::post('datawarga/store-multiple', [DataWargaController::class, 'storeMultiple'])->name('datawarga.storeMultiple');
 
 Route::resource('event', EventController::class);
 
