@@ -10,6 +10,7 @@
             :disabled="$attrs.disabled"
             :onclick="$attrs.onclick || undefined"
             oninput="$attrs.oninput || undefined" 
+            :inputmode="$attrs.inputmode || undefined"
             :placeholder="$attrs.placeholder"
             @blur="$attrs.onblur || undefined"
         />
