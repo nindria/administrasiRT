@@ -9,11 +9,12 @@
             v-model="inputValue"
             :disabled="$attrs.disabled"
             :onclick="$attrs.onclick || undefined"
-            :placeholder="$attrs.placeholder"
-            @blur="$attrs.onblur || undefined"
-            :maxlength="$attrs.maxlength"
             :oninput="$attrs.oninput || undefined"
             :inputmode="$attrs.inputmode"
+            :maxlength="$attrs.maxlength"
+            :placeholder="$attrs.placeholder"
+            @blur="$attrs.onblur || undefined"
+            :required="$attrs.required"
         />
         <InputError :message="message" />
     </div>

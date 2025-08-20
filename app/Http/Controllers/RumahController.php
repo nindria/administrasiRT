@@ -34,7 +34,6 @@ class RumahController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         $validated = $request->validate([
             'perumahan' => 'required|string',
             'nik'       => 'required|string|exists:data_wargas,nik',
@@ -49,6 +48,19 @@ class RumahController extends Controller
                 $validated['blok'] .
                 str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
         );
+        
+        // Cek apakah ID rumah sudah ada
+        $existingRumah = Rumah::find($id_rumah);
+        if ($existingRumah) {
+            // Jika ID rumah sudah ada, tambahkan suffix untuk membuat ID unik
+            $counter = 1;
+            $originalId = $id_rumah;
+            while (Rumah::find($id_rumah)) {
+                $id_rumah = $originalId . '-' . $counter;
+                $counter++;
+            }
+        }
+        
         Rumah::create([
             'id_rumah'  => $id_rumah,
             'nik'       => $validated['nik'],
@@ -96,12 +108,22 @@ class RumahController extends Controller
         ]);
 
         $id_rumah = strtoupper(
-
             $validated['perumahan'] .
                 $validated['jalan'] .
                 $validated['blok'] .
                 str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
         );
+
+        // Jika ID rumah baru berbeda dengan ID rumah lama dan ID rumah baru sudah ada di database
+        if ($rumah->id_rumah !== $id_rumah && Rumah::where('id_rumah', $id_rumah)->exists()) {
+            // Tambahkan suffix untuk membuat ID unik
+            $counter = 1;
+            $originalId = $id_rumah;
+            while (Rumah::where('id_rumah', $id_rumah)->where('id_rumah', '!=', $rumah->id_rumah)->exists()) {
+                $id_rumah = $originalId . '-' . $counter;
+                $counter++;
+            }
+        }
 
         $rumah->update([
             'id_rumah'  => $id_rumah,

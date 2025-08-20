@@ -85,12 +85,12 @@ const confirmDelete = (no_kk: string) => {
                             <td class="px-6 py-4">{{ kartuKeluarga.dataWargaKepalaKeluarga?.full_name || 'Tidak ada data' }}</td>
                             <td class="px-6 py-4">{{ kartuKeluarga.jumlah_anggota }}</td>
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="route('kk.show', kartuKeluarga.no_kk)">
+                                <Link :href="route('kartukeluarga.show', kartuKeluarga.no_kk)">
                                     <Button variant="outline" size="sm">
                                         <Eye class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Link :href="route('kk.edit', kartuKeluarga.no_kk)">
+                                <Link :href="route('kartukeluarga.edit', kartuKeluarga.no_kk)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />
                                     </Button>

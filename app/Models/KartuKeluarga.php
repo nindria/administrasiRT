@@ -17,14 +17,11 @@ class KartuKeluarga extends Model
         'foto_ktp_kepala_keluarga',
     ];
 
-    // public function rumah()
-    // {
-    //     return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
-    // }
-    // public function rumah()
-    // {
-    //     return $this->belongsTo(Rumah::class, 'id_rumah', 'id_rumah');
-    // }
+    public function rumah()
+    {
+        return $this->belongsTo(Rumah::class, 'nik', 'nik');
+    }
+   
 
     public function dataWargaKepalaKeluarga()
     {
