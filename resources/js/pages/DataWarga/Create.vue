@@ -70,8 +70,9 @@ function submit() {
                                 v-model:value="form.nik"
                                 :message="form.errors.nik"
                                 type="text"
+                                maxlength="16"
                                 inputmode="numeric"
-                                oninput="if(this.value.length > 16) this.value = this.value.slice(0, 16)"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 placeholder="Masukkan NIK"
                             />
 
