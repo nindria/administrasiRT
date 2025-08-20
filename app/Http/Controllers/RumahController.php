@@ -14,6 +14,7 @@ class RumahController extends Controller
      */
     public function index()
     {
+        
         $rumahs = Rumah::latest()->paginate(10);
         return Inertia::render('Rumah/Index', [
             'rumahs' => $rumahs
