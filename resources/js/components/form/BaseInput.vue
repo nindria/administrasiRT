@@ -9,6 +9,7 @@
             v-model="inputValue"
             :disabled="$attrs.disabled"
             :onclick="$attrs.onclick || undefined"
+            oninput="$attrs.oninput || undefined" 
             :placeholder="$attrs.placeholder"
             @blur="$attrs.onblur || undefined"
         />
