@@ -11,14 +11,14 @@ interface KartuKeluarga {
     nik: string;
     jumlah_anggota: number;
     foto_ktp_kepala_keluarga?: string;
-    dataWargaKepalaKeluarga?: {
+    data_warga?: {
         nik: string;
         full_name: string;
     };
 }
 
 interface Props {
-    kk: {
+    kartukeluarga: {
         data: KartuKeluarga[];
     };
 }
@@ -30,11 +30,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const { kk } = defineProps<Props>();
+const { kartukeluarga } = defineProps<Props>();
+
+console.log(kartukeluarga);
 
 const confirmDelete = (no_kk: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data kartu keluarga ini?')) {
-        router.delete(route('kk.destroy', no_kk));
+        router.delete(route('kartukeluarga.destroy', no_kk));
     }
 };
 </script>
@@ -68,7 +70,7 @@ const confirmDelete = (no_kk: string) => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="kartuKeluarga in kk.data"
+                            v-for="kartuKeluarga in kartukeluarga.data"
                             :key="kartuKeluarga.no_kk"
                             class="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
                         >
@@ -79,10 +81,10 @@ const confirmDelete = (no_kk: string) => {
                             </td>
                             <td class="px-6 py-4">
                                 <Badge>
-                                    {{ kartuKeluarga.nik }}
+                                    {{ kartuKeluarga.data_warga?.nik }}
                                 </Badge>
                             </td>
-                            <td class="px-6 py-4">{{ kartuKeluarga.dataWargaKepalaKeluarga?.full_name || 'Tidak ada data' }}</td>
+                            <td class="px-6 py-4">{{ kartuKeluarga.data_warga?.full_name || 'Tidak ada data' }}</td>
                             <td class="px-6 py-4">{{ kartuKeluarga.jumlah_anggota }}</td>
                             <td class="flex space-x-2 px-6 py-4">
                                 <Link :href="route('kartukeluarga.show', kartuKeluarga.no_kk)">
