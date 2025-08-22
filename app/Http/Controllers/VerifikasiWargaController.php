@@ -35,14 +35,14 @@ class VerifikasiWargaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nik' => 'required|string|max:20|unique:data_warga,nik',
+            'nik' => 'required|string|max:20|unique:data_wargas,nik',
             'full_name' => 'required|string|max:255',
             'verification_status' => 'in:pending,verified,rejected'
         ]);
 
         $warga = DataWarga::create($validated);
 
-        return redirect()->route('verifikasi.index')
+        return redirect()->route('verifikasiwarga.index')
             ->with('success', 'Data warga berhasil ditambahkan.');
     }
 
@@ -96,7 +96,7 @@ class VerifikasiWargaController extends Controller
         $warga->is_warga = true;
         $warga->save();
 
-        return redirect()->route('verifikasi.index')->with('success', 'Warga berhasil diverifikasi!');
+        return redirect()->route('verifikasiwarga.index')->with('success', 'Warga berhasil diverifikasi!');
     }
 
     /**
@@ -107,7 +107,7 @@ class VerifikasiWargaController extends Controller
         $warga = DataWarga::findOrFail($nik);
         $warga->delete();
 
-        return redirect()->route('verifikasi.index')->with('success', 'Data warga ditolak dan dihapus!');
+        return redirect()->route('verifikasiwarga.index')->with('success', 'Data warga ditolak dan dihapus!');
     }
 
     public function verify(Request $request, string $id)

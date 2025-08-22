@@ -36,21 +36,40 @@ class DataWargaController extends Controller
     }
 
     public function store(Request $request)
-    {
+{
+    // Handle multiple wargas
+    if ($request->has('wargas')) {
         $validated = $request->validate([
-            'nik' => 'required|string|unique:data_wargas',
-            'full_name' => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'tempat_lahir' => 'required|string',
-            'status' => 'required|in:anak,istri,kepala keluarga',
+            'wargas' => 'required|array',
+            'wargas.*.nik' => 'required|string|max:20|unique:data_wargas,nik',
+            'wargas.*.full_name' => 'required|string|max:255',
+            'wargas.*.tempat_lahir' => 'nullable|string|max:255',
+            'wargas.*.tanggal_lahir' => 'nullable|date',
+            'wargas.*.status' => 'nullable|string|max:255',
+            'wargas.*.verification_status' => 'in:pending,verified,rejected'
         ]);
-        $validated['is_warga'] = false;
-        $validated['verification_status'] = 'pending';
+
+        foreach ($validated['wargas'] as $wargaData) {
+            DataWarga::create($wargaData);
+        }
+    } 
+    // Handle single warga
+    else {
+        $validated = $request->validate([
+            'nik' => 'required|string|max:20|unique:data_wargas,nik',
+            'full_name' => 'required|string|max:255',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'nullable|date',
+            'status' => 'nullable|string|max:255',
+            'verification_status' => 'in:pending,verified,rejected'
+        ]);
 
         DataWarga::create($validated);
-
-        return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil ditambahkan');
     }
+
+    return redirect()->route('datawarga.index')
+        ->with('success', 'Data warga berhasil ditambahkan.');
+}
 
     public function storeMultiple(Request $request)
     {

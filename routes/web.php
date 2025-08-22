@@ -32,7 +32,7 @@ Route::resource('dataipl', DataIplController::class)->middleware('auth');
 Route::resource('verifikasiwarga', VerifikasiWargaController::class);
 
 
-Route::resource('verifikasi', VerifikasiWargaController::class)->only(['index', 'update', 'destroy']);
+// Route::resource('verifikasi', VerifikasiWargaController::class)->only(['index', 'update', 'destroy']);
 
 
 Route::resource('verifikasiipl', VerifikasiIplController::class)->only([

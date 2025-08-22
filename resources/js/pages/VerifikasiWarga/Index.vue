@@ -22,8 +22,12 @@ const props = defineProps<{
   wargas: Warga[]
 }>()
 
-function updateStatus(id: number, newStatus: 'pending' | 'verified' | 'rejected') {
-  router.put(`/verifikasi-warga/${id}`, { verification_status: newStatus })
+
+
+function updateStatus(nik: string, newStatus:'pending' | 'verified' | 'rejected') {
+  router.put(route('verifikasiwarga.update', {verifikasiwarga: nik}), {
+    verification_status: newStatus
+  })
 }
 </script>
 
@@ -45,7 +49,7 @@ function updateStatus(id: number, newStatus: 'pending' | 'verified' | 'rejected'
             </tr>
           </thead>
           <tbody>
-            <tr v-for="w in props.wargas" :key="w.id" class="border-t hover:bg-gray-50">
+            <tr v-for="w in props.wargas" :key="w.nik" class="border-t hover:bg-gray-50">
               <td class="px-4 py-2 text-sm text-gray-800">{{ w.nik }}</td>
               <td class="px-4 py-2 text-sm text-gray-800">{{ w.full_name }}</td>
               <td class="px-4 py-2">
@@ -60,19 +64,19 @@ function updateStatus(id: number, newStatus: 'pending' | 'verified' | 'rejected'
               <td class="px-4 py-2 text-center space-x-2">
                 <button
                   class="px-3 py-1 rounded-lg bg-green-600 text-white text-sm"
-                  @click="updateStatus(w.id, 'verified')"
+                  @click="updateStatus(w.nik, 'verified')"
                 >
                   Verify
                 </button>
                 <button
                   class="px-3 py-1 rounded-lg bg-red-600 text-white text-sm"
-                  @click="updateStatus(w.id, 'rejected')"
+                  @click="updateStatus(w.nik, 'rejected')"
                 >
                   Reject
                 </button>
                 <button
                   class="px-3 py-1 rounded-lg bg-yellow-500 text-white text-sm"
-                  @click="updateStatus(w.id, 'pending')"
+                  @click="updateStatus(w.nik, 'pending')"
                 >
                   Pending
                 </button>

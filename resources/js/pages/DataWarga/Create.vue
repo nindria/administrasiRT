@@ -6,29 +6,58 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ChevronLeft } from 'lucide-vue-next';
-import { ref, computed } from 'vue';
+import { ref, computed  } from 'vue';
+
+interface Warga {
+    nik: string;
+    full_name: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    status: string;
+    verification_status: string;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Create', href: '/datawarga/create' },
 ];
 
-// Data warga bisa banyak
-const wargaForm = useForm({
-    warga: [
-        {
-            nik: '',
-            full_name: '',
-            tempat_lahir: '',
-            tanggal_lahir: '',
-            status: '',
-        },
-    ],
-});
+const wargaList = ref([{
+    nik: '',
+    full_name: '',
+    tempat_lahir: '',
+    tanggal_lahir: '',
+    status: '',
+    verification_status: 'pending',
+}]);
 
-// Index untuk warga yang lagi diinput
 const activeIndex = ref(0);
 
-// Untuk form tambahan KK & Rumah hanya jika kepala keluarga
+function addMoreWarga() {
+    wargaList.value.push({
+        nik: '',
+        full_name: '',
+        tempat_lahir: '',
+        tanggal_lahir: '',
+        status: '',
+        verification_status: 'pending',
+    });
+    activeIndex.value = wargaList.value.length - 1;
+}
+
+function removeWarga(index: number) {
+    if (wargaList.value.length > 1) {
+        wargaList.value.splice(index, 1);
+        if (activeIndex.value >= wargaList.value.length) {
+            activeIndex.value = wargaList.value.length - 1;
+        }
+    }
+}
+
+
+const isKepalaKeluarga = computed(() =>
+    wargaList.value.some((w: Warga) => w.status === 'kepala keluarga')
+);
+
 const kkForm = useForm({
     no_kk: '',
     nik: '',
@@ -44,56 +73,46 @@ const rumahForm = useForm({
     nomor: '',
 });
 
-// Tambah warga baru
-function addMoreWarga() {
-    wargaForm.warga.push({
-        nik: '',
-        full_name: '',
-        tempat_lahir: '',
-        tanggal_lahir: '',
-        status: '',
-    });
-    activeIndex.value = wargaForm.warga.length - 1;
-}
-
-// Hapus warga
-function removeWarga(index: number) {
-    if (wargaForm.warga.length > 1) {
-        wargaForm.warga.splice(index, 1);
-        if (activeIndex.value >= wargaForm.warga.length) {
-            activeIndex.value = wargaForm.warga.length - 1;
-        }
-    }
-}
-
-const isKepalaKeluarga = computed(() =>
-    wargaForm.warga.some((w) => w.status === 'kepala keluarga')
-);
 
 async function submit() {
-    await wargaForm.post(route('verifikasi.store'), {
-    preserveScroll: true,
-    onSuccess: () => wargaForm.reset(),
-});
+    // Create a new form instance with the current wargaList data
+    const submitForm = useForm({
+        wargas: [...wargaList.value]
+    });
 
+    await submitForm.post(route('datawarga.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            submitForm.reset();
+            wargaList.value = [{
+                nik: '',
+                full_name: '',
+                tempat_lahir: '',
+                tanggal_lahir: '',
+                status: '',
+                verification_status: 'pending',
+            }];
+        },
+        onError: (errors) => {
+            console.error('Submission errors:', errors);
+        }
+    });
 }
 </script>
 
-
 <template>
 
-    <Head title="Data Warga" />
-
+    <Head title="Tambah Data Warga" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <h1 class="text-2xl font-bold">Tambah Data Warga</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <!-- Loop Data Warga -->
-                    <div v-for="(warga, index) in wargaForm.warga" :key="index" class="mb-4 rounded-lg border p-4">
+                    <div v-for="(warga, index) in wargaList" :key="index" class="mb-4 rounded-lg border p-4">
                         <div class="flex justify-between items-center mb-2">
                             <h2 class="text-xl font-semibold">Data Warga {{ index + 1 }}</h2>
-                            <Button v-if="wargaForm.warga.length > 1" type="button"
+                            <Button v-if="wargaList.length > 1" type="button"
                                 class="bg-red-500 text-white hover:bg-red-600" @click="removeWarga(index)">
                                 Hapus
                             </Button>
@@ -168,7 +187,9 @@ async function submit() {
                             Back
                         </Button>
                         </Link>
-                        <Button class="w-24" type="submit" :disabled="wargaForm.processing">Submit</Button>
+                        <Button class="w-24" type="submit">
+                            Submit
+                        </Button>
                     </div>
                 </div>
             </form>

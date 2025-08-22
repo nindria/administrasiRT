@@ -21,8 +21,16 @@ class DataWarga extends Model
         'tanggal_lahir',
         'status',
         'is_warga',
+        'verification_status',
+        'verified_by',
+        'verified_at',
+        'rejection_reason'
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'nik'; //  {verifikasiwarga} pake nik, bukan id
+    }
     public function rumah()
     {
         return $this->hasMany(Rumah::class, 'nik', 'nik');
