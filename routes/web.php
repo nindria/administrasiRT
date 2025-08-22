@@ -29,17 +29,10 @@ Route::resource('event', EventController::class);
 
 Route::resource('dataipl', DataIplController::class)->middleware('auth');
 
-Route::resource('verifikasiwarga', VerifikasiWargaController::class)->only([
-    'index',
-    'show'
-]);
+Route::resource('verifikasiwarga', VerifikasiWargaController::class);
 
 
-Route::post('verifikasiwarga/{id}/verify', [VerifikasiWargaController::class, 'verify'])
-    ->name('verifikasiwarga.verify');
-
-Route::post('verifikasiwarga/bulk-verify', [VerifikasiWargaController::class, 'bulkVerify'])
-    ->name('verifikasiwarga.bulkVerify');
+Route::resource('verifikasi', VerifikasiWargaController::class)->only(['index', 'update', 'destroy']);
 
 
 Route::resource('verifikasiipl', VerifikasiIplController::class)->only([

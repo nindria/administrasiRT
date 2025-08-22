@@ -13,6 +13,7 @@ interface Warga {
     tanggal_lahir: string;
     status: string;
     blok: Array<string>;
+    verification_status: 'pending' | 'verified' | 'rejected';
 }
 
 interface Props {
@@ -43,19 +44,17 @@ const confirmDelete = (nik: string) => {
 </script>
 
 <template>
+
     <Head title="Data Warga" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <h1 class="text-2xl font-bold">Daftar Data Warga</h1>
             <div class="">
-                <Link
-                    href="/datawarga/create"
-                    type="button"
-                    class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
-                >
-                    <Plus :size="18" :stroke-width="2.5" class="mr-2" />
-                    Tambah Data Warga
+                <Link href="/datawarga/create" type="button"
+                    class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800">
+                <Plus :size="18" :stroke-width="2.5" class="mr-2" />
+                Tambah Data Warga
                 </Link>
             </div>
 
@@ -69,11 +68,13 @@ const confirmDelete = (nik: string) => {
                             <th scope="col" class="px-6 py-3">Tanggal Lahir</th>
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Blok Rumah</th>
+                            <th scope="col" class="px-6 py-3">Status Verifikasi</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="warga in wargas.data" :key="warga.nik" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <tr v-for="warga in wargas.data" :key="warga.nik"
+                            class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
                             <td class="px-6 py-4">
                                 <Badge variant="outline">
                                     {{ warga.nik }}
@@ -88,18 +89,27 @@ const confirmDelete = (nik: string) => {
                                     {{ warga.status }}
                                 </Badge>
                             </td>
+                            <td class="px-6 py-4">
+                                <Badge :variant="warga.verification_status === 'verified'
+                                    ? 'success'
+                                    : warga.verification_status === 'rejected'
+                                        ? 'destructive'
+                                        : 'warning'">
+                                    {{ warga.verification_status.charAt(0).toUpperCase() +
+                                    warga.verification_status.slice(1) }} </Badge>
 
+                            </td>
                             <td class="px-6 py-4">{{ warga.blok }}</td>
                             <td class="flex space-x-2 px-6 py-4">
                                 <Link :href="`datawarga/${warga.nik}/edit`">
-                                    <Button variant="outline" size="sm">
-                                        <Eye class="h-4 w-4" />
-                                    </Button>
+                                <Button variant="outline" size="sm">
+                                    <Eye class="h-4 w-4" />
+                                </Button>
                                 </Link>
                                 <Link :href="route('datawarga.edit', warga.nik)">
-                                    <Button variant="outline" size="sm">
-                                        <Pencil class="h-4 w-4" />
-                                    </Button>
+                                <Button variant="outline" size="sm">
+                                    <Pencil class="h-4 w-4" />
+                                </Button>
                                 </Link>
                                 <Button variant="destructive" size="sm" @click="confirmDelete(warga.nik)">
                                     <Trash2 class="h-4 w-4" />

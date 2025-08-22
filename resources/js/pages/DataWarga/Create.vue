@@ -71,14 +71,11 @@ const isKepalaKeluarga = computed(() =>
 );
 
 async function submit() {
-    await wargaForm.post(route('datawarga.storeMultiple'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            wargaForm.reset();
-            kkForm.reset();
-            rumahForm.reset();
-        },
-    });
+    await wargaForm.post(route('verifikasi.store'), {
+    preserveScroll: true,
+    onSuccess: () => wargaForm.reset(),
+});
+
 }
 </script>
 

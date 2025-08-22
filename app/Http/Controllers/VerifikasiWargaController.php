@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataWarga;
+use App\Models\VerifikasiDatawarga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -14,16 +15,9 @@ class VerifikasiWargaController extends Controller
      */
     public function index()
     {
+        $wargas = DataWarga::where('verification_status', 'pending')->get();
         return Inertia::render('VerifikasiWarga/Index', [
-            'allWargas' => DataWarga::with(['noRumah:id,name', 'verifier:id,name'])
-                ->orderByRaw("FIELD(verification_status, 'pending', 'verified', 'rejected')")
-                ->latest()
-                ->get(),
-            'verificationStatuses' => [
-                'pending' => 'Pending',
-                'verified' => 'Verified',
-                'rejected' => 'Rejected'
-                ]
+            'wargas' => $wargas
         ]);
     }
 
@@ -32,7 +26,7 @@ class VerifikasiWargaController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('VerifikasiWarga/Create');
     }
 
     /**
@@ -40,23 +34,48 @@ class VerifikasiWargaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nik' => 'required|string|max:20|unique:data_warga,nik',
+            'full_name' => 'required|string|max:255',
+            'verification_status' => 'in:pending,verified,rejected'
+        ]);
+
+        $warga = DataWarga::create($validated);
+
+        return redirect()->route('verifikasi.index')
+            ->with('success', 'Data warga berhasil ditambahkan.');
     }
+
+    public function approve(DataWarga  $warga)
+    {
+        $warga->update([
+            'is_warga' => true,
+            'verification_status' => 'verified',
+            'verified_by' => Auth::id(),
+            'verified_at' => now(),
+        ]);
+
+        return back()->with('success', 'Data berhasil disetujui.');
+    }
+    public function reject(DataWarga $warga, Request $request)
+    {
+        $warga->update([
+            'verification_status' => 'rejected',
+            'rejection_reason' => $request->catatan,
+        ]);
+
+        return back()->with('error', 'Data ditolak');
+    }
+
+
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(VerifikasiDatawarga $verifikasi)
     {
-        $warga = DataWarga::with(['noRumah:id,name', 'verifier:id,name'])->findOrFail($id);
-
         return Inertia::render('VerifikasiWarga/Show', [
-            'warga' => $warga,
-            'verificationStatuses' => [
-                'pending' => 'Pending',
-                'verified' => 'Verified',
-                'rejected' => 'Rejected'
-            ]
+            'item' => $verifikasi,
         ]);
     }
 
@@ -71,17 +90,24 @@ class VerifikasiWargaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $nik)
     {
-        //
+        $warga = DataWarga::findOrFail($nik);
+        $warga->is_warga = true;
+        $warga->save();
+
+        return redirect()->route('verifikasi.index')->with('success', 'Warga berhasil diverifikasi!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $nik)
     {
-        //
+        $warga = DataWarga::findOrFail($nik);
+        $warga->delete();
+
+        return redirect()->route('verifikasi.index')->with('success', 'Data warga ditolak dan dihapus!');
     }
 
     public function verify(Request $request, string $id)
@@ -112,7 +138,7 @@ class VerifikasiWargaController extends Controller
 
     public function bulkVerify(Request $request)
     {
-       $validated = $request->validate([
+        $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'exists:data_wargas,id',
             'status' => 'required|in:verified,rejected',

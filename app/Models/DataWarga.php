@@ -20,6 +20,7 @@ class DataWarga extends Model
         'tempat_lahir',
         'tanggal_lahir',
         'status',
+        'is_warga',
     ];
 
     public function rumah()

@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_wargas', function (Blueprint $table) {
-            $table->string('nik', 16)->primary();
+        Schema::create('verifikasi_datawargas', function (Blueprint $table) {
+            $table->id();
+            $table->string('nik', 16)->unique(); // sama dengan data_wargas
             $table->string('full_name');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->enum('status', ['Kepala Keluarga', 'Istri', 'Anak']);
-            $table->boolean('is_warga')->default(false);
+            $table->enum('verifikasi_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->text('catatan')->nullable(); // alasan reject, dll
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_wargas');
+        Schema::dropIfExists('verifikasi_datawargas');
     }
 };

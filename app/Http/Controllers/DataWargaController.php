@@ -44,6 +44,8 @@ class DataWargaController extends Controller
             'tempat_lahir' => 'required|string',
             'status' => 'required|in:anak,istri,kepala keluarga',
         ]);
+        $validated['is_warga'] = false;
+        $validated['verification_status'] = 'pending';
 
         DataWarga::create($validated);
 
