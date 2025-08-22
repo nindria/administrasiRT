@@ -93,7 +93,7 @@ class VerifikasiWargaController extends Controller
     public function update(Request $request, $nik)
     {
         $warga = DataWarga::findOrFail($nik);
-        $warga->is_warga = true;
+        $warga->verification_status = 'verified';
         $warga->save();
 
         return redirect()->route('verifikasiwarga.index')->with('success', 'Warga berhasil diverifikasi!');
