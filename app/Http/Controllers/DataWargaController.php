@@ -67,7 +67,7 @@ class DataWargaController extends Controller
         DataWarga::create($validated);
     }
 
-    return redirect()->route('datawarga.index')
+    return redirect()->route('datawarga.index    ')
         ->with('success', 'Data warga berhasil ditambahkan.');
 }
 
