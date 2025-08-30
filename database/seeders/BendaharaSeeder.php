@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\UserRole;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,7 +18,7 @@ class BendaharaSeeder extends Seeder
             'name' => 'Bendah User',
             'email' => 'bendahara@gmail.com',
             'role' => UserRole::Bendahara,
-            'password' => Hash::make('password')  
+            'password' => Hash::make('password'),
         ];
 
         User::create($data);

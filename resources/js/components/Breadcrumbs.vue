@@ -13,7 +13,7 @@ defineProps<{
 </script>
 
 <template>
-    <Breadcrumb >
+    <Breadcrumb>
         <BreadcrumbList>
             <template v-for="(item, index) in breadcrumbs" :key="index">
                 <BreadcrumbItem>

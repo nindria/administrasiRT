@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -29,7 +28,7 @@ class RoleSeeder extends Seeder
             'users.view',
             // Add other permissions that warga should have
         ];
-        
+
         $wargaRole->syncPermissions($wargaPermissions);
     }
 }

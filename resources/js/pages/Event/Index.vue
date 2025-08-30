@@ -34,7 +34,7 @@ const confirmDelete = (id: number) => {
             },
             onError: () => {
                 alert('Gagal menghapus event. Silakan coba lagi.');
-            }
+            },
         });
     }
 };

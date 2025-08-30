@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::table('rumahs', function (Blueprint $table) {
             // Hapus foreign key constraint terlebih dahulu
             $table->dropForeign(['nik']);
-            
+
             // Hapus unique constraint
             $table->dropUnique(['nik']);
-            
+
             // Buat ulang foreign key constraint tanpa unique constraint
             $table->foreign('nik')->references('nik')->on('data_wargas')->onDelete('cascade');
         });
@@ -31,10 +31,10 @@ return new class extends Migration
         Schema::table('rumahs', function (Blueprint $table) {
             // Hapus foreign key constraint
             $table->dropForeign(['nik']);
-            
+
             // Kembalikan unique constraint
             $table->unique('nik');
-            
+
             // Buat ulang foreign key constraint dengan unique constraint
             $table->foreign('nik')->references('nik')->on('data_wargas')->onDelete('cascade');
         });

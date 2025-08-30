@@ -2,10 +2,10 @@
 import Badge from '@/components/ui/badge/Badge.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { can } from '@/lib/can';
 import { type BreadcrumbItem, type Role } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Plus, Pencil, Trash2 } from 'lucide-vue-next';
-import { can } from '@/lib/can';
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 defineProps<{
-    roles: Role[]
+    roles: Role[];
 }>();
 
 const confirmDelete = (id: number) => {
@@ -23,16 +23,13 @@ const confirmDelete = (id: number) => {
         router.delete(route('roles.destroy', id));
     }
 };
-
 </script>
 
 <template>
-
     <Head title="Role" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <h1 class="text-2xl font-bold">Daftar Role</h1>
             <div class="">
                 <Link
@@ -49,18 +46,10 @@ const confirmDelete = (id: number) => {
                 <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-6 py-3">
-                                ID
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Nama
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Permission
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Aksi
-                            </th>
+                            <th scope="col" class="px-6 py-3">ID</th>
+                            <th scope="col" class="px-6 py-3">Nama</th>
+                            <th scope="col" class="px-6 py-3">Permission</th>
+                            <th scope="col" class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +84,6 @@ const confirmDelete = (id: number) => {
                     </tbody>
                 </table>
             </div>
-
         </div>
     </AppLayout>
 </template>

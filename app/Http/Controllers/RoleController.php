@@ -14,8 +14,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return Inertia::render("Roles/Index", [
-            'roles' => Role::with("permissions")->get()
+        return Inertia::render('Roles/Index', [
+            'roles' => Role::with('permissions')->get(),
         ]);
     }
 
@@ -24,8 +24,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return Inertia::render("Roles/Create", [
-            "permissions" => Permission::select("id", "name")->get()
+        return Inertia::render('Roles/Create', [
+            'permissions' => Permission::select('id', 'name')->get(),
         ]);
     }
 
@@ -35,12 +35,13 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "name" => "required",
-            "permissions" => "required"
+            'name' => 'required',
+            'permissions' => 'required',
         ]);
 
-        $role = Role::create(["name" => $request->name]);
+        $role = Role::create(['name' => $request->name]);
         $role->syncPermissions($request->permissions);
+
         return redirect()->route('roles.index');
     }
 
@@ -50,9 +51,10 @@ class RoleController extends Controller
     public function show(string $id)
     {
         $role = Role::find($id);
-        return Inertia::render("Roles/Show", [
-            "role" => $role,
-            "rolePermissions" => $role->permissions()->pluck("name")->all(),
+
+        return Inertia::render('Roles/Show', [
+            'role' => $role,
+            'rolePermissions' => $role->permissions()->pluck('name')->all(),
         ]);
     }
 
@@ -63,10 +65,11 @@ class RoleController extends Controller
     {
 
         $role = Role::find($id);
-        return Inertia::render("Roles/Edit", [
-            "role" => $role,
-            "rolePermissions" => $role->permissions()->pluck("name")->all(),
-            "permissions" => Permission::select("id", "name")->get()
+
+        return Inertia::render('Roles/Edit', [
+            'role' => $role,
+            'rolePermissions' => $role->permissions()->pluck('name')->all(),
+            'permissions' => Permission::select('id', 'name')->get(),
         ]);
     }
 
@@ -76,13 +79,14 @@ class RoleController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            "name" => "required",
-            "permissions" => "required"
+            'name' => 'required',
+            'permissions' => 'required',
         ]);
 
         $role = Role::find($id);
-        $role->update(["name" => $request->name]);
+        $role->update(['name' => $request->name]);
         $role->syncPermissions($request->permissions);
+
         return redirect()->route('roles.index');
     }
 
@@ -92,18 +96,18 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         $role = Role::find($id);
-        
-        if (!$role) {
+
+        if (! $role) {
             return redirect()->route('roles.index')->with('error', 'Role tidak ditemukan.');
         }
-        
+
         // Check if role is being used by any users
         if ($role->users()->count() > 0) {
             return redirect()->route('roles.index')->with('error', 'Role tidak dapat dihapus karena masih digunakan oleh user.');
         }
-        
+
         $role->delete();
-        
+
         return redirect()->route('roles.index')->with('success', 'Role berhasil dihapus.');
     }
 }

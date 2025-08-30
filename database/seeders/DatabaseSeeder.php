@@ -15,13 +15,13 @@ class DatabaseSeeder extends Seeder
     {
         // Seed permissions first
         $this->call(PermissionSeeder::class);
-        
+
         // Then seed roles (which depend on permissions)
         $this->call(RoleSeeder::class);
-        
+
         // Then seed admin user with role assignment
         $this->call(AdminSeeder::class);
-        
+
         // User::factory(10)->create();
 
         User::factory()->create([

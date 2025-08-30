@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\DataWarga;
 use App\Models\KartuKeluarga;
 use App\Models\Rumah;
 use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
 
 class KartuKeluargaController extends Controller
 {
@@ -19,8 +17,9 @@ class KartuKeluargaController extends Controller
     public function index()
     {
         $kartukeluarga = KartuKeluarga::with('dataWarga')->latest()->paginate(10);
+
         return Inertia::render('KartuKeluarga/Index', [
-            'kartukeluarga' => $kartukeluarga
+            'kartukeluarga' => $kartukeluarga,
         ]);
     }
 
@@ -30,6 +29,7 @@ class KartuKeluargaController extends Controller
     public function create()
     {
         $wargas = DataWarga::all(); // untuk pilih kepala keluarga
+
         return Inertia::render('KartuKeluarga/Create', compact('wargas'));
     }
 
@@ -50,18 +50,18 @@ class KartuKeluargaController extends Controller
             'nik' => $validated['nik'],
             'jumlah_anggota' => $validated['jumlah_anggota'],
             'foto_ktp_kepala_keluarga' => null,
-            'public_id' => null
+            'public_id' => null,
         ];
 
         if ($request->hasFile('foto_ktp_kepala_keluarga')) {
-            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService = new CloudinaryService;
             $uploadResult = $cloudinaryService->uploadImage($request->file('foto_ktp_kepala_keluarga'), 'kartu-keluarga-images');
-            
+
             // Check if upload was successful
-            if (!$uploadResult['url']) {
+            if (! $uploadResult['url']) {
                 return redirect()->back()->with('error', 'Gagal mengunggah foto KTP ke Cloudinary. Silakan coba lagi.');
             }
-            
+
             $data['foto_ktp_kepala_keluarga'] = $uploadResult['url'];
             $data['public_id'] = $uploadResult['public_id'];
         }
@@ -70,12 +70,14 @@ class KartuKeluargaController extends Controller
 
         return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil ditambahkan');
     }
+
     /**
      * Display the specified resource.
      */
     public function show(string $no_kk)
     {
         $kartukeluarga = KartuKeluarga::with(['dataWarga', 'datawarga'])->findOrFail($no_kk);
+
         return Inertia::render('KartuKeluarga/Show', compact('kartukeluarga'));
     }
 
@@ -86,9 +88,10 @@ class KartuKeluargaController extends Controller
     {
         $kartukeluarga = KartuKeluarga::findOrFail($id);
         $rumahs = Rumah::all();
+
         return Inertia::render('KartuKeluarga/Edit', [
             'kartukeluarga' => $kartukeluarga,
-            'rumahs' => $rumahs
+            'rumahs' => $rumahs,
         ]);
     }
 
@@ -112,19 +115,19 @@ class KartuKeluargaController extends Controller
         if ($request->hasFile('foto_ktp_kepala_keluarga')) {
             // Delete old image from Cloudinary if exists
             if ($kartukeluarga->public_id) {
-                $cloudinaryService = new CloudinaryService();
+                $cloudinaryService = new CloudinaryService;
                 $cloudinaryService->deleteImage($kartukeluarga->public_id);
             }
-            
+
             // Upload new image to Cloudinary
-            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService = new CloudinaryService;
             $uploadResult = $cloudinaryService->uploadImage($request->file('foto_ktp_kepala_keluarga'), 'kartu-keluarga-images');
-            
+
             // Check if upload was successful
-            if (!$uploadResult['url']) {
+            if (! $uploadResult['url']) {
                 return redirect()->back()->with('error', 'Gagal mengunggah foto KTP ke Cloudinary. Silakan coba lagi.');
             }
-            
+
             $data['foto_ktp_kepala_keluarga'] = $uploadResult['url'];
             $data['public_id'] = $uploadResult['public_id'];
         }
@@ -140,14 +143,15 @@ class KartuKeluargaController extends Controller
     public function destroy(string $id)
     {
         $kartukeluarga = KartuKeluarga::findOrFail($id);
-        
+
         // Delete image from Cloudinary if exists
         if ($kartukeluarga->public_id) {
-            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService = new CloudinaryService;
             $cloudinaryService->deleteImage($kartukeluarga->public_id);
         }
-        
+
         $kartukeluarga->delete();
+
         return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil dihapus');
     }
 }

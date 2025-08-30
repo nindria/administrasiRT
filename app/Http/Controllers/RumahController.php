@@ -14,10 +14,11 @@ class RumahController extends Controller
      */
     public function index()
     {
-        
+
         $rumahs = Rumah::latest()->paginate(10);
+
         return Inertia::render('Rumah/Index', [
-            'rumahs' => $rumahs
+            'rumahs' => $rumahs,
         ]);
     }
 
@@ -27,6 +28,7 @@ class RumahController extends Controller
     public function create()
     {
         $wargas = DataWarga::where('status', 'Kepala Keluarga')->get();
+
         return Inertia::render('Rumah/Create', compact('wargas'));
     }
 
@@ -37,16 +39,16 @@ class RumahController extends Controller
     {
         $validated = $request->validate([
             'perumahan' => 'required|string',
-            'nik'       => 'required|string|exists:data_wargas,nik',
+            'nik' => 'required|string|exists:data_wargas,nik',
             'jalan' => 'required|string',
             'blok' => 'required|string',
             'nomor' => 'required|string',
         ]);
 
         $id_rumah = strtoupper(
-            $validated['perumahan'] .
-                $validated['jalan'] .
-                $validated['blok'] .
+            $validated['perumahan'].
+                $validated['jalan'].
+                $validated['blok'].
                 str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
         );
 
@@ -57,18 +59,18 @@ class RumahController extends Controller
             $counter = 1;
             $originalId = $id_rumah;
             while (Rumah::find($id_rumah)) {
-                $id_rumah = $originalId . '-' . $counter;
+                $id_rumah = $originalId.'-'.$counter;
                 $counter++;
             }
         }
 
         Rumah::create([
-            'id_rumah'  => $id_rumah,
-            'nik'       => $validated['nik'],
+            'id_rumah' => $id_rumah,
+            'nik' => $validated['nik'],
             'perumahan' => strtoupper($validated['perumahan']),
-            'jalan'     => $validated['jalan'],
-            'blok'      => strtoupper($validated['blok']),
-            'nomor'     => $validated['nomor'],
+            'jalan' => $validated['jalan'],
+            'blok' => strtoupper($validated['blok']),
+            'nomor' => $validated['nomor'],
         ]);
 
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil ditambahkan');
@@ -80,6 +82,7 @@ class RumahController extends Controller
     public function show(string $id_rumah)
     {
         $rumah = Rumah::with(['kepalaKeluarga', 'penghuni'])->findOrFail($id_rumah);
+
         return Inertia::render('Rumah/Show', compact('rumah'));
     }
 
@@ -89,8 +92,9 @@ class RumahController extends Controller
     public function edit(string $id)
     {
         $rumah = Rumah::findOrFail($id);
+
         return Inertia::render('Rumah/Edit', [
-            'rumah' => $rumah
+            'rumah' => $rumah,
         ]);
     }
 
@@ -109,9 +113,9 @@ class RumahController extends Controller
         ]);
 
         $id_rumah = strtoupper(
-            $validated['perumahan'] .
-                $validated['jalan'] .
-                $validated['blok'] .
+            $validated['perumahan'].
+                $validated['jalan'].
+                $validated['blok'].
                 str_pad($validated['nomor'], 2, '0', STR_PAD_LEFT)
         );
 
@@ -121,18 +125,18 @@ class RumahController extends Controller
             $counter = 1;
             $originalId = $id_rumah;
             while (Rumah::where('id_rumah', $id_rumah)->where('id_rumah', '!=', $rumah->id_rumah)->exists()) {
-                $id_rumah = $originalId . '-' . $counter;
+                $id_rumah = $originalId.'-'.$counter;
                 $counter++;
             }
         }
 
         $rumah->update([
-            'id_rumah'  => $id_rumah,
-            'nik'       => $validated['nik'],
+            'id_rumah' => $id_rumah,
+            'nik' => $validated['nik'],
             'perumahan' => strtoupper($validated['perumahan']),
-            'jalan'     => $validated['jalan'],
-            'blok'      => strtoupper($validated['blok']),
-            'nomor'     => $validated['nomor'],
+            'jalan' => $validated['jalan'],
+            'blok' => strtoupper($validated['blok']),
+            'nomor' => $validated['nomor'],
         ]);
 
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil diperbarui');
@@ -144,6 +148,7 @@ class RumahController extends Controller
     public function destroy(string $id)
     {
         Rumah::destroy($id);
+
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil dihapus');
     }
 }

@@ -18,7 +18,7 @@ class DataIpl extends Model
         'verification_status',
         'rejection_reason',
         'verified_by',
-        'verified_at'
+        'verified_at',
     ];
 
     public function verifiedBy()
@@ -31,15 +31,13 @@ class DataIpl extends Model
         return $query->where('verification_status', 'pending');
     }
 
-    public function Rumah() 
+    public function Rumah()
     {
         return $this->belongsTo(Rumah::class, 'no_rumah_id');
     }
 
-    public function recordedBy() 
+    public function recordedBy()
     {
         return $this->belongsTo(User::class, 'recorded_by');
     }
-
-    
 }

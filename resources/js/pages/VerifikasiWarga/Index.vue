@@ -86,9 +86,7 @@ function updateStatus(nik: string, newStatus: 'pending' | 'verified' | 'rejected
                         </tr>
                         <!-- fallback kalau data kosong -->
                         <tr v-if="props.wargas.length === 0">
-                            <td colspan="4" class="py-4 text-center text-gray-500">
-                                Tidak ada data warga pending untuk diverifikasi.
-                            </td>
+                            <td colspan="4" class="py-4 text-center text-gray-500">Tidak ada data warga pending untuk diverifikasi.</td>
                         </tr>
                     </tbody>
                 </table>

@@ -59,7 +59,7 @@ const submit = () => {
                         <TextLink
                             v-if="canResetPassword"
                             :href="route('password.request')"
-                            class="text-sm text-primary hover:text-primary/80 font-medium"
+                            class="text-sm font-medium text-primary hover:text-primary/80"
                             :tabindex="3"
                         >
                             Forgot password?
@@ -78,27 +78,32 @@ const submit = () => {
                     <InputError :message="form.errors.password" />
                 </div>
 
-                <div class="flex items-center gap-2 mt-1">
+                <div class="mt-1 flex items-center gap-2">
                     <Checkbox id="remember" v-model="form.remember" :tabindex="4" class="text-primary focus:ring-primary/30" />
-                    <Label for="remember" class="text-sm font-medium leading-none text-slate-600 dark:text-slate-400 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <Label
+                        for="remember"
+                        class="text-sm leading-none font-medium text-slate-600 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-slate-400"
+                    >
                         Remember me
                     </Label>
                 </div>
 
-                <Button 
-                    type="submit" 
-                    class="mt-4 w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center" 
-                    :tabindex="5" 
+                <Button
+                    type="submit"
+                    class="mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-primary font-medium text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/90 hover:shadow-lg"
+                    :tabindex="5"
                     :disabled="form.processing"
                 >
-                    <LoaderCircle v-if="form.processing" class="h-5 w-5 animate-spin mr-2" />
+                    <LoaderCircle v-if="form.processing" class="mr-2 h-5 w-5 animate-spin" />
                     <span>Sign In</span>
                 </Button>
             </div>
 
-            <div class="text-center text-sm text-slate-600 dark:text-slate-400 mt-2">
+            <div class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
                 Don't have an account?
-                <TextLink :href="route('register')" :tabindex="6" class="text-primary hover:text-primary/80 font-medium ml-1">Create an account</TextLink>
+                <TextLink :href="route('register')" :tabindex="6" class="ml-1 font-medium text-primary hover:text-primary/80"
+                    >Create an account</TextLink
+                >
             </div>
         </form>
     </AuthBase>

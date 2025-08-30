@@ -35,9 +35,7 @@ import { Head, Link } from '@inertiajs/vue3';
         </header>
         <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
             <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
-                <h1>
-                    403 Error
-                </h1>
+                <h1>403 Error</h1>
             </main>
         </div>
         <div class="hidden h-14.5 lg:block"></div>

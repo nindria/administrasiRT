@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -17,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('User/Index', [
-            "users" => User::with("roles")->get()
+            'users' => User::with('roles')->get(),
         ]);
     }
 
@@ -27,7 +26,7 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render('User/Create', [
-            "roles" => Role::select("id", "name")->get()
+            'roles' => Role::select('id', 'name')->get(),
         ]);
     }
 
@@ -37,18 +36,18 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            "name" => "required",
-            "email" => "required|email|unique:users,email",
-            "password" => "required|min:8",
-            "roles" => "required|array"
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+            'roles' => 'required|array',
         ]);
 
         $user = User::create([
-            "name" => $validated['name'],
-            "email" => $validated['email'],
-            "password" => Hash::make($validated['password'])
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
-        
+
         // Get role names from the submitted role IDs
         $roleNames = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
         $user->syncRoles($roleNames);
@@ -63,8 +62,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        return Inertia::render("User/Show", [
-            "user" => $user
+        return Inertia::render('User/Show', [
+            'user' => $user,
         ]);
     }
 
@@ -74,11 +73,11 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::find($id);
-        
-        return Inertia::render("User/Edit", [
-            "user" => $user,
-            "roles" => Role::select("id", "name")->get(),
-            "userRoles" => $user->roles()->pluck('id')->toArray()
+
+        return Inertia::render('User/Edit', [
+            'user' => $user,
+            'roles' => Role::select('id', 'name')->get(),
+            'userRoles' => $user->roles()->pluck('id')->toArray(),
         ]);
     }
 
@@ -88,9 +87,9 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            "name" => "required",
-            "email" => "required|email|unique:users,email," . $id,
-            "password" => "nullable|min:8"
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'nullable|min:8',
         ]);
 
         $user = User::find($id);
@@ -116,9 +115,9 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-        
+
         $user->delete();
-        
+
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 }

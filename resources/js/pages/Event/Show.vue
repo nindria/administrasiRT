@@ -20,7 +20,7 @@ const formattedDate = computed(() => {
     return date.toLocaleDateString('id-ID', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
     });
 });
 </script>
@@ -31,55 +31,54 @@ const formattedDate = computed(() => {
 
         <!-- Header -->
         <header class="bg-card shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between">
-                    <Link :href="route('home')" class="text-primary hover:text-primary/80 font-semibold">
-                        ← Back to Home
-                    </Link>
+                    <Link :href="route('home')" class="font-semibold text-primary hover:text-primary/80"> ← Back to Home </Link>
                     <h1 class="text-2xl font-bold text-foreground">Event Details</h1>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="bg-card rounded-lg shadow-md overflow-hidden">
+        <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div class="overflow-hidden rounded-lg bg-card shadow-md">
                 <!-- Event Image -->
-                <div class="h-64 bg-secondary flex items-center justify-center">
-                    <img v-if="event.image" :src="`/storage/${event.image}`" :alt="event.title" class="w-full h-full object-cover" />
-                    <div v-else class="text-primary text-6xl">📅</div>
+                <div class="flex h-64 items-center justify-center bg-secondary">
+                    <img v-if="event.image" :src="`/storage/${event.image}`" :alt="event.title" class="h-full w-full object-cover" />
+                    <div v-else class="text-6xl text-primary">📅</div>
                 </div>
 
                 <!-- Event Content -->
                 <div class="p-6">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="mb-4 flex items-center justify-between">
                         <h2 class="text-3xl font-bold text-foreground">{{ event.title }}</h2>
                         <span class="text-sm text-muted-foreground">{{ formattedDate }}</span>
                     </div>
 
-                    <div class="prose prose-lg text-foreground mb-6">
+                    <div class="prose prose-lg mb-6 text-foreground">
                         <p>{{ event.description }}</p>
                     </div>
 
                     <!-- Additional Event Details (can be expanded later) -->
-                    <div class="bg-muted rounded-lg p-4">
-                        <h3 class="text-lg font-semibold text-foreground mb-2">Event Information</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
-                            <div>
-                                <span class="font-medium">Date:</span> {{ formattedDate }}
-                            </div>
-                            <div>
-                                <span class="font-medium">Status:</span> Upcoming
-                            </div>
+                    <div class="rounded-lg bg-muted p-4">
+                        <h3 class="mb-2 text-lg font-semibold text-foreground">Event Information</h3>
+                        <div class="grid grid-cols-1 gap-4 text-sm text-muted-foreground md:grid-cols-2">
+                            <div><span class="font-medium">Date:</span> {{ formattedDate }}</div>
+                            <div><span class="font-medium">Status:</span> Upcoming</div>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="mt-6 flex items-center gap-4">
-                        <Link :href="route('home')" class="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition">
+                        <Link
+                            :href="route('home')"
+                            class="rounded-lg bg-primary px-6 py-2 font-semibold text-primary-foreground transition hover:bg-primary/90"
+                        >
                             Back to Home
                         </Link>
-                        <button class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition dark:bg-green-700 dark:hover:bg-green-800">
+                        <button
+                            class="rounded-lg bg-green-600 px-6 py-2 font-semibold text-white transition hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                        >
                             Register for Event
                         </button>
                     </div>
@@ -88,11 +87,9 @@ const formattedDate = computed(() => {
         </main>
 
         <!-- Footer -->
-        <footer class="bg-card border-t border-border mt-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <p class="text-center text-muted-foreground text-sm">
-                    © 2025 Event Management System. All rights reserved.
-                </p>
+        <footer class="mt-12 border-t border-border bg-card">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <p class="text-center text-sm text-muted-foreground">© 2025 Event Management System. All rights reserved.</p>
             </div>
         </footer>
     </div>

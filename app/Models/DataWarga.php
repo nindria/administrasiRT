@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 class DataWarga extends Model
 {
     protected $primaryKey = 'nik';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -24,13 +23,14 @@ class DataWarga extends Model
         'verification_status',
         'verified_by',
         'verified_at',
-        'rejection_reason'
+        'rejection_reason',
     ];
 
     public function getRouteKeyName()
     {
         return 'nik'; //  {verifikasiwarga} pake nik, bukan id
     }
+
     public function rumah()
     {
         return $this->hasMany(Rumah::class, 'nik', 'nik');

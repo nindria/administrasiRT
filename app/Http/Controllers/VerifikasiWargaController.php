@@ -16,8 +16,9 @@ class VerifikasiWargaController extends Controller
     public function index()
     {
         $wargas = DataWarga::where('verification_status', 'pending')->get();
+
         return Inertia::render('VerifikasiWarga/Index', [
-            'wargas' => $wargas
+            'wargas' => $wargas,
         ]);
     }
 
@@ -37,7 +38,7 @@ class VerifikasiWargaController extends Controller
         $validated = $request->validate([
             'nik' => 'required|string|max:20|unique:data_wargas,nik',
             'full_name' => 'required|string|max:255',
-            'verification_status' => 'in:pending,verified,rejected'
+            'verification_status' => 'in:pending,verified,rejected',
         ]);
 
         $warga = DataWarga::create($validated);
@@ -46,7 +47,7 @@ class VerifikasiWargaController extends Controller
             ->with('success', 'Data warga berhasil ditambahkan.');
     }
 
-    public function approve(DataWarga  $warga)
+    public function approve(DataWarga $warga)
     {
         $warga->update([
             'is_warga' => true,
@@ -57,6 +58,7 @@ class VerifikasiWargaController extends Controller
 
         return back()->with('success', 'Data berhasil disetujui.');
     }
+
     public function reject(DataWarga $warga, Request $request)
     {
         $warga->update([
@@ -66,8 +68,6 @@ class VerifikasiWargaController extends Controller
 
         return back()->with('error', 'Data ditolak');
     }
-
-
 
     /**
      * Display the specified resource.
@@ -94,11 +94,11 @@ class VerifikasiWargaController extends Controller
     {
         $validated = $request->validate([
             'verification_status' => 'required|in:pending,verified,rejected',
-            'rejection_reason' => 'nullable|string|max:255'
+            'rejection_reason' => 'nullable|string|max:255',
         ]);
 
         $warga = DataWarga::findOrFail($nik);
-        
+
         if ($validated['verification_status'] === 'verified') {
             $warga->verification_status = 'verified';
             $warga->verified_by = Auth::id();
@@ -137,7 +137,7 @@ class VerifikasiWargaController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|in:verified,rejected',
-            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255'
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255',
         ]);
 
         $dataWarga = DataWarga::findOrFail($id);
@@ -148,14 +148,14 @@ class VerifikasiWargaController extends Controller
             'verified_at' => now(),
             'rejection_reason' => $validated['status'] === 'rejected'
                 ? $validated['rejection_reason']
-                : null
+                : null,
         ]);
 
         return redirect()
             ->route('verifikasiwarga.index') // Pastikan nama route konsisten
             ->with('toast', [
                 'message' => 'status telah diperbarui',
-                'type' => 'success'
+                'type' => 'success',
             ]);
     }
 
@@ -165,7 +165,7 @@ class VerifikasiWargaController extends Controller
             'ids' => 'required|array',
             'ids.*' => 'exists:data_wargas,id',
             'status' => 'required|in:verified,rejected',
-            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255'
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255',
         ]);
 
         DataWarga::whereIn('id', $validated['ids'])->update([
@@ -174,12 +174,12 @@ class VerifikasiWargaController extends Controller
             'verified_at' => now(),
             'rejection_reason' => $validated['status'] === 'rejected'
                 ? $validated['rejection_reason']
-                : null
+                : null,
         ]);
 
         return response()->json([
             'message' => 'Verifikasi massal berhasil dilakukan',
-            'success' => true
+            'success' => true,
         ]);
     }
 }

@@ -20,7 +20,7 @@ class DataIplController extends Controller
             'iplPayments' => DataIpl::with(['noRumah', 'recordedBy'])
                 ->latest()
                 ->get(),
-            'noRumahs' => NoRumah::all()
+            'noRumahs' => NoRumah::all(),
 
         ]);
     }
@@ -31,7 +31,7 @@ class DataIplController extends Controller
     public function create()
     {
         return Inertia::render('DataIpl/Create', [
-            'noRumahs' => NoRumah::all()
+            'noRumahs' => NoRumah::all(),
         ]);
     }
 
@@ -47,7 +47,7 @@ class DataIplController extends Controller
             'payment_method' => 'required|in:cash,transfer',
             'receipt_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'notes' => 'nullable|string',
-            'status' => 'required|in:verified,reject,pending'
+            'status' => 'required|in:verified,reject,pending',
         ]);
 
         if ($request->hasFile('receipt_path')) {
@@ -69,7 +69,7 @@ class DataIplController extends Controller
         $dataipl = DataIpl::with(['noRumah', 'recordedBy'])->findOrFail($id);
 
         return Inertia::render('DataIpl/Show', [
-            'dataIpl' => $dataipl
+            'dataIpl' => $dataipl,
         ]);
 
     }
@@ -83,7 +83,7 @@ class DataIplController extends Controller
 
         return Inertia::render('DataIpl/Edit', [
             'dataipl' => $dataipl,
-            'noRumahs' => $noRumahs
+            'noRumahs' => $noRumahs,
         ]);
     }
 
@@ -113,6 +113,7 @@ class DataIplController extends Controller
         }
 
         $dataipl->update($validated);
+
         return redirect()->route('dataipl.index')->with('success', 'Data berhasil diperbarui');
     }
 

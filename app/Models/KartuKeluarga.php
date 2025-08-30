@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class KartuKeluarga extends Model
 {
     protected $primaryKey = 'no_kk';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
         'no_kk',
-        'nik', // -> foreign key 
+        'nik', // -> foreign key
         'jumlah_anggota',
         'foto_ktp_kepala_keluarga',
         'public_id',
@@ -22,7 +24,6 @@ class KartuKeluarga extends Model
     {
         return $this->belongsTo(Rumah::class, 'nik', 'nik');
     }
-
 
     public function dataWarga()
     {

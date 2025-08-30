@@ -79,7 +79,12 @@ const confirmDelete = (no_kk: string) => {
                                 </Badge>
                             </td>
                             <td class="px-6 py-4">
-                                <img v-if="kartuKeluarga.foto_ktp_kepala_keluarga" :src="kartuKeluarga.foto_ktp_kepala_keluarga" alt="Foto KTP" class="h-auto w-16 rounded object-cover" />
+                                <img
+                                    v-if="kartuKeluarga.foto_ktp_kepala_keluarga"
+                                    :src="kartuKeluarga.foto_ktp_kepala_keluarga"
+                                    alt="Foto KTP"
+                                    class="h-auto w-16 rounded object-cover"
+                                />
                                 <div v-else class="flex h-12 w-16 items-center justify-center rounded bg-gray-200 text-gray-500">
                                     <span class="text-xs">No Image</span>
                                 </div>

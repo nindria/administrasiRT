@@ -16,8 +16,9 @@ class EventController extends Controller
     public function index()
     {
         $event = Event::get();
+
         return Inertia::render('Event/Index', [
-            'event' => $event
+            'event' => $event,
         ]);
     }
 
@@ -40,20 +41,19 @@ class EventController extends Controller
             'description' => 'required',
         ]);
 
-
         $data = [
             'title' => $request->title,
             'description' => $request->description,
             'image' => null,
-            'public_id' => null
+            'public_id' => null,
         ];
 
         if ($request->hasFile('image')) {
-            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService = new CloudinaryService;
             $uploadResult = $cloudinaryService->uploadImage($request->file('image'), 'event-images');
 
             // Check if upload was successful
-            if (!$uploadResult['url']) {
+            if (! $uploadResult['url']) {
                 return redirect()->back()->with('error', 'Gagal mengunggah gambar ke Cloudinary. Silakan coba lagi.');
             }
 
@@ -72,8 +72,9 @@ class EventController extends Controller
     public function show(string $id)
     {
         $event = Event::findOrFail($id);
+
         return Inertia::render('Event/Show', [
-            'event' => $event
+            'event' => $event,
         ]);
     }
 
@@ -83,8 +84,9 @@ class EventController extends Controller
     public function edit(string $id)
     {
         $event = Event::findOrFail($id);
+
         return Inertia::render('Event/Edit', [
-            'event' => $event
+            'event' => $event,
         ]);
     }
 
@@ -103,22 +105,22 @@ class EventController extends Controller
 
         $data = [
             'title' => $request->title,
-            'description' => $request->description
+            'description' => $request->description,
         ];
 
         if ($request->hasFile('image')) {
             // Delete old image from Cloudinary if exists
             if ($event->public_id) {
-                $cloudinaryService = new CloudinaryService();
+                $cloudinaryService = new CloudinaryService;
                 $cloudinaryService->deleteImage($event->public_id);
             }
 
             // Upload new image to Cloudinary
-            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService = new CloudinaryService;
             $uploadResult = $cloudinaryService->uploadImage($request->file('image'), 'event-images');
 
             // Check if upload was successful
-            if (!$uploadResult['url']) {
+            if (! $uploadResult['url']) {
                 return redirect()->back()->with('error', 'Gagal mengunggah gambar ke Cloudinary. Silakan coba lagi.');
             }
 
@@ -140,7 +142,7 @@ class EventController extends Controller
 
         // Delete image from Cloudinary if exists
         if ($event->public_id) {
-            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService = new CloudinaryService;
             $cloudinaryService->deleteImage($event->public_id);
         }
 

@@ -6,7 +6,6 @@ use App\Models\DataWarga;
 use App\Models\KartuKeluarga;
 use App\Models\Rumah;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DataWargaController extends Controller
@@ -19,11 +18,12 @@ class DataWargaController extends Controller
             if ($warga->rumah && $warga->rumah->count() > 0) {
                 // Mengambil semua blok rumah dan menggabungkannya menjadi string
                 $warga->blok = $warga->rumah->map(function ($rumah) {
-                    return  $rumah->blok . $rumah->nomor;
+                    return $rumah->blok.$rumah->nomor;
                 })->implode(', ');
             } else {
                 $warga->blok = '-';
             }
+
             return $warga;
         });
 
@@ -36,40 +36,40 @@ class DataWargaController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Handle multiple wargas
-    if ($request->has('wargas')) {
-        $validated = $request->validate([
-            'wargas' => 'required|array',
-            'wargas.*.nik' => 'required|string|max:20|unique:data_wargas,nik',
-            'wargas.*.full_name' => 'required|string|max:255',
-            'wargas.*.tempat_lahir' => 'nullable|string|max:255',
-            'wargas.*.tanggal_lahir' => 'nullable|date',
-            'wargas.*.status' => 'nullable|string|max:255',
-            'wargas.*.verification_status' => 'in:pending,verified,rejected'
-        ]);
+    {
+        // Handle multiple wargas
+        if ($request->has('wargas')) {
+            $validated = $request->validate([
+                'wargas' => 'required|array',
+                'wargas.*.nik' => 'required|string|max:20|unique:data_wargas,nik',
+                'wargas.*.full_name' => 'required|string|max:255',
+                'wargas.*.tempat_lahir' => 'nullable|string|max:255',
+                'wargas.*.tanggal_lahir' => 'nullable|date',
+                'wargas.*.status' => 'nullable|string|max:255',
+                'wargas.*.verification_status' => 'in:pending,verified,rejected',
+            ]);
 
-        foreach ($validated['wargas'] as $wargaData) {
-            DataWarga::create($wargaData);
+            foreach ($validated['wargas'] as $wargaData) {
+                DataWarga::create($wargaData);
+            }
         }
-    } 
-    // Handle single warga
-    else {
-        $validated = $request->validate([
-            'nik' => 'required|string|max:20|unique:data_wargas,nik',
-            'full_name' => 'required|string|max:255',
-            'tempat_lahir' => 'nullable|string|max:255',
-            'tanggal_lahir' => 'nullable|date',
-            'status' => 'nullable|string|max:255',
-            'verification_status' => 'in:pending,verified,rejected'
-        ]);
+        // Handle single warga
+        else {
+            $validated = $request->validate([
+                'nik' => 'required|string|max:20|unique:data_wargas,nik',
+                'full_name' => 'required|string|max:255',
+                'tempat_lahir' => 'nullable|string|max:255',
+                'tanggal_lahir' => 'nullable|date',
+                'status' => 'nullable|string|max:255',
+                'verification_status' => 'in:pending,verified,rejected',
+            ]);
 
-        DataWarga::create($validated);
+            DataWarga::create($validated);
+        }
+
+        return redirect()->route('datawarga.index')
+            ->with('success', 'Data warga berhasil ditambahkan.');
     }
-
-    return redirect()->route('datawarga.index')
-        ->with('success', 'Data warga berhasil ditambahkan.');
-}
 
     public function storeMultiple(Request $request)
     {
@@ -99,7 +99,7 @@ class DataWargaController extends Controller
         }
 
         // Handle KK creation if provided
-        if (isset($validated['kk']) && !empty($validated['kk']['no_kk'])) {
+        if (isset($validated['kk']) && ! empty($validated['kk']['no_kk'])) {
             $kepalaKeluarga = collect($wargaEntries)->firstWhere('status', 'kepala keluarga');
             if ($kepalaKeluarga) {
                 KartuKeluarga::create([
@@ -112,7 +112,7 @@ class DataWargaController extends Controller
         }
 
         // Handle Rumah creation if provided
-        if (isset($validated['rumah']) && !empty($validated['rumah']['jalan'])) {
+        if (isset($validated['rumah']) && ! empty($validated['rumah']['jalan'])) {
             $kepalaKeluarga = collect($wargaEntries)->firstWhere('status', 'kepala keluarga');
             if ($kepalaKeluarga) {
                 Rumah::create([
@@ -133,10 +133,11 @@ class DataWargaController extends Controller
         $warga = DataWarga::findOrFail($id);
         $kks = KartuKeluarga::all();
         $rumahs = Rumah::all();
+
         return Inertia::render('DataWarga/Edit', [
             'warga' => $warga,
             'kks' => $kks,
-            'noRumahs' => $rumahs
+            'noRumahs' => $rumahs,
         ]);
     }
 
@@ -158,6 +159,7 @@ class DataWargaController extends Controller
     public function destroy(string $id)
     {
         DataWarga::destroy($id);
+
         return redirect()->route('datawarga.index')->with('success', 'Data warga berhasil dihapus');
     }
 }

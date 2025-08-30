@@ -16,10 +16,10 @@ use Inertia\Inertia;
 Route::get('/', function () {
     $events = \App\Models\Event::latest()->take(4)->get();
     $banner = \App\Models\Banner::active()->latest()->first();
-    
+
     return Inertia::render('Welcome', [
         'events' => $events,
-        'banner' => $banner
+        'banner' => $banner,
     ]);
 })->name('home');
 
@@ -57,17 +57,15 @@ Route::resource('dataipl', DataIplController::class)->middleware('auth');
 
 Route::resource('verifikasiwarga', VerifikasiWargaController::class);
 
-
 // Route::resource('verifikasi', VerifikasiWargaController::class)->only(['index', 'update', 'destroy']);
-
 
 Route::resource('verifikasiipl', VerifikasiIplController::class)->only([
     'index',
-    'show'
+    'show',
 ]);
 
 Route::put('/verifikasiipl/{ipl}/verify', [VerifikasiIplController::class, 'verify'])
     ->name('verifikasiipl.verify');
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

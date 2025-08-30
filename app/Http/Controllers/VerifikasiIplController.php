@@ -22,11 +22,10 @@ class VerifikasiIplController extends Controller
             'verificationStatuses' => [
                 'pending' => 'Menunggu Verifikasi',
                 'verified' => 'Terverifikasi',
-                'rejected' => 'Ditolak'
-            ]
+                'rejected' => 'Ditolak',
+            ],
         ]);
     }
-
 
     public function create()
     {
@@ -44,7 +43,7 @@ class VerifikasiIplController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $ipl = DataIpl::with(['noRumah', 'recordedBy', 'verifiedBy'])
             ->findOrFail($id);
@@ -54,8 +53,8 @@ class VerifikasiIplController extends Controller
             'verificationStatuses' => [
                 'pending' => 'Menunggu Verifikasi',
                 'verified' => 'Terverifikasi',
-                'rejected' => 'Ditolak'
-            ]
+                'rejected' => 'Ditolak',
+            ],
         ]);
     }
 
@@ -87,14 +86,14 @@ class VerifikasiIplController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|in:pending,verified,rejected',
-            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255'
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:255',
         ]);
 
         $updateData = [
             'status' => $validated['status'],
             'verified_at' => $validated['status'] === 'verified' ? now() : null,
             'verified_by' => $validated['status'] === 'verified' ? Auth::id() : null,
-            'rejection_reason' => $validated['status'] === 'rejected' ? $validated['rejection_reason'] : null
+            'rejection_reason' => $validated['status'] === 'rejected' ? $validated['rejection_reason'] : null,
         ];
 
         $ipl->update($updateData);

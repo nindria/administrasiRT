@@ -27,7 +27,7 @@ const props = defineProps<{
 <template>
     <div class="font-inter text-foreground antialiased">
         <!-- Header / Nav -->
-        <header class="bg-white border-b border-gray-200 dark:bg-slate-900 dark:border-slate-700">
+        <header class="border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 lg:px-8">
                 <div class="flex items-center gap-3">
                     <div class="h-10 w-10 rounded-sm bg-blue-600"></div>
@@ -35,7 +35,9 @@ const props = defineProps<{
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <Link :href="route('login')" class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 transition-colors">Login</Link>
+                    <Link :href="route('login')" class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700"
+                        >Login</Link
+                    >
                 </div>
             </div>
         </header>
@@ -76,7 +78,7 @@ const props = defineProps<{
                         v-for="event in props.events"
                         :key="event.id"
                         :href="route('events.show', event.id)"
-                        class="overflow-hidden rounded-xl bg-white shadow-md transition-shadow duration-300 hover:shadow-xl border border-gray-200 dark:bg-slate-700 dark:border-slate-600"
+                        class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow duration-300 hover:shadow-xl dark:border-slate-600 dark:bg-slate-700"
                     >
                         <div class="h-56 overflow-hidden bg-gray-100 dark:bg-slate-600">
                             <img
@@ -102,7 +104,9 @@ const props = defineProps<{
         </section>
 
         <!-- Simple Footer -->
-        <footer class="bg-gray-100 py-6 text-center text-sm text-gray-600 border-t border-gray-200 dark:bg-slate-800 dark:text-gray-400 dark:border-slate-700">
+        <footer
+            class="border-t border-gray-200 bg-gray-100 py-6 text-center text-sm text-gray-600 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-400"
+        >
             © {{ new Date().getFullYear() }} SIRUWA 07. All rights reserved.
         </footer>
     </div>

@@ -7,7 +7,6 @@ use App\Models\DataWarga;
 use App\Models\Event;
 use App\Models\KartuKeluarga;
 use App\Models\Rumah;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -16,7 +15,7 @@ class DashboardController extends Controller
      * Display the dashboard with statistics.
      */
     public function index()
-    {        
+    {
         // Collect statistics from various models
         $stats = [
             'total_warga' => DataWarga::count(),
@@ -28,7 +27,7 @@ class DashboardController extends Controller
         ];
 
         return Inertia::render('Dashboard', [
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 interface Rumah {
     id: number;
@@ -32,7 +31,7 @@ const props = defineProps<{
 
 const form = useForm({
     status: props.ipl?.status ?? 'pending',
-    rejection_reason: props.ipl?.rejection_reason ?? null
+    rejection_reason: props.ipl?.rejection_reason ?? null,
 });
 
 const submitForm = () => {
@@ -43,19 +42,19 @@ const submitForm = () => {
         },
         onError: (errors) => {
             console.error('Verification error:', errors);
-        }
+        },
     });
 };
 
 const formatDate = (dateString: string | null | undefined): string => {
     if (!dateString) return '-';
     try {
-        const options: Intl.DateTimeFormatOptions = { 
-            year: 'numeric', 
-            month: 'long', 
+        const options: Intl.DateTimeFormatOptions = {
+            year: 'numeric',
+            month: 'long',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         };
         return new Date(dateString).toLocaleDateString('id-ID', options);
     } catch {
@@ -71,7 +70,7 @@ const getSafeValue = {
         if (amount === null || amount === undefined) return '0';
         return amount.toLocaleString('id-ID');
     },
-    paymentMethod: (method: string | null | undefined): string => method ?? '-'
+    paymentMethod: (method: string | null | undefined): string => method ?? '-',
 };
 </script>
 
@@ -80,18 +79,16 @@ const getSafeValue = {
 
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-foreground">
-                Verifikasi Pembayaran IPL
-            </h2>
+            <h2 class="text-xl leading-tight font-semibold text-foreground">Verifikasi Pembayaran IPL</h2>
         </template>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-card shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-card border-b border-border">
+                    <div class="border-b border-border bg-card p-6">
                         <h1 class="mb-6 text-2xl font-bold text-foreground">Verifikasi Data IPL</h1>
 
-                        <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
+                        <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
                             <div>
                                 <h3 class="mb-4 text-lg font-medium text-foreground">Data Pembayaran</h3>
                                 <div class="space-y-3">
@@ -113,15 +110,13 @@ const getSafeValue = {
 
                         <form @submit.prevent="submitForm">
                             <div class="mb-4">
-                                <label class="block mb-1 text-sm font-medium text-foreground">
-                                    Status Verifikasi
-                                </label>
-                                <select v-model="form.status"
+                                <label class="mb-1 block text-sm font-medium text-foreground"> Status Verifikasi </label>
+                                <select
+                                    v-model="form.status"
                                     class="w-full rounded-md border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary"
-                                    @change="form.rejection_reason = null">
-                                    <option v-for="(label, value) in verificationStatuses" 
-                                            :value="value"
-                                            :key="value">
+                                    @change="form.rejection_reason = null"
+                                >
+                                    <option v-for="(label, value) in verificationStatuses" :value="value" :key="value">
                                         {{ label }}
                                     </option>
                                 </select>
@@ -131,26 +126,30 @@ const getSafeValue = {
                             </div>
 
                             <div class="mb-4" v-if="form.status === 'rejected'">
-                                <label class="block mb-1 text-sm font-medium text-foreground">
-                                    Alasan Penolakan
-                                </label>
-                                <textarea v-model="form.rejection_reason"
+                                <label class="mb-1 block text-sm font-medium text-foreground"> Alasan Penolakan </label>
+                                <textarea
+                                    v-model="form.rejection_reason"
                                     class="w-full rounded-md border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary"
                                     rows="3"
-                                    required></textarea>
+                                    required
+                                ></textarea>
                                 <p v-if="form.errors.rejection_reason" class="mt-1 text-sm text-red-600">
                                     {{ form.errors.rejection_reason }}
                                 </p>
                             </div>
 
                             <div class="flex justify-end space-x-4">
-                                <Link :href="route('verifikasiipl.index')"
-                                    class="px-4 py-2 text-foreground bg-secondary rounded-md hover:bg-secondary/80">
+                                <Link
+                                    :href="route('verifikasiipl.index')"
+                                    class="rounded-md bg-secondary px-4 py-2 text-foreground hover:bg-secondary/80"
+                                >
                                     Kembali
                                 </Link>
-                                <button type="submit"
-                                    class="px-4 py-2 text-primary-foreground bg-primary rounded-md hover:bg-primary/90 disabled:opacity-50"
-                                    :disabled="form.processing">
+                                <button
+                                    type="submit"
+                                    class="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                                    :disabled="form.processing"
+                                >
                                     <span v-if="form.processing">Memproses...</span>
                                     <span v-else>Simpan</span>
                                 </button>
