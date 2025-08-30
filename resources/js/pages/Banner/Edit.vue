@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import AppLayout from '@/layouts/AppLayout.vue';
+import BaseInput from '@/components/form/BaseInput.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import InputError from '@/components/InputError.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ChevronLeft } from 'lucide-vue-next';
+import { ref } from 'vue';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Edit',
+        href: '/banners/edit',
+    },
+];
 
 const props = defineProps<{
     banner: {
@@ -22,81 +31,98 @@ const form = useForm({
     description: props.banner.description,
     image: null as File | null,
     is_active: props.banner.is_active,
+    _method: 'put',
 });
 
-const submit = () => {
-    form.put(route('banners.update', props.banner.id), {
-        onSuccess: () => form.reset(),
+const imagePreview = ref<string | null>(null);
+
+function handleImageChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+        form.image = file;
+        imagePreview.value = URL.createObjectURL(file);
+    }
+}
+
+function submit() {
+    form.post(route('banners.update', props.banner.id), {
+        onSuccess: () => {
+            form.reset();
+            imagePreview.value = null;
+        },
     });
-};
+}
 </script>
 
 <template>
-    <AppLayout>
-        <Head title="Edit Banner" />
+    <Head title="Edit Banner" />
 
-        <div class="container mx-auto py-6">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-bold">Edit Banner</h1>
-                <Link :href="route('banners.index')">
-                    <Button variant="outline">Back to Banners</Button>
-                </Link>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-6">
-                <form @submit.prevent="submit" class="space-y-6">
-                    <div class="grid gap-2">
-                        <Label for="title">Title</Label>
-                        <Input
-                            id="title"
-                            v-model="form.title"
-                            required
-                            placeholder="Enter banner title"
-                        />
-                        <InputError :message="form.errors.title" />
-                    </div>
-
-                    <div class="grid gap-2">
-                        <Label for="description">Description</Label>
-                        <Input
-                            id="description"
-                            v-model="form.description"
-                            placeholder="Enter banner description (optional)"
-                        />
-                        <InputError :message="form.errors.description" />
-                    </div>
-
-                    <div class="grid gap-2">
-                        <Label for="image">Banner Image</Label>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <h1 class="text-2xl font-bold">Edit Banner</h1>
+            <form @submit.prevent="submit">
+                <div class="grid gap-4">
+                    <BaseInput
+                        label="Title"
+                        name="title"
+                        v-model:value="form.title"
+                        placeholder="Masukkan judul banner"
+                        :message="form.errors.title"
+                    />
+                    <BaseInput
+                        label="Description"
+                        name="description"
+                        v-model:value="form.description"
+                        placeholder="Masukkan deskripsi banner"
+                        :message="form.errors.description"
+                    />
+                    <div class="grid">
+                        <Label class="mb-2" for="image">Banner Image</Label>
                         <Input
                             id="image"
+                            name="image"
                             type="file"
                             accept="image/*"
-                            @input="form.image = $event.target.files[0]"
+                            @input="form.image = ($event.target as HTMLInputElement)?.files?.[0] || null"
+                            @change="handleImageChange"
+                            class="mt-1 block w-full"
                         />
+                        <p class="mt-1 text-sm text-gray-500">Supported formats: JPG, JPEG, PNG. Max size: 2MB</p>
+                        <div v-if="imagePreview" class="mt-2">
+                            <img :src="imagePreview" alt="Preview" class="h-auto w-32 rounded border" />
+                        </div>
+                        <div v-if="!imagePreview && banner.image" class="mt-2">
+                            <p class="text-sm text-gray-500">Current image:</p>
+                            <img :src="`${banner.image}`" alt="Current image" class="h-auto w-32 rounded border" />
+                        </div>
                         <InputError :message="form.errors.image" />
-                        <p class="text-sm text-gray-500">Supported formats: JPG, JPEG, PNG. Max size: 2MB</p>
                     </div>
-
                     <div class="flex items-center space-x-2">
-                        <Checkbox
+                        <input
                             id="is_active"
+                            type="checkbox"
                             v-model="form.is_active"
+                            class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
                         />
-                        <Label for="is_active" class="cursor-pointer">Set as active banner</Label>
+                        <label for="is_active" class="cursor-pointer text-sm font-medium text-gray-700">Set as active banner</label>
                     </div>
-                    <InputError :message="form.errors.is_active" />
+                    <div v-if="form.errors.is_active" class="text-sm text-red-500">{{ form.errors.is_active }}</div>
 
-                    <div class="flex justify-end space-x-4">
+                    <div class="flex justify-end gap-2">
                         <Link :href="route('banners.index')">
-                            <Button type="button" variant="outline">Cancel</Button>
+                            <Button
+                                class="inline-flex w-24 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800"
+                                type="button"
+                            >
+                                <ChevronLeft class="h-4 w-4" />
+                                Back
+                            </Button>
                         </Link>
-                        <Button type="submit" :disabled="form.processing">
-                            Update Banner
-                        </Button>
+                        <Button class="w-24" type="submit" :disabled="form.processing">Update</Button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </AppLayout>
 </template>

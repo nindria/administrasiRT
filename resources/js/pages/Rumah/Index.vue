@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -69,11 +69,6 @@ const confirmDelete = (id: number) => {
                             <td class="px-6 py-4">{{ rumah.blok }}</td>
                             <td class="px-6 py-4">{{ rumah.nomor }}</td>
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="`rumah/${rumah.id}/edit`">
-                                    <Button variant="outline" size="sm">
-                                        <Eye class="h-4 w-4" />
-                                    </Button>
-                                </Link>
                                 <Link :href="route('rumah.edit', rumah.id_rumah)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />

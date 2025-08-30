@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import Badge from '@/components/ui/badge/Badge.vue';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type Role } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
-import { Plus, Pencil, Eye } from 'lucide-vue-next';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { Plus, Pencil, Trash2 } from 'lucide-vue-next';
+import { can } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,6 +18,12 @@ defineProps<{
     roles: Role[]
 }>();
 
+const confirmDelete = (id: number) => {
+    if (confirm('Apakah Anda yakin ingin menghapus role ini?')) {
+        router.delete(route('roles.destroy', id));
+    }
+};
+
 </script>
 
 <template>
@@ -26,15 +35,19 @@ defineProps<{
 
             <h1 class="text-2xl font-bold">Daftar Role</h1>
             <div class="">
-                <Link href="/roles/create" type="button"
-                    class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800">
-                <Plus :size="18" :stroke-width="2.5" class="mr-2" />
-                Tambah Role
+                <Link
+                    v-if="can('roles.create')"
+                    href="/roles/create"
+                    type="button"
+                    class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
+                >
+                    <Plus :size="18" :stroke-width="2.5" class="mr-2" />
+                    Tambah Role
                 </Link>
             </div>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div class="relative flex overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">
                                 ID
@@ -51,29 +64,32 @@ defineProps<{
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="role in roles" :key="role.id"
-                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ role.id }}
-                            </th>
+                        <tr v-for="role in roles" :key="role.id" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                            <td class="px-6 py-4">
+                                <Badge variant="outline">
+                                    {{ role.id }}
+                                </Badge>
+                            </td>
                             <td class="px-6 py-4">
                                 {{ role.name }}
                             </td>
                             <td class="px-6 py-4">
-                                <span v-for="permission in role.permissions" :key="permission.id">
-                                    {{ permission.name }}
-                                </span>
+                                <div class="flex flex-wrap gap-1">
+                                    <Badge v-for="permission in role.permissions" :key="permission.id" variant="outline">
+                                        {{ permission.name }}
+                                    </Badge>
+                                </div>
                             </td>
 
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="route('roles.show', role.id)">
-                                <Eye class="h-4 w-4" />
+                                <Link :href="route('roles.edit', role.id.toString())">
+                                    <Button variant="outline" size="sm">
+                                        <Pencil class="h-4 w-4" />
+                                    </Button>
                                 </Link>
-                                <Link :href="route('roles.edit', role.id.toString())"
-                                    class="inline-flex items-center p-2 text-blue-600 hover:text-blue-800">
-                                <Pencil class="h-4 w-4" />
-                                </Link>
+                                <Button variant="destructive" size="sm" @click="confirmDelete(role.id)">
+                                    <Trash2 class="h-4 w-4" />
+                                </Button>
                             </td>
                         </tr>
                     </tbody>

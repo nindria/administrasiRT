@@ -80,20 +80,20 @@ const getSafeValue = {
 
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-foreground">
                 Verifikasi Pembayaran IPL
             </h2>
         </template>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <h1 class="mb-6 text-2xl font-bold">Verifikasi Data IPL</h1>
+                <div class="overflow-hidden bg-card shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-card border-b border-border">
+                        <h1 class="mb-6 text-2xl font-bold text-foreground">Verifikasi Data IPL</h1>
 
                         <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
                             <div>
-                                <h3 class="mb-4 text-lg font-medium">Data Pembayaran</h3>
+                                <h3 class="mb-4 text-lg font-medium text-foreground">Data Pembayaran</h3>
                                 <div class="space-y-3">
                                     <p><strong>No Rumah:</strong> {{ getSafeValue.rumahName(ipl?.no_rumah) }}</p>
                                     <p><strong>Jumlah:</strong> Rp {{ getSafeValue.amount(ipl?.amount) }}</p>
@@ -103,7 +103,7 @@ const getSafeValue = {
                             </div>
 
                             <div>
-                                <h3 class="mb-4 text-lg font-medium">Data Pencatatan</h3>
+                                <h3 class="mb-4 text-lg font-medium text-foreground">Data Pencatatan</h3>
                                 <div class="space-y-3">
                                     <p><strong>Dicatat Oleh:</strong> {{ getSafeValue.userName(ipl?.recorded_by) }}</p>
                                     <p><strong>Tanggal Catat:</strong> {{ formatDate(ipl?.created_at) }}</p>
@@ -113,11 +113,11 @@ const getSafeValue = {
 
                         <form @submit.prevent="submitForm">
                             <div class="mb-4">
-                                <label class="block mb-1 text-sm font-medium text-gray-700">
+                                <label class="block mb-1 text-sm font-medium text-foreground">
                                     Status Verifikasi
                                 </label>
                                 <select v-model="form.status"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    class="w-full rounded-md border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary"
                                     @change="form.rejection_reason = null">
                                     <option v-for="(label, value) in verificationStatuses" 
                                             :value="value"
@@ -131,11 +131,11 @@ const getSafeValue = {
                             </div>
 
                             <div class="mb-4" v-if="form.status === 'rejected'">
-                                <label class="block mb-1 text-sm font-medium text-gray-700">
+                                <label class="block mb-1 text-sm font-medium text-foreground">
                                     Alasan Penolakan
                                 </label>
                                 <textarea v-model="form.rejection_reason"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    class="w-full rounded-md border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary"
                                     rows="3"
                                     required></textarea>
                                 <p v-if="form.errors.rejection_reason" class="mt-1 text-sm text-red-600">
@@ -145,11 +145,11 @@ const getSafeValue = {
 
                             <div class="flex justify-end space-x-4">
                                 <Link :href="route('verifikasiipl.index')"
-                                    class="px-4 py-2 text-gray-800 bg-gray-300 rounded-md hover:bg-gray-400">
+                                    class="px-4 py-2 text-foreground bg-secondary rounded-md hover:bg-secondary/80">
                                     Kembali
                                 </Link>
                                 <button type="submit"
-                                    class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 disabled:opacity-50"
+                                    class="px-4 py-2 text-primary-foreground bg-primary rounded-md hover:bg-primary/90 disabled:opacity-50"
                                     :disabled="form.processing">
                                     <span v-if="form.processing">Memproses...</span>
                                     <span v-else>Simpan</span>

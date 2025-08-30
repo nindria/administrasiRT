@@ -23,9 +23,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::resource('users', UserController::class);
 
 // Route::resource('users', UserController::class)
@@ -53,7 +51,7 @@ Route::resource('datawarga', DataWargaController::class);
 Route::post('datawarga/store-multiple', [DataWargaController::class, 'storeMultiple'])->name('datawarga.storeMultiple');
 
 Route::resource('events', EventController::class);
-Route::resource('banners', BannerController::class);
+Route::resource('banners', BannerController::class)->middleware('auth');
 
 Route::resource('dataipl', DataIplController::class)->middleware('auth');
 

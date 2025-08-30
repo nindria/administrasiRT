@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -34,19 +35,33 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'title' => 'required',
             'description' => 'nullable',
         ]);
 
-        $imagePath = $request->file('image')->store('banner-images', 'public');
-
-        Banner::create([
-            'image' => $imagePath,
+        $data = [
             'title' => $request->title,
             'description' => $request->description,
             'is_active' => $request->is_active ?? false,
-        ]);
+            'image' => null,
+            'public_id' => null
+        ];
+
+        if ($request->hasFile('image')) {
+            $cloudinaryService = new CloudinaryService();
+            $uploadResult = $cloudinaryService->uploadImage($request->file('image'), 'banner-images');
+            
+            // Check if upload was successful
+            if (!$uploadResult['url']) {
+                return redirect()->back()->with('error', 'Gagal mengunggah gambar ke Cloudinary. Silakan coba lagi.');
+            }
+            
+            $data['image'] = $uploadResult['url'];
+            $data['public_id'] = $uploadResult['public_id'];
+        }
+        
+        Banner::create($data);
 
         return redirect()->route('banners.index');
     }
@@ -93,11 +108,23 @@ class BannerController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($banner->image) {
-                Storage::disk('public')->delete($banner->image);
+            // Delete old image from Cloudinary if exists
+            if ($banner->public_id) {
+                $cloudinaryService = new CloudinaryService();
+                $cloudinaryService->deleteImage($banner->public_id);
             }
-            $data['image'] = $request->file('image')->store('banner-images', 'public');
+            
+            // Upload new image to Cloudinary
+            $cloudinaryService = new CloudinaryService();
+            $uploadResult = $cloudinaryService->uploadImage($request->file('image'), 'banner-images');
+            
+            // Check if upload was successful
+            if (!$uploadResult['url']) {
+                return redirect()->back()->with('error', 'Gagal mengunggah gambar ke Cloudinary. Silakan coba lagi.');
+            }
+            
+            $data['image'] = $uploadResult['url'];
+            $data['public_id'] = $uploadResult['public_id'];
         }
 
         $banner->update($data);
@@ -112,9 +139,10 @@ class BannerController extends Controller
     {
         $banner = Banner::findOrFail($id);
         
-        // Delete image if exists
-        if ($banner->image) {
-            Storage::disk('public')->delete($banner->image);
+        // Delete image from Cloudinary if exists
+        if ($banner->public_id) {
+            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService->deleteImage($banner->public_id);
         }
         
         $banner->delete();

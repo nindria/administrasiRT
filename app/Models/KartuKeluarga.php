@@ -15,6 +15,7 @@ class KartuKeluarga extends Model
         'nik', // -> foreign key 
         'jumlah_anggota',
         'foto_ktp_kepala_keluarga',
+        'public_id',
     ];
 
     public function rumah()

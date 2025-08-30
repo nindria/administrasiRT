@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 interface Warga {
     nik: string;
@@ -32,9 +32,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 const { wargas } = defineProps<Props>();
 
 const form = useForm({});
-// function formatStatus(residence_status: string): string {
-//     return residence_status.replaceAll('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-// }
 
 const confirmDelete = (nik: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data warga ini?')) {
@@ -105,11 +102,6 @@ const confirmDelete = (nik: string) => {
                                 </Badge>
                             </td>
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="`datawarga/${warga.nik}/edit`">
-                                    <Button variant="outline" size="sm">
-                                        <Eye class="h-4 w-4" />
-                                    </Button>
-                                </Link>
                                 <Link :href="route('datawarga.edit', warga.nik)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />

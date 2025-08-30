@@ -19,6 +19,7 @@ class Banner extends Model
         'description',
         'image',
         'is_active',
+        'public_id',
     ];
 
     /**

@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import BaseInput from '@/components/form/BaseInput.vue';
+import BaseSelect from '@/components/form/BaseSelect.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ChevronLeft } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 defineProps<{
     wargas: Array<{ nik: string; full_name: string; status: string }>;
@@ -21,17 +26,31 @@ const form = useForm<{
     no_kk: string;
     nik: string;
     jumlah_anggota: string;
-    foto_ktp_kepala_keluarga: string;
+    foto_ktp_kepala_keluarga: File | null;
 }>({
     no_kk: '',
     nik: '',
     jumlah_anggota: '',
-    foto_ktp_kepala_keluarga: '',
+    foto_ktp_kepala_keluarga: null,
 });
+
+const imagePreview = ref<string | null>(null);
+
+function handleImageChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+        form.foto_ktp_kepala_keluarga = file;
+        imagePreview.value = URL.createObjectURL(file);
+    }
+}
 
 function submit() {
     form.post(route('kartukeluarga.store'), {
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            imagePreview.value = null;
+        },
         preserveScroll: true,
     });
 }
@@ -55,14 +74,17 @@ function submit() {
                         placeholder="Masukkan Nomor KK"
                     />
 
-                    <BaseInput
-                        label="NIK Kepala Keluarga"
+                    <BaseSelect
+                        label="Kepala Keluarga"
                         name="nik"
                         v-model:value="form.nik"
                         :message="form.errors.nik"
-                        type="text"
-                        maxlength="16"
-                        placeholder="Masukkan NIK Kepala Keluarga"
+                        :options="
+                            wargas
+                                .filter((warga) => warga.status === 'Kepala Keluarga')
+                                .map((warga) => ({ value: warga.nik, label: `${warga.nik} - ${warga.full_name}` }))
+                        "
+                        placeholder="Pilih Kepala Keluarga"
                     />
 
                     <!-- <BaseSelect
@@ -88,14 +110,23 @@ function submit() {
                         placeholder="Masukkan Jumlah Anggota"
                     />
 
-                    <BaseInput
-                        label="Foto KTP Kepala Keluarga"
-                        name="foto_ktp_kepala_keluarga"
-                        v-model:value="form.foto_ktp_kepala_keluarga"
-                        :message="form.errors.foto_ktp_kepala_keluarga"
-                        type="text"
-                        placeholder="Masukkan URL Foto KTP"
-                    />
+                    <div class="grid">
+                        <Label class="mb-2" for="foto_ktp_kepala_keluarga">Foto KTP Kepala Keluarga</Label>
+                        <Input
+                            id="foto_ktp_kepala_keluarga"
+                            name="foto_ktp_kepala_keluarga"
+                            type="file"
+                            accept="image/*"
+                            @input="form.foto_ktp_kepala_keluarga = ($event.target as HTMLInputElement)?.files?.[0] || null"
+                            @change="handleImageChange"
+                            class="mt-1 block w-full"
+                        />
+                        <p class="mt-1 text-sm text-gray-500">Format yang didukung: JPG, JPEG, PNG. Ukuran maksimal: 2MB</p>
+                        <div v-if="imagePreview" class="mt-2">
+                            <img :src="imagePreview" alt="Preview" class="h-32 w-32 rounded border object-cover" />
+                        </div>
+                        <InputError :message="form.errors.foto_ktp_kepala_keluarga" />
+                    </div>
 
                     <div class="flex justify-end gap-2">
                         <Link href="/kartukeluarga"

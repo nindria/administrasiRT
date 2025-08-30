@@ -1,9 +1,21 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import { Input } from '@/components/ui/input';
+import BaseInput from '@/components/form/BaseInput.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ChevronLeft } from 'lucide-vue-next';
+import { ref } from 'vue';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Create',
+        href: '/events/create',
+    },
+];
 
 const form = useForm({
     title: '',
@@ -23,16 +35,7 @@ function handleImageChange(event: Event) {
 }
 
 function submit() {
-    const data = new FormData();
-    if (form.image) {
-        data.append('image', form.image);
-    }
-
-    data.append('title', form.title);
-    data.append('description', form.description);
-
-    router.post(route('event.store'), data, {
-        forceFormData: true,
+    form.post(route('events.store'), {
         onSuccess: () => {
             form.reset();
             imagePreview.value = null;
@@ -43,36 +46,56 @@ function submit() {
 
 <template>
     <Head title="Create Event" />
-    <AppLayout>
-        <div class="p-6">
-            <h1 class="text-2xl font-semibold mb-4">Create Event</h1>
-            <div class="pb-4">
-                <Link href="/norumah" type="button"
-                    class="inline-flex items-center text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
-                <ChevronLeft class="w-4 h-4 mr-2"/>
-                Back
-                </Link>
-            </div>
-            <form @submit.prevent="submit" class="space-y-4 max-w-md">
-                <div>
-                    <label class="block mb-1 font-medium">Title</label>
-                    <Input v-model="form.title" type="text" required />
-                </div>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <h1 class="text-2xl font-bold">Tambah Event</h1>
+            <form @submit.prevent="submit">
+                <div class="grid gap-4">
+                    <BaseInput
+                        label="Title"
+                        name="title"
+                        v-model:value="form.title"
+                        placeholder="Masukkan judul event"
+                        :message="form.errors.title"
+                    />
+                    <BaseInput
+                        label="Description"
+                        name="description"
+                        v-model:value="form.description"
+                        placeholder="Masukkan deskripsi event"
+                        :message="form.errors.description"
+                    />
+                    <div class="grid">
+                        <Label class="mb-2" for="image">Event Image</Label>
+                        <Input
+                            id="image"
+                            name="image"
+                            type="file"
+                            accept="image/*"
+                            @input="form.image = ($event.target as HTMLInputElement)?.files?.[0] || null"
+                            @change="handleImageChange"
+                            class="mt-1 block w-full"
+                        />
+                        <p class="mt-1 text-sm text-gray-500">Supported formats: JPG, JPEG, PNG. Max size: 2MB</p>
+                        <div v-if="imagePreview" class="mt-2">
+                            <img :src="imagePreview" alt="Preview" class="h-auto w-32 rounded border" />
+                        </div>
+                        <InputError :message="form.errors.image" class="mt-2" />
+                    </div>
 
-                <div>
-                    <label class="block mb-1 font-medium">Description</label>
-                    <Input v-model="form.description" required />
-                </div>
-
-                <div>
-                    <label class="block mb-1 font-medium">Image</label>
-                    <Input type="file" accept="image/*" @change="handleImageChange" />
-                    <div v-if="imagePreview" class="mt-2">
-                        <img :src="imagePreview" alt="Preview" class="w-32 h-auto rounded border" />
+                    <div class="flex justify-end gap-2">
+                        <Link href="/events"
+                            ><Button
+                                class="inline-flex w-24 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800"
+                                type="button"
+                            >
+                                <ChevronLeft class="h-4 w-4" />
+                                Back
+                            </Button></Link
+                        >
+                        <Button class="w-24" type="submit" :disabled="form.processing">Submit</Button>
                     </div>
                 </div>
-
-                <Button type="submit" class="mt-4">Submit</Button>
             </form>
         </div>
     </AppLayout>

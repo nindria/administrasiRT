@@ -22,27 +22,27 @@ defineProps<{
 
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-foreground">
                 Verifikasi Pembayaran IPL
             </h2>
         </template>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
+                <div class="overflow-hidden bg-card shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-card border-b border-border">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full divide-y divide-border">
+                                <thead class="bg-muted">
                                     <tr>
-                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">No Rumah</th>
-                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Jumlah</th>
-                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Tanggal Bayar</th>
-                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
-                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Aksi</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-muted-foreground uppercase">No Rumah</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-muted-foreground uppercase">Jumlah</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-muted-foreground uppercase">Tanggal Bayar</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-muted-foreground uppercase">Status</th>
+                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-muted-foreground uppercase">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="bg-card divide-y divide-border">
                                     <tr v-for="ipl in pendingIpls" :key="ipl.id">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ ipl.no_rumah.name }}
@@ -56,16 +56,16 @@ defineProps<{
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="px-2 py-1 text-xs font-semibold rounded-full" 
                                                   :class="{
-                                                      'bg-yellow-100 text-yellow-800': ipl.status === 'pending',
-                                                      'bg-green-100 text-green-800': ipl.status === 'verified',
-                                                      'bg-red-100 text-red-800': ipl.status === 'rejected'
+                                                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300': ipl.status === 'pending',
+                                                      'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300': ipl.status === 'verified',
+                                                      'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300': ipl.status === 'rejected'
                                                   }">
                                                 {{ verificationStatuses[ipl.status] }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <Link :href="route('verifikasiipl.show', ipl.id)" 
-                                                  class="text-indigo-600 hover:text-indigo-900">
+                                                  class="text-primary hover:text-primary/80">
                                                 Verifikasi
                                             </Link>
                                         </td>

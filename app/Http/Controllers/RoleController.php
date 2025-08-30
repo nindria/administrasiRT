@@ -91,6 +91,19 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $role = Role::find($id);
+        
+        if (!$role) {
+            return redirect()->route('roles.index')->with('error', 'Role tidak ditemukan.');
+        }
+        
+        // Check if role is being used by any users
+        if ($role->users()->count() > 0) {
+            return redirect()->route('roles.index')->with('error', 'Role tidak dapat dihapus karena masih digunakan oleh user.');
+        }
+        
+        $role->delete();
+        
+        return redirect()->route('roles.index')->with('success', 'Role berhasil dihapus.');
     }
 }

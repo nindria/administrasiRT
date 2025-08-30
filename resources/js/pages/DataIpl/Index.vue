@@ -35,9 +35,9 @@ const { iplPayments } = defineProps({
 });
 const statusClasses = (status: 'verified' | 'pending' | 'reject') => {
   return {
-    'bg-green-100 text-green-800': status === 'verified',
-    'bg-yellow-100 text-yellow-800': status === 'pending',
-    'bg-red-100 text-red-800': status === 'reject'
+    'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300': status === 'verified',
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300': status === 'pending',
+    'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300': status === 'reject'
   };
 };
 
@@ -63,34 +63,34 @@ const getStatusLabel = (status: 'verified' | 'pending' | 'reject'): string => {
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="px-4 py-6 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
-        <div class="bg-white shadow-sm sm:rounded-lg">
-          <div class="p-6 bg-white border-b border-gray-200">
+        <div class="bg-card shadow-sm sm:rounded-lg">
+          <div class="p-6 bg-card border-b border-border">
             <div class="flex justify-between items-center mb-6">
-              <h1 class="text-2xl font-bold">Data Pembayaran IPL</h1>
+              <h1 class="text-2xl font-bold text-foreground">Data Pembayaran IPL</h1>
               <Link :href="route('dataipl.create')"
-                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
               Tambah Pembayaran
               </Link>
             </div>
 
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+              <table class="min-w-full divide-y divide-border">
+                <thead class="bg-muted">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No Rumah
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">No Rumah
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Jumlah
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Tanggal
                       Bayar</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Metode
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Aksi</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-card divide-y divide-border">
                   <tr v-for="payment in iplPayments" :key="payment.id">
                     <td class="px-6 py-4 whitespace-nowrap">
                       {{ payment.no_rumah.name }}
@@ -112,7 +112,7 @@ const getStatusLabel = (status: 'verified' | 'pending' | 'reject'): string => {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link :href="route('dataipl.show', payment.id)"
-                        class="text-indigo-600 hover:text-indigo-900 mr-3">
+                        class="text-primary hover:text-primary/80 mr-3">
                       Detail
                       </Link>
                       <Link :href="route('dataipl.edit', payment.id)">

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 interface KartuKeluarga {
     no_kk: string;
@@ -31,8 +31,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const { kartukeluarga } = defineProps<Props>();
-
-console.log(kartukeluarga);
 
 const confirmDelete = (no_kk: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data kartu keluarga ini?')) {
@@ -62,6 +60,7 @@ const confirmDelete = (no_kk: string) => {
                     <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">No KK</th>
+                            <th scope="col" class="px-6 py-3">Foto KTP</th>
                             <th scope="col" class="px-6 py-3">NIK Kepala Keluarga</th>
                             <th scope="col" class="px-6 py-3">Nama Kepala Keluarga</th>
                             <th scope="col" class="px-6 py-3">Jumlah Anggota</th>
@@ -80,6 +79,12 @@ const confirmDelete = (no_kk: string) => {
                                 </Badge>
                             </td>
                             <td class="px-6 py-4">
+                                <img v-if="kartuKeluarga.foto_ktp_kepala_keluarga" :src="kartuKeluarga.foto_ktp_kepala_keluarga" alt="Foto KTP" class="h-auto w-16 rounded object-cover" />
+                                <div v-else class="flex h-12 w-16 items-center justify-center rounded bg-gray-200 text-gray-500">
+                                    <span class="text-xs">No Image</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
                                 <Badge>
                                     {{ kartuKeluarga.data_warga?.nik }}
                                 </Badge>
@@ -87,11 +92,6 @@ const confirmDelete = (no_kk: string) => {
                             <td class="px-6 py-4">{{ kartuKeluarga.data_warga?.full_name || 'Tidak ada data' }}</td>
                             <td class="px-6 py-4">{{ kartuKeluarga.jumlah_anggota }}</td>
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="route('kartukeluarga.show', kartuKeluarga.no_kk)">
-                                    <Button variant="outline" size="sm">
-                                        <Eye class="h-4 w-4" />
-                                    </Button>
-                                </Link>
                                 <Link :href="route('kartukeluarga.edit', kartuKeluarga.no_kk)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />

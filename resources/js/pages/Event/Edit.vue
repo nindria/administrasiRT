@@ -9,18 +9,28 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ChevronLeft } from 'lucide-vue-next';
 import { ref } from 'vue';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Create',
-        href: '/banners/create',
+        title: 'Edit',
+        href: '/events/edit',
     },
 ];
 
+const props = defineProps<{
+    event: {
+        id: number;
+        title: string;
+        description: string;
+        image: string;
+    };
+}>();
+
 const form = useForm({
-    title: '',
-    description: '',
+    title: props.event.title,
+    description: props.event.description,
     image: null as File | null,
-    is_active: false,
+    _method: 'put',
 });
 
 const imagePreview = ref<string | null>(null);
@@ -35,7 +45,7 @@ function handleImageChange(event: Event) {
 }
 
 function submit() {
-    form.post(route('banners.store'), {
+    form.post(route('events.update', props.event.id), {
         onSuccess: () => {
             form.reset();
             imagePreview.value = null;
@@ -45,29 +55,29 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Create Banner" />
+    <Head title="Edit Event" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Tambah Banner</h1>
+            <h1 class="text-2xl font-bold">Edit Event</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput
                         label="Title"
                         name="title"
                         v-model:value="form.title"
-                        placeholder="Masukkan judul banner"
+                        placeholder="Masukkan judul event"
                         :message="form.errors.title"
                     />
                     <BaseInput
                         label="Description"
                         name="description"
                         v-model:value="form.description"
-                        placeholder="Masukkan deskripsi banner"
+                        placeholder="Masukkan deskripsi event"
                         :message="form.errors.description"
                     />
                     <div class="grid">
-                        <Label class="mb-2" for="image">Banner Image</Label>
+                        <Label class="mb-2" for="image">Event Image</Label>
                         <Input
                             id="image"
                             name="image"
@@ -81,30 +91,24 @@ function submit() {
                         <div v-if="imagePreview" class="mt-2">
                             <img :src="imagePreview" alt="Preview" class="h-auto w-32 rounded border" />
                         </div>
-                        <InputError :message="form.errors.image" />
+                        <div v-if="!imagePreview && event.image" class="mt-2">
+                            <p class="text-sm text-gray-500">Current image:</p>
+                            <img :src="event.image" alt="Current image" class="h-auto w-32 rounded border" />
+                        </div>
+                        <InputError :message="form.errors.image" class="mt-2" />
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <input
-                            id="is_active"
-                            type="checkbox"
-                            v-model="form.is_active"
-                            class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
-                        />
-                        <label for="is_active" class="cursor-pointer text-sm font-medium text-gray-700">Set as active banner</label>
-                    </div>
-                    <div v-if="form.errors.is_active" class="text-sm text-red-500">{{ form.errors.is_active }}</div>
 
                     <div class="flex justify-end gap-2">
-                        <Link :href="route('banners.index')">
-                            <Button
+                        <Link href="/events"
+                            ><Button
                                 class="inline-flex w-24 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800"
                                 type="button"
                             >
                                 <ChevronLeft class="h-4 w-4" />
                                 Back
-                            </Button>
-                        </Link>
-                        <Button class="w-24" type="submit" :disabled="form.processing">Submit</Button>
+                            </Button></Link
+                        >
+                        <Button class="w-24" type="submit" :disabled="form.processing">Update</Button>
                     </div>
                 </div>
             </form>

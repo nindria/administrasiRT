@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, NotebookTabs, House, BadgeCheck, CalendarClock, Users, Notebook } from 'lucide-vue-next';
+import { BadgeCheck, CalendarClock, House, LayoutGrid, Notebook, NotebookTabs, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -44,11 +44,11 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Verifikasi Warga',
         href: '/verifikasiwarga',
-        icon: BadgeCheck ,
+        icon: BadgeCheck,
     },
     {
         title: 'Event',
-        href: '/event',
+        href: '/events',
         icon: CalendarClock,
     },
     {
@@ -58,22 +58,11 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
-];
+const footerNavItems: NavItem[] = [];
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset" >
+    <Sidebar collapsible="icon" variant="inset">
         <SidebarHeader class="rounded-t-xl">
             <SidebarMenu>
                 <SidebarMenuItem>

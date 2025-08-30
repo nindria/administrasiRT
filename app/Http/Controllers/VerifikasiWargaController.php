@@ -92,11 +92,34 @@ class VerifikasiWargaController extends Controller
      */
     public function update(Request $request, $nik)
     {
-        $warga = DataWarga::findOrFail($nik);
-        $warga->verification_status = 'verified';
-        $warga->save();
+        $validated = $request->validate([
+            'verification_status' => 'required|in:pending,verified,rejected',
+            'rejection_reason' => 'nullable|string|max:255'
+        ]);
 
-        return redirect()->route('verifikasiwarga.index')->with('success', 'Warga berhasil diverifikasi!');
+        $warga = DataWarga::findOrFail($nik);
+        
+        if ($validated['verification_status'] === 'verified') {
+            $warga->verification_status = 'verified';
+            $warga->verified_by = Auth::id();
+            $warga->verified_at = now();
+            $warga->rejection_reason = null;
+            $warga->save();
+            $message = 'Warga berhasil diverifikasi!';
+        } elseif ($validated['verification_status'] === 'rejected') {
+            // Langsung hapus data warga jika ditolak
+            $warga->delete();
+            $message = 'Data warga berhasil ditolak dan dihapus!';
+        } else {
+            $warga->verification_status = 'pending';
+            $warga->verified_by = null;
+            $warga->verified_at = null;
+            $warga->rejection_reason = null;
+            $warga->save();
+            $message = 'Status warga berhasil diubah ke pending!';
+        }
+
+        return redirect()->route('verifikasiwarga.index')->with('success', $message);
     }
 
     /**

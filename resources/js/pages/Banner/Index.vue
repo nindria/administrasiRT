@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import AppLayout from '@/layouts/AppLayout.vue';
+import Badge from '@/components/ui/badge/Badge.vue';
 import { Button } from '@/components/ui/button';
-import { BreadcrumbItem } from '@/types';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,69 +13,82 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-defineProps<{
-    banners: Array<{
-        id: number;
-        title: string;
-        description: string;
-        image: string;
-        is_active: boolean;
-        created_at: string;
-    }>;
-}>();
+defineProps({
+    banners: Object,
+});
+
+const confirmDelete = (id: number) => {
+    if (confirm('Apakah Anda yakin ingin menghapus banner ini?')) {
+        router.delete(route('banners.destroy', id));
+    }
+};
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Banner Management" />
+    <Head title="Banner Management" />
 
-        <div class="container mx-auto py-6">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-bold">Banner Management</h1>
-                <Link :href="route('banners.create')">
-                    <Button>Add New Banner</Button>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <h1 class="text-2xl font-bold">Daftar Banner</h1>
+            <div class="">
+                <Link
+                    :href="route('banners.create')"
+                    type="button"
+                    class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
+                >
+                    <Plus :size="18" :stroke-width="2.5" class="mr-2" />
+                    Tambah Banner
                 </Link>
             </div>
-
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="grid grid-cols-1 gap-4 p-6">
-                    <div v-for="banner in banners" :key="banner.id" class="border rounded-lg p-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-20 h-12">
-                                    <img 
-                                        v-if="banner.image" 
-                                        :src="`/storage/${banner.image}`" 
-                                        :alt="banner.title"
-                                        class="w-full h-full object-cover rounded"
-                                    />
-                                    <div v-else class="w-full h-full bg-gray-200 rounded flex items-center justify-center">
-                                        <span class="text-gray-500 text-sm">No image</span>
-                                    </div>
+            <div class="relative flex overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">ID</th>
+                            <th scope="col" class="px-6 py-3">Gambar</th>
+                            <th scope="col" class="px-6 py-3">Title</th>
+                            <th scope="col" class="px-6 py-3">Description</th>
+                            <th scope="col" class="px-6 py-3">Status</th>
+                            <th scope="col" class="px-6 py-3">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="banner in banners" :key="banner.id" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                            <td class="px-6 py-4">
+                                <Badge variant="outline">
+                                    {{ banner.id }}
+                                </Badge>
+                            </td>
+                            <td class="px-6 py-4">
+                                <img v-if="banner.image" :src="banner.image" :alt="banner.title" class="h-auto w-16 rounded object-cover" />
+                                <div v-else class="flex h-12 w-16 items-center justify-center rounded bg-gray-200 text-gray-500">
+                                    <span class="text-xs">No Image</span>
                                 </div>
-                                <div>
-                                    <h3 class="font-semibold">{{ banner.title }}</h3>
-                                    <p class="text-sm text-gray-600">{{ banner.description }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span 
-                                    class="px-2 py-1 text-xs rounded-full"
-                                    :class="banner.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'"
-                                >
+                            </td>
+                            <td class="px-6 py-4">{{ banner.title }}</td>
+                            <td class="px-6 py-4">
+                                <Badge>
+                                    {{ banner.description }}
+                                </Badge>
+                            </td>
+                            <td class="px-6 py-4">
+                                <Badge :variant="banner.is_active ? 'default' : 'outline'">
                                     {{ banner.is_active ? 'Active' : 'Inactive' }}
-                                </span>
-                                <span class="text-sm text-gray-500">{{ new Date(banner.created_at).toLocaleDateString() }}</span>
+                                </Badge>
+                            </td>
+                            <td class="flex space-x-2 px-6 py-4">
                                 <Link :href="route('banners.edit', banner.id)">
-                                    <Button variant="outline" size="sm">Edit</Button>
+                                    <Button variant="outline" size="sm">
+                                        <Pencil class="h-4 w-4" />
+                                    </Button>
                                 </Link>
-                                <Link :href="route('banners.destroy', banner.id)" method="delete" as="button">
-                                    <Button variant="destructive" size="sm">Delete</Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <Button variant="destructive" size="sm" @click="confirmDelete(banner.id)">
+                                    <Trash2 class="h-4 w-4" />
+                                </Button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </AppLayout>

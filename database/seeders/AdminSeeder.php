@@ -7,6 +7,7 @@ use App\UserRole;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AdminSeeder extends Seeder
 {
@@ -15,13 +16,18 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
-            'name' => 'Super Admin',
-            'email' => 'admin@gmail.com',
-            'role' => UserRole::SuperAdmin,
-            'password' => Hash::make('password')  
-        ];
+        $user = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password')
+            ]
+        );
 
-        User::create($data);
+        // Assign superadmin role using Spatie Permission
+        $superadminRole = Role::where('name', 'superadmin')->first();
+        if ($superadminRole) {
+            $user->assignRole($superadminRole);
+        }
     }
 }

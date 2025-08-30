@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\DataWarga;
 use App\Models\KartuKeluarga;
 use App\Models\Rumah;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -36,18 +37,36 @@ class KartuKeluargaController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-
     {
-
         $validated = $request->validate([
             'no_kk' => 'required|string|unique:kartu_keluargas',
             'nik' => 'required|exists:data_wargas,nik',
             'jumlah_anggota' => 'required|integer|min:1',
-            'foto_ktp_kepala_keluarga' => 'nullable|string',
+            'foto_ktp_kepala_keluarga' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        $data = [
+            'no_kk' => $validated['no_kk'],
+            'nik' => $validated['nik'],
+            'jumlah_anggota' => $validated['jumlah_anggota'],
+            'foto_ktp_kepala_keluarga' => null,
+            'public_id' => null
+        ];
 
-        KartuKeluarga::create($validated);
+        if ($request->hasFile('foto_ktp_kepala_keluarga')) {
+            $cloudinaryService = new CloudinaryService();
+            $uploadResult = $cloudinaryService->uploadImage($request->file('foto_ktp_kepala_keluarga'), 'kartu-keluarga-images');
+            
+            // Check if upload was successful
+            if (!$uploadResult['url']) {
+                return redirect()->back()->with('error', 'Gagal mengunggah foto KTP ke Cloudinary. Silakan coba lagi.');
+            }
+            
+            $data['foto_ktp_kepala_keluarga'] = $uploadResult['url'];
+            $data['public_id'] = $uploadResult['public_id'];
+        }
+
+        KartuKeluarga::create($data);
 
         return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil ditambahkan');
     }
@@ -82,10 +101,35 @@ class KartuKeluargaController extends Controller
         $validated = $request->validate([
             'nik' => 'required|exists:data_wargas,nik',
             'jumlah_anggota' => 'required|integer|min:1',
-            'foto_ktp_kepala_keluarga' => 'nullable|string',
+            'foto_ktp_kepala_keluarga' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $kartukeluarga->update($validated);
+        $data = [
+            'nik' => $validated['nik'],
+            'jumlah_anggota' => $validated['jumlah_anggota'],
+        ];
+
+        if ($request->hasFile('foto_ktp_kepala_keluarga')) {
+            // Delete old image from Cloudinary if exists
+            if ($kartukeluarga->public_id) {
+                $cloudinaryService = new CloudinaryService();
+                $cloudinaryService->deleteImage($kartukeluarga->public_id);
+            }
+            
+            // Upload new image to Cloudinary
+            $cloudinaryService = new CloudinaryService();
+            $uploadResult = $cloudinaryService->uploadImage($request->file('foto_ktp_kepala_keluarga'), 'kartu-keluarga-images');
+            
+            // Check if upload was successful
+            if (!$uploadResult['url']) {
+                return redirect()->back()->with('error', 'Gagal mengunggah foto KTP ke Cloudinary. Silakan coba lagi.');
+            }
+            
+            $data['foto_ktp_kepala_keluarga'] = $uploadResult['url'];
+            $data['public_id'] = $uploadResult['public_id'];
+        }
+
+        $kartukeluarga->update($data);
 
         return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil diperbarui');
     }
@@ -95,7 +139,15 @@ class KartuKeluargaController extends Controller
      */
     public function destroy(string $id)
     {
-        KartuKeluarga::destroy($id);
+        $kartukeluarga = KartuKeluarga::findOrFail($id);
+        
+        // Delete image from Cloudinary if exists
+        if ($kartukeluarga->public_id) {
+            $cloudinaryService = new CloudinaryService();
+            $cloudinaryService->deleteImage($kartukeluarga->public_id);
+        }
+        
+        $kartukeluarga->delete();
         return redirect()->route('kartukeluarga.index')->with('success', 'Kartu Keluarga berhasil dihapus');
     }
 }

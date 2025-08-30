@@ -10,5 +10,6 @@ class Event extends Model
         'image',
         'title',
         'description',
+        'public_id',
     ];
 }

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import BaseInput from '@/components/form/BaseInput.vue';
 import BaseSelect from '@/components/form/BaseSelect.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/vue3';
@@ -59,8 +62,19 @@ const kkForm = useForm({
     no_kk: '',
     nik: '',
     jumlah_anggota: '1',
-    foto_ktp_kepala_keluarga: '',
+    foto_ktp_kepala_keluarga: null as File | null,
 });
+
+const kkImagePreview = ref<string | null>(null);
+
+function handleKKImageChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+        kkForm.foto_ktp_kepala_keluarga = file;
+        kkImagePreview.value = URL.createObjectURL(file);
+    }
+}
 
 const rumahForm = useForm({
     nik: '',
@@ -96,14 +110,14 @@ async function submit() {
                                 preserveScroll: true,
                                 onSuccess: () => {
                                     rumahForm.reset();
+                                    kkForm.reset();
+                                    kkImagePreview.value = null;
                                 },
                                 onError: (errors) => {
                                     console.error('Error menyimpan data Rumah:', errors);
                                     alert('Error menyimpan data Rumah: ' + JSON.stringify(errors));
                                 },
                             });
-
-                            kkForm.reset();
                         },
                         onError: (errors) => {
                             console.error('Error menyimpan data KK:', errors);
@@ -234,14 +248,23 @@ async function submit() {
                                         placeholder="Masukkan Jumlah Anggota"
                                     />
 
-                                    <BaseInput
-                                        label="Foto KTP Kepala Keluarga"
-                                        :name="`foto_ktp_kepala_keluarga_${index}`"
-                                        v-model:value="kkForm.foto_ktp_kepala_keluarga"
-                                        :message="kkForm.errors.foto_ktp_kepala_keluarga"
-                                        type="text"
-                                        placeholder="Masukkan URL Foto KTP"
-                                    />
+                                    <div class="grid">
+                                        <Label class="mb-2" :for="`foto_ktp_kepala_keluarga_${index}`">Foto KTP Kepala Keluarga</Label>
+                                        <Input
+                                            :id="`foto_ktp_kepala_keluarga_${index}`"
+                                            :name="`foto_ktp_kepala_keluarga_${index}`"
+                                            type="file"
+                                            accept="image/*"
+                                            @input="kkForm.foto_ktp_kepala_keluarga = ($event.target as HTMLInputElement)?.files?.[0] || null"
+                                            @change="handleKKImageChange"
+                                            class="mt-1 block w-full"
+                                        />
+                                        <p class="mt-1 text-sm text-gray-500">Format yang didukung: JPG, JPEG, PNG. Ukuran maksimal: 2MB</p>
+                                        <div v-if="kkImagePreview" class="mt-2">
+                                            <img :src="kkImagePreview" alt="Preview" class="h-32 w-32 rounded border object-cover" />
+                                        </div>
+                                        <InputError :message="kkForm.errors.foto_ktp_kepala_keluarga" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-4" v-if="isKepalaKeluarga">
