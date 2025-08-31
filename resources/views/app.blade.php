@@ -31,7 +31,7 @@
     }
   </style>
 
-  <title inertia>{{ config('app.name', 'Laravel') }}</title>
+  <title inertia>{{ config('app.name', 'Administrasi RT') }}</title>
 
   <link rel="icon" href="/avatar.png" sizes="any">
   <link rel="icon" href="/avatar.png" type="image/svg+xml">

@@ -25,7 +25,7 @@ const confirmDelete = (id: number) => {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Rumah" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">

@@ -89,7 +89,7 @@ const formattedDate = computed(() => {
         <!-- Footer -->
         <footer class="mt-12 border-t border-border bg-card">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <p class="text-center text-sm text-muted-foreground">© 2025 Event Management System. All rights reserved.</p>
+                <p class="text-center text-sm text-muted-foreground">© 2025 Event Management System. Hak cipta dilindungi.</p>
             </div>
         </footer>
     </div>

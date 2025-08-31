@@ -43,7 +43,7 @@ defineProps<{
 
             <!-- Footer note -->
             <div class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-                © {{ new Date().getFullYear() }} SIRUWA 07. All rights reserved.
+                © {{ new Date().getFullYear() }} SIRUWA 07. Hak cipta dilindungi.
             </div>
         </div>
     </div>

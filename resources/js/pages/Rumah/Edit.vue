@@ -8,7 +8,7 @@ import { ChevronLeft } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Edit',
+        title: 'Edit Rumah',
         href: '/rumah/edit',
     },
 ];
@@ -40,7 +40,7 @@ function submit() {
 </script>
 
 <template>
-    <Head title="No Rumah" />
+    <Head title="Edit Rumah" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
@@ -80,10 +80,10 @@ function submit() {
                                 type="button"
                             >
                                 <ChevronLeft class="h-4 w-4" />
-                                Back
+Kembali
                             </Button></Link
                         >
-                        <Button class="w-24" type="submit" :disabled="form.processing">Update</Button>
+                        <Button class="w-24" type="submit" :disabled="form.processing">Perbarui</Button>
                     </div>
                 </div>
             </form>

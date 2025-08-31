@@ -9,7 +9,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'User',
+        title: 'Pengguna',
         href: '/users',
     },
 ];
@@ -26,7 +26,7 @@ const confirmDelete = (id: number) => {
 </script>
 
 <template>
-    <Head title="User" />
+    <Head title="Pengguna" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
@@ -49,7 +49,7 @@ const confirmDelete = (id: number) => {
                             <th scope="col" class="px-6 py-3">ID</th>
                             <th scope="col" class="px-6 py-3">Nama</th>
                             <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3">Roles</th>
+                            <th scope="col" class="px-6 py-3">Peran</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>

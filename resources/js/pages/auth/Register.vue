@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
+import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,13 +24,13 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Create an account" description="Enter your details below to create your account">
-        <Head title="Register" />
+    <AuthBase title="Buat akun" description="Masukkan detail Anda di bawah ini untuk membuat akun">
+        <Head title="Daftar" />
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-3">
-                    <Label for="name" class="text-slate-700 dark:text-slate-300">Full Name</Label>
+                    <Label for="name" class="text-slate-700 dark:text-slate-300">Nama Lengkap</Label>
                     <Input
                         id="name"
                         type="text"
@@ -38,14 +39,14 @@ const submit = () => {
                         :tabindex="1"
                         autocomplete="name"
                         v-model="form.name"
-                        placeholder="John Doe"
+                        placeholder="Nama Lengkap Anda"
                         class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
                     />
                     <InputError :message="form.errors.name" />
                 </div>
 
                 <div class="grid gap-3">
-                    <Label for="email" class="text-slate-700 dark:text-slate-300">Email address</Label>
+                    <Label for="email" class="text-slate-700 dark:text-slate-300">Alamat Email</Label>
                     <Input
                         id="email"
                         type="email"
@@ -53,37 +54,35 @@ const submit = () => {
                         :tabindex="2"
                         autocomplete="email"
                         v-model="form.email"
-                        placeholder="email@example.com"
+                        placeholder="email@contoh.com"
                         class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
                     />
                     <InputError :message="form.errors.email" />
                 </div>
 
                 <div class="grid gap-3">
-                    <Label for="password" class="text-slate-700 dark:text-slate-300">Password</Label>
-                    <Input
+                    <Label for="password" class="text-slate-700 dark:text-slate-300">Kata Sandi</Label>
+                    <PasswordInput
                         id="password"
-                        type="password"
                         required
                         :tabindex="3"
                         autocomplete="new-password"
                         v-model="form.password"
-                        placeholder="Create a secure password"
+                        placeholder="Buat kata sandi yang aman"
                         class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
                     />
                     <InputError :message="form.errors.password" />
                 </div>
 
                 <div class="grid gap-3">
-                    <Label for="password_confirmation" class="text-slate-700 dark:text-slate-300">Confirm password</Label>
-                    <Input
+                    <Label for="password_confirmation" class="text-slate-700 dark:text-slate-300">Konfirmasi Kata Sandi</Label>
+                    <PasswordInput
                         id="password_confirmation"
-                        type="password"
                         required
                         :tabindex="4"
                         autocomplete="new-password"
                         v-model="form.password_confirmation"
-                        placeholder="Confirm your password"
+                        placeholder="Konfirmasi kata sandi Anda"
                         class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
                     />
                     <InputError :message="form.errors.password_confirmation" />
@@ -96,7 +95,7 @@ const submit = () => {
                     :disabled="form.processing"
                 >
                     <LoaderCircle v-if="form.processing" class="mr-2 h-5 w-5 animate-spin" />
-                    <span>Create Account</span>
+                    <span>Buat Akun</span>
                 </Button>
             </div>
 

@@ -113,7 +113,7 @@ function submit() {
                 </div>
 
                 <div class="flex items-center gap-4 py-6">
-                    <Button :disabled="form.processing">Update</Button>
+                    <Button :disabled="form.processing">Perbarui</Button>
                 </div>
             </form>
         </div>

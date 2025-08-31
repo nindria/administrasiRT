@@ -314,10 +314,10 @@ async function submit() {
                                 type="button"
                             >
                                 <ChevronLeft class="h-4 w-4" />
-                                Back
+Kembali
                             </Button>
                         </Link>
-                        <Button class="w-24" type="submit"> Submit </Button>
+                        <Button class="w-24" type="submit"> Simpan </Button>
                     </div>
                 </div>
             </form>

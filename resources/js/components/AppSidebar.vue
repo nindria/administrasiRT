@@ -10,17 +10,17 @@ import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Dasbor',
         href: '/dashboard',
         icon: LayoutGrid,
     },
     {
-        title: 'Users',
+        title: 'Pengguna',
         href: '/users',
         icon: Users,
     },
     {
-        title: 'Role',
+        title: 'Peran',
         href: '/roles',
         icon: Notebook,
     },
@@ -47,12 +47,12 @@ const mainNavItems: NavItem[] = [
         icon: BadgeCheck,
     },
     {
-        title: 'Event',
+        title: 'Acara',
         href: '/events',
         icon: CalendarClock,
     },
     {
-        title: 'Banner',
+        title: 'Spanduk',
         href: '/banners',
         icon: CalendarClock,
     },

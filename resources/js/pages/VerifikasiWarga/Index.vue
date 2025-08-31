@@ -71,16 +71,16 @@ function updateStatus(nik: string, newStatus: 'pending' | 'verified' | 'rejected
                             </td>
                             <td class="flex space-x-2 px-6 py-4">
                                 <Button variant="default" size="sm" class="bg-green-600 hover:bg-green-700" @click="updateStatus(w.nik, 'verified')">
-                                    Verify
+                                    Verifikasi
                                 </Button>
-                                <Button variant="destructive" size="sm" @click="updateStatus(w.nik, 'rejected')"> Reject </Button>
+                                <Button variant="destructive" size="sm" @click="updateStatus(w.nik, 'rejected')"> Tolak </Button>
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     class="bg-yellow-500 text-white hover:bg-yellow-600 hover:text-white"
                                     @click="updateStatus(w.nik, 'pending')"
                                 >
-                                    Pending
+                                    Tertunda
                                 </Button>
                             </td>
                         </tr>

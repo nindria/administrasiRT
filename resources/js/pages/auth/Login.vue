@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
+import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -28,8 +29,8 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Log in to your account" description="Enter your email and password below to log in">
-        <Head title="Log in" />
+    <AuthBase title="Masuk ke akun Anda" description="Masukkan email dan kata sandi Anda di bawah ini untuk masuk">
+        <Head title="Masuk" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}
@@ -38,7 +39,7 @@ const submit = () => {
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-3">
-                    <Label for="email" class="text-slate-700 dark:text-slate-300">Email address</Label>
+                    <Label for="email" class="text-slate-700 dark:text-slate-300">Alamat Email</Label>
                     <Input
                         id="email"
                         type="email"
@@ -47,7 +48,7 @@ const submit = () => {
                         :tabindex="1"
                         autocomplete="email"
                         v-model="form.email"
-                        placeholder="email@example.com"
+                        placeholder="email@contoh.com"
                         class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
                     />
                     <InputError :message="form.errors.email" />
@@ -55,24 +56,23 @@ const submit = () => {
 
                 <div class="grid gap-3">
                     <div class="flex items-center justify-between">
-                        <Label for="password" class="text-slate-700 dark:text-slate-300">Password</Label>
+                        <Label for="password" class="text-slate-700 dark:text-slate-300">Kata Sandi</Label>
                         <TextLink
                             v-if="canResetPassword"
                             :href="route('password.request')"
                             class="text-sm font-medium text-primary hover:text-primary/80"
                             :tabindex="3"
                         >
-                            Forgot password?
+                            Lupa kata sandi?
                         </TextLink>
                     </div>
-                    <Input
+                    <PasswordInput
                         id="password"
-                        type="password"
                         required
                         :tabindex="2"
                         autocomplete="current-password"
                         v-model="form.password"
-                        placeholder="Password"
+                        placeholder="Kata Sandi"
                         class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
                     />
                     <InputError :message="form.errors.password" />
@@ -84,7 +84,7 @@ const submit = () => {
                         for="remember"
                         class="text-sm leading-none font-medium text-slate-600 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-slate-400"
                     >
-                        Remember me
+                        Ingat saya
                     </Label>
                 </div>
 
@@ -95,14 +95,14 @@ const submit = () => {
                     :disabled="form.processing"
                 >
                     <LoaderCircle v-if="form.processing" class="mr-2 h-5 w-5 animate-spin" />
-                    <span>Sign In</span>
+                    <span>Masuk</span>
                 </Button>
             </div>
 
             <div class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
-                Don't have an account?
+                Belum punya akun?
                 <TextLink :href="route('register')" :tabindex="6" class="ml-1 font-medium text-primary hover:text-primary/80"
-                    >Create an account</TextLink
+                    >Buat akun</TextLink
                 >
             </div>
         </form>

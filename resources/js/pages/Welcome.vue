@@ -36,7 +36,7 @@ const props = defineProps<{
 
                 <div class="flex items-center gap-4">
                     <Link :href="route('login')" class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700"
-                        >Login</Link
+                        >Masuk</Link
                     >
                 </div>
             </div>
@@ -107,7 +107,7 @@ const props = defineProps<{
         <footer
             class="border-t border-gray-200 bg-gray-100 py-6 text-center text-sm text-gray-600 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-400"
         >
-            © {{ new Date().getFullYear() }} SIRUWA 07. All rights reserved.
+            © {{ new Date().getFullYear() }} SIRUWA 07. Hak cipta dilindungi.
         </footer>
     </div>
 </template>
