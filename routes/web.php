@@ -191,5 +191,5 @@ Route::put('/verifikasiipl/{ipl}/verify', [VerifikasiIplController::class, 'veri
     ->name('verifikasiipl.verify')
     ->middleware('permission:verifikasiipl.edit');
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

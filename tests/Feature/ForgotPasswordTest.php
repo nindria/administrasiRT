@@ -44,7 +44,7 @@ class ForgotPasswordTest extends TestCase
         $user = User::factory()->create();
         $token = Password::createToken($user);
 
-        $response = $this->get('/reset-password/' . $token . '?email=' . $user->email);
+        $response = $this->get('/reset-password/'.$token.'?email='.$user->email);
 
         $response->assertStatus(200);
     }
