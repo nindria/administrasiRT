@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 interface KartuKeluarga {
     no_kk: string;
@@ -97,6 +97,11 @@ const confirmDelete = (no_kk: string) => {
                             <td class="px-6 py-4">{{ kartuKeluarga.data_warga?.full_name || 'Tidak ada data' }}</td>
                             <td class="px-6 py-4">{{ kartuKeluarga.jumlah_anggota }}</td>
                             <td class="flex space-x-2 px-6 py-4">
+                                <Link :href="route('kartukeluarga.show', kartuKeluarga.no_kk)">
+                                    <Button variant="outline" size="sm">
+                                        <Eye class="h-4 w-4" />
+                                    </Button>
+                                </Link>
                                 <Link :href="route('kartukeluarga.edit', kartuKeluarga.no_kk)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />

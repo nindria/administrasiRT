@@ -24,6 +24,7 @@ class DataWarga extends Model
         'verified_by',
         'verified_at',
         'rejection_reason',
+        'user_id',
     ];
 
     public function getRouteKeyName()
@@ -34,6 +35,11 @@ class DataWarga extends Model
     public function rumah()
     {
         return $this->hasMany(Rumah::class, 'nik', 'nik');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // public function kartuKeluarga()

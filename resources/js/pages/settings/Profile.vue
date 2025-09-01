@@ -14,9 +14,16 @@ import { type BreadcrumbItem, type User } from '@/types';
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
+    wargaData?: {
+        nik: string;
+        full_name: string;
+        tempat_lahir?: string;
+        tanggal_lahir?: string;
+        status?: string;
+    };
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -31,6 +38,13 @@ const user = page.props.auth.user as User;
 const form = useForm({
     name: user.name,
     email: user.email,
+    wargaData: {
+        nik: props.wargaData?.nik || '',
+        full_name: props.wargaData?.full_name || '',
+        tempat_lahir: props.wargaData?.tempat_lahir || '',
+        tanggal_lahir: props.wargaData?.tanggal_lahir || '',
+        status: props.wargaData?.status || '',
+    },
 });
 
 const submit = () => {
@@ -67,6 +81,46 @@ const submit = () => {
                             placeholder="Alamat email"
                         />
                         <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
+
+                    <!-- Warga Data Section -->
+                    <div v-if="user.roles?.some(role => role.name.toLowerCase() === 'warga')" class="space-y-6">
+                        <HeadingSmall title="Data Warga" description="Perbarui informasi data warga Anda" />
+
+                        <div class="grid gap-2">
+                            <Label for="nik">NIK</Label>
+                            <Input id="nik" class="mt-1 block w-full" v-model="form.wargaData.nik" required placeholder="Nomor Induk Kependudukan" />
+                            <InputError class="mt-2" :message="form.errors['wargaData.nik']" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="full_name">Nama Lengkap</Label>
+                            <Input id="full_name" class="mt-1 block w-full" v-model="form.wargaData.full_name" required placeholder="Nama lengkap sesuai KTP" />
+                            <InputError class="mt-2" :message="form.errors['wargaData.full_name']" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="tempat_lahir">Tempat Lahir</Label>
+                            <Input id="tempat_lahir" class="mt-1 block w-full" v-model="form.wargaData.tempat_lahir" placeholder="Tempat lahir" />
+                            <InputError class="mt-2" :message="form.errors['wargaData.tempat_lahir']" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="tanggal_lahir">Tanggal Lahir</Label>
+                            <Input id="tanggal_lahir" type="date" class="mt-1 block w-full" v-model="form.wargaData.tanggal_lahir" />
+                            <InputError class="mt-2" :message="form.errors['wargaData.tanggal_lahir']" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="status">Status</Label>
+                            <select id="status" class="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background" v-model="form.wargaData.status">
+                                <option value="">Pilih Status</option>
+                                <option value="Kepala Keluarga">Kepala Keluarga</option>
+                                <option value="Istri">Istri</option>
+                                <option value="Anak">Anak</option>
+                            </select>
+                            <InputError class="mt-2" :message="form.errors['wargaData.status']" />
+                        </div>
                     </div>
 
                     <div v-if="mustVerifyEmail && !user.email_verified_at">

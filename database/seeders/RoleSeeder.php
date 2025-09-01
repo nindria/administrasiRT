@@ -23,12 +23,13 @@ class RoleSeeder extends Seeder
         // Assign all permissions to superadmin
         $superadminRole->syncPermissions($allPermissions);
 
-        // Assign limited permissions to warga (only view permissions)
+        // Assign limited permissions to warga (view + own data management)
         $wargaPermissions = [
-            'users.view',
             'kartukeluarga.view',
             'rumah.view',
             'datawarga.view',
+            'datawarga.create',
+            'datawarga.edit',
             'events.view',
             'banners.view',
             'verifikasiwarga.view',

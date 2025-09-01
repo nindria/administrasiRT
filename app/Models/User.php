@@ -59,4 +59,12 @@ class User extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    /**
+     * Get the warga data associated with the user.
+     */
+    public function wargaData()
+    {
+        return $this->hasOne(DataWarga::class, 'user_id');
+    }
 }
