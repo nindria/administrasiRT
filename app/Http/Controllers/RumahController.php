@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataWarga;
 use App\Models\Rumah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class RumahController extends Controller
@@ -14,8 +15,17 @@ class RumahController extends Controller
      */
     public function index()
     {
+        $query = Rumah::query();
 
-        $rumahs = Rumah::latest()->paginate(10);
+        // Filter berdasarkan NIK user jika role warga
+        $user = Auth::user();
+        if ($user && $user->role === \App\UserRole::Warga && $user->nik) {
+            $query->whereHas('dataWarga', function ($q) use ($user) {
+                $q->where('nik', $user->nik);
+            });
+        }
+
+        $rumahs = $query->latest()->paginate(10);
 
         return Inertia::render('Rumah/Index', [
             'rumahs' => $rumahs,

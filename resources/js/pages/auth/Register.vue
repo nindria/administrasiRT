@@ -12,6 +12,7 @@ import { LoaderCircle } from 'lucide-vue-next';
 const form = useForm({
     name: '',
     email: '',
+    nik: '',
     password: '',
     password_confirmation: '',
 });
@@ -61,11 +62,28 @@ const submit = () => {
                 </div>
 
                 <div class="grid gap-3">
+                    <Label for="nik" class="text-slate-700 dark:text-slate-300">NIK</Label>
+                    <Input
+                        id="nik"
+                        type="text"
+                        required
+                        :tabindex="3"
+                        autocomplete="off"
+                        v-model="form.nik"
+                        placeholder="Nomor Induk Kependudukan (16 digit)"
+                        maxlength="16"
+                        pattern="[0-9]{16}"
+                        class="h-11 rounded-lg border-slate-300 bg-white/50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800/50"
+                    />
+                    <InputError :message="form.errors.nik" />
+                </div>
+
+                <div class="grid gap-3">
                     <Label for="password" class="text-slate-700 dark:text-slate-300">Kata Sandi</Label>
                     <PasswordInput
                         id="password"
                         required
-                        :tabindex="3"
+                        :tabindex="4"
                         autocomplete="new-password"
                         v-model="form.password"
                         placeholder="Buat kata sandi yang aman"
@@ -91,7 +109,7 @@ const submit = () => {
                 <Button
                     type="submit"
                     class="mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-primary font-medium text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/90 hover:shadow-lg"
-                    tabindex="5"
+                    tabindex="6"
                     :disabled="form.processing"
                 >
                     <LoaderCircle v-if="form.processing" class="mr-2 h-5 w-5 animate-spin" />
@@ -101,7 +119,7 @@ const submit = () => {
 
             <div class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
                 Already have an account?
-                <TextLink :href="route('login')" class="ml-1 font-medium text-primary hover:text-primary/80" :tabindex="6">Sign in</TextLink>
+                <TextLink :href="route('login')" class="ml-1 font-medium text-primary hover:text-primary/80" :tabindex="7">Sign in</TextLink>
             </div>
         </form>
     </AuthBase>

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -33,14 +34,20 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'nik' => 'required|string|size:16|regex:/^[0-9]{16}$/|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'nik' => $request->nik,
             'password' => Hash::make($request->password),
         ]);
+
+        // Ensure 'warga' role exists and assign it to new user
+        $wargaRole = Role::firstOrCreate(['name' => 'warga', 'guard_name' => 'web']);
+        $user->assignRole($wargaRole);
 
         event(new Registered($user));
 

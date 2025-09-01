@@ -6,13 +6,22 @@ use App\Models\DataWarga;
 use App\Models\KartuKeluarga;
 use App\Models\Rumah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DataWargaController extends Controller
 {
     public function index()
     {
-        $wargas = DataWarga::with('rumah')->latest()->paginate(10);
+        $query = DataWarga::with('rumah');
+
+        // Filter berdasarkan NIK user jika role warga
+        $user = Auth::user();
+        if ($user && $user->role === \App\UserRole::Warga && $user->nik) {
+            $query->where('nik', $user->nik);
+        }
+
+        $wargas = $query->latest()->paginate(10);
 
         $wargas->through(function ($warga) {
             if ($warga->rumah && $warga->rumah->count() > 0) {

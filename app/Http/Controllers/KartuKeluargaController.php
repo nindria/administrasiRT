@@ -7,6 +7,7 @@ use App\Models\KartuKeluarga;
 use App\Models\Rumah;
 use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class KartuKeluargaController extends Controller
@@ -16,7 +17,17 @@ class KartuKeluargaController extends Controller
      */
     public function index()
     {
-        $kartukeluarga = KartuKeluarga::with('dataWarga')->latest()->paginate(10);
+        $query = KartuKeluarga::with('dataWarga');
+
+        // Filter berdasarkan NIK user jika role warga
+        $user = Auth::user();
+        if ($user && $user->role === \App\UserRole::Warga && $user->nik) {
+            $query->whereHas('dataWarga', function ($q) use ($user) {
+                $q->where('nik', $user->nik);
+            });
+        }
+
+        $kartukeluarga = $query->latest()->paginate(10);
 
         return Inertia::render('KartuKeluarga/Index', [
             'kartukeluarga' => $kartukeluarga,

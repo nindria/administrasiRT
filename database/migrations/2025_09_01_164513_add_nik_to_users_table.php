@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('kartu_keluargas', function (Blueprint $table) {
-            $table->string('public_id')->nullable()->after('foto_ktp_kepala_keluarga');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('nik', 16)->nullable()->unique()->after('email');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('kartu_keluargas', function (Blueprint $table) {
-            $table->dropColumn('public_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('nik');
         });
     }
 };

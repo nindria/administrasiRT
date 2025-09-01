@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasCloudinaryImage;
 use Illuminate\Database\Eloquent\Model;
 
 class KartuKeluarga extends Model
 {
+    use HasCloudinaryImage;
+
     protected $primaryKey = 'no_kk';
 
     public $incrementing = false;
