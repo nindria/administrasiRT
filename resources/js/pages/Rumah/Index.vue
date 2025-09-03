@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { can } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -32,6 +33,7 @@ const confirmDelete = (id: number) => {
             <h1 class="text-2xl font-bold">Daftar Rumah</h1>
             <div class="">
                 <Link
+                    v-if="can('rumah.create')"
                     href="/rumah/create"
                     type="button"
                     class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
@@ -69,12 +71,12 @@ const confirmDelete = (id: number) => {
                             <td class="px-6 py-4">{{ rumah.blok }}</td>
                             <td class="px-6 py-4">{{ rumah.nomor }}</td>
                             <td class="flex space-x-2 px-6 py-4">
-                                <Link :href="route('rumah.edit', rumah.id_rumah)">
+                                <Link v-if="can('rumah.edit')" :href="route('rumah.edit', rumah.id_rumah)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Button variant="destructive" size="sm" @click="confirmDelete(rumah.id_rumah)">
+                                <Button v-if="can('rumah.delete')" variant="destructive" size="sm" @click="confirmDelete(rumah.id_rumah)">
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
                             </td>

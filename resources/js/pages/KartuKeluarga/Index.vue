@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { can } from '@/lib/can';
 
 interface KartuKeluarga {
     no_kk: string;
@@ -47,6 +48,7 @@ const confirmDelete = (no_kk: string) => {
             <h1 class="text-2xl font-bold">Daftar Kartu Keluarga</h1>
             <div class="">
                 <Link
+                    v-if="can('kartukeluarga.create')"
                     href="/kartukeluarga/create"
                     type="button"
                     class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
@@ -102,12 +104,12 @@ const confirmDelete = (no_kk: string) => {
                                         <Eye class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Link :href="route('kartukeluarga.edit', kartuKeluarga.no_kk)">
+                                <Link v-if="can('kartukeluarga.edit')" :href="route('kartukeluarga.edit', kartuKeluarga.no_kk)">
                                     <Button variant="outline" size="sm">
                                         <Pencil class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Button variant="destructive" size="sm" @click="confirmDelete(kartuKeluarga.no_kk)">
+                                <Button v-if="can('kartukeluarga.delete')" variant="destructive" size="sm" @click="confirmDelete(kartuKeluarga.no_kk)">
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
                             </td>
