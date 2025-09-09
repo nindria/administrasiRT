@@ -29,6 +29,12 @@ class KartuKeluargaController extends Controller
 
         $kartukeluarga = $query->latest()->paginate(10);
 
+        // Append accessor for full image URL
+        $kartukeluarga->getCollection()->transform(function ($item) {
+            $item->append('foto_ktp_kepala_keluarga_url');
+            return $item;
+        });
+
         return Inertia::render('KartuKeluarga/Index', [
             'kartukeluarga' => $kartukeluarga,
         ]);

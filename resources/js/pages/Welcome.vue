@@ -30,7 +30,7 @@ const props = defineProps<{
         <header class="border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 lg:px-8">
                 <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-sm bg-blue-600"></div>
+                    <div class="h-10 w-10 rounded-sm bg-[url('avatar.png')]"></div>
                     <div class="text-lg font-bold text-gray-900 dark:text-white">SIRUWA 07</div>
                 </div>
 

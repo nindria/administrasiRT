@@ -59,6 +59,7 @@ export interface KartuKeluarga {
     nik: string;
     jumlah_anggota: number;
     foto_ktp_kepala_keluarga?: string;
+    foto_ktp_kepala_keluarga_url?: string;
     public_id?: string;
     dataWarga?: DataWarga;
     rumah?: Rumah;

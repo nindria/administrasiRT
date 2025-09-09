@@ -14,6 +14,7 @@ interface Props {
         tempat_lahir: string;
         tanggal_lahir: string;
         status: string;
+        status_kependukan?: string;
     };
     noRumahs: Array<{ id_rumah: string; perumahan: string; jalan: string; blok: string; nomor: string }>;
 }
@@ -33,6 +34,7 @@ const form = useForm({
     tempat_lahir: props.warga.tempat_lahir,
     tanggal_lahir: props.warga.tanggal_lahir,
     status: props.warga.status,
+    status_kependukan: props.warga.status_kependukan || '',
 });
 
 function submit() {
@@ -101,6 +103,18 @@ function submit() {
                             { value: 'Anak', label: 'Anak' },
                         ]"
                         placeholder="Pilih status"
+                    />
+
+                    <BaseSelect
+                        label="Status Kependukan"
+                        name="status_kependukan"
+                        v-model:value="form.status_kependukan"
+                        :message="form.errors.status_kependukan"
+                        :options="[
+                            { value: 'tetap', label: 'Tetap' },
+                            { value: 'tidak tetap', label: 'Tidak Tetap' },
+                        ]"
+                        placeholder="Pilih status kependukan"
                     />
 
                     <!-- <BaseInput

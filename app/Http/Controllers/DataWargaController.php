@@ -55,11 +55,22 @@ class DataWargaController extends Controller
                 'wargas.*.tempat_lahir' => 'nullable|string|max:255',
                 'wargas.*.tanggal_lahir' => 'nullable|date',
                 'wargas.*.status' => 'nullable|string|max:255',
+                'wargas.*.status_kependukan' => 'nullable|in:tetap,tidak tetap',
                 'wargas.*.verification_status' => 'in:pending,verified,rejected',
             ]);
 
             foreach ($validated['wargas'] as $wargaData) {
-                DataWarga::create($wargaData);
+                $warga = DataWarga::create($wargaData);
+                // Create rumah if provided
+                if (isset($wargaData['rumah']) && !empty($wargaData['rumah']['jalan'])) {
+                    Rumah::create([
+                        'nik' => $warga->nik,
+                        'perumahan' => $wargaData['rumah']['perumahan'] ?? 'GBJ2',
+                        'jalan' => $wargaData['rumah']['jalan'],
+                        'blok' => $wargaData['rumah']['blok'] ?? null,
+                        'nomor' => $wargaData['rumah']['nomor'] ?? null,
+                    ]);
+                }
             }
         }
         // Handle single warga
@@ -70,10 +81,27 @@ class DataWargaController extends Controller
                 'tempat_lahir' => 'nullable|string|max:255',
                 'tanggal_lahir' => 'nullable|date',
                 'status' => 'nullable|string|max:255',
+                'status_kependukan' => 'nullable|in:tetap,tidak tetap',
                 'verification_status' => 'in:pending,verified,rejected',
+                'rumah' => 'nullable|array',
+                'rumah.perumahan' => 'nullable|string',
+                'rumah.jalan' => 'nullable|string',
+                'rumah.blok' => 'nullable|string',
+                'rumah.nomor' => 'nullable|string',
             ]);
 
-            DataWarga::create($validated);
+            $warga = DataWarga::create($validated);
+
+            // Create rumah if provided
+            if (isset($validated['rumah']) && !empty($validated['rumah']['jalan'])) {
+                Rumah::create([
+                    'nik' => $warga->nik,
+                    'perumahan' => $validated['rumah']['perumahan'] ?? 'GBJ2',
+                    'jalan' => $validated['rumah']['jalan'],
+                    'blok' => $validated['rumah']['blok'] ?? null,
+                    'nomor' => $validated['rumah']['nomor'] ?? null,
+                ]);
+            }
         }
 
         return redirect()->route('datawarga.index')
@@ -83,16 +111,17 @@ class DataWargaController extends Controller
     public function storeMultiple(Request $request)
     {
         $validated = $request->validate([
-            'warga' => 'required|array',
-            'warga.*.nik' => 'required|string|unique:data_wargas,nik',
-            'warga.*.full_name' => 'required|string',
-            'warga.*.tanggal_lahir' => 'required|date',
-            'warga.*.tempat_lahir' => 'required|string',
-            'warga.*.status' => 'required|in:anak,istri,kepala keluarga',
+            'wargas' => 'required|array',
+            'wargas.*.nik' => 'required|string|unique:data_wargas,nik',
+            'wargas.*.full_name' => 'required|string',
+            'wargas.*.tanggal_lahir' => 'required|date',
+            'wargas.*.tempat_lahir' => 'required|string',
+            'wargas.*.status' => 'required|in:kepala keluarga,istri,anak',
+            'wargas.*.status_kependukan' => 'nullable|in:tetap,tidak tetap',
             'kk' => 'sometimes|array',
             'kk.no_kk' => 'sometimes|string',
             'kk.jumlah_anggota' => 'sometimes|integer|min:1',
-            'kk.foto_ktp_kepala_keluarga' => 'sometimes|string',
+            'kk.foto_ktp_kepala_keluarga' => 'sometimes|file|image|max:2048',
             'rumah' => 'sometimes|array',
             'rumah.perumahan' => 'sometimes|string',
             'rumah.jalan' => 'sometimes|string',
@@ -102,8 +131,16 @@ class DataWargaController extends Controller
 
         // Create all warga entries
         $wargaEntries = [];
-        foreach ($validated['warga'] as $wargaData) {
-            $warga = DataWarga::create($wargaData);
+        foreach ($validated['wargas'] as $wargaData) {
+            $warga = DataWarga::create([
+                'nik' => $wargaData['nik'],
+                'full_name' => $wargaData['full_name'],
+                'tempat_lahir' => $wargaData['tempat_lahir'],
+                'tanggal_lahir' => $wargaData['tanggal_lahir'],
+                'status' => $wargaData['status'],
+                'status_kependukan' => $wargaData['status_kependukan'] ?? null,
+                'verification_status' => $wargaData['verification_status'] ?? 'pending',
+            ]);
             $wargaEntries[] = $warga;
         }
 
@@ -111,12 +148,28 @@ class DataWargaController extends Controller
         if (isset($validated['kk']) && ! empty($validated['kk']['no_kk'])) {
             $kepalaKeluarga = collect($wargaEntries)->firstWhere('status', 'kepala keluarga');
             if ($kepalaKeluarga) {
-                KartuKeluarga::create([
-                    'no_kk' => $validated['kk']['no_kk'],
-                    'nik' => $kepalaKeluarga->nik,
-                    'jumlah_anggota' => $validated['kk']['jumlah_anggota'] ?? 1,
-                    'foto_ktp_kepala_keluarga' => $validated['kk']['foto_ktp_kepala_keluarga'] ?? null,
-                ]);
+                // Check if KK already exists
+                $existingKK = KartuKeluarga::where('no_kk', $validated['kk']['no_kk'])->first();
+
+                if (!$existingKK) {
+                    $kkData = [
+                        'no_kk' => $validated['kk']['no_kk'],
+                        'nik' => $kepalaKeluarga->nik,
+                        'jumlah_anggota' => $validated['kk']['jumlah_anggota'] ?? 1,
+                    ];
+
+                    // Handle file upload for foto_ktp_kepala_keluarga
+                    if (isset($validated['kk']['foto_ktp_kepala_keluarga']) && $validated['kk']['foto_ktp_kepala_keluarga']) {
+                        // Upload to Cloudinary using the model's trait method
+                        $kkModel = new KartuKeluarga();
+                        $uploadResult = $kkModel->uploadToCloudinary($validated['kk']['foto_ktp_kepala_keluarga'], 'kk-photos', 'foto_ktp_kepala_keluarga');
+
+                        $kkData['foto_ktp_kepala_keluarga'] = $uploadResult['url'] ?? null;
+                        $kkData['public_id'] = $uploadResult['public_id'] ?? null;
+                    }
+
+                    KartuKeluarga::create($kkData);
+                }
             }
         }
 
@@ -124,13 +177,20 @@ class DataWargaController extends Controller
         if (isset($validated['rumah']) && ! empty($validated['rumah']['jalan'])) {
             $kepalaKeluarga = collect($wargaEntries)->firstWhere('status', 'kepala keluarga');
             if ($kepalaKeluarga) {
-                Rumah::create([
-                    'nik' => $kepalaKeluarga->nik,
-                    'perumahan' => $validated['rumah']['perumahan'] ?? 'GBJ2',
-                    'jalan' => $validated['rumah']['jalan'],
-                    'blok' => $validated['rumah']['blok'] ?? null,
-                    'nomor' => $validated['rumah']['nomor'] ?? null,
-                ]);
+                // Check if rumah already exists for this NIK
+                $existingRumah = Rumah::where('nik', $kepalaKeluarga->nik)->first();
+
+                if (!$existingRumah) {
+                    $rumahData = [
+                        'nik' => $kepalaKeluarga->nik,
+                        'perumahan' => $validated['rumah']['perumahan'] ?? 'GBJ2',
+                        'jalan' => $validated['rumah']['jalan'],
+                        'blok' => $validated['rumah']['blok'] ?? null,
+                        'nomor' => $validated['rumah']['nomor'] ?? null,
+                    ];
+
+                    Rumah::create($rumahData);
+                }
             }
         }
 
@@ -158,6 +218,7 @@ class DataWargaController extends Controller
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required|string',
             'status' => 'required|in:anak,istri,kepala keluarga',
+            'status_kependukan' => 'nullable|in:tetap,tidak tetap',
         ]);
 
         $warga->update($validated);

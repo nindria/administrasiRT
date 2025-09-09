@@ -19,6 +19,7 @@ class DataWarga extends Model
         'tempat_lahir',
         'tanggal_lahir',
         'status',
+        'status_kependukan',
         'is_warga',
         'verification_status',
         'verified_by',

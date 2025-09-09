@@ -17,6 +17,7 @@ interface Warga {
     tempat_lahir: string;
     tanggal_lahir: string;
     status: string;
+    status_kependukan: string;
     verification_status: string;
 }
 
@@ -29,6 +30,7 @@ const wargaList = ref([
         tempat_lahir: '',
         tanggal_lahir: '',
         status: '',
+        status_kependukan: '',
         verification_status: 'pending',
     },
 ]);
@@ -42,6 +44,7 @@ function addMoreWarga() {
         tempat_lahir: '',
         tanggal_lahir: '',
         status: '',
+        status_kependukan: '',
         verification_status: 'pending',
     });
     activeIndex.value = wargaList.value.length - 1;
@@ -88,50 +91,27 @@ async function submit() {
     // Create a new form instance with the current wargaList data
     const submitForm = useForm({
         wargas: [...wargaList.value],
+        kk: {
+            no_kk: kkForm.no_kk,
+            jumlah_anggota: kkForm.jumlah_anggota,
+            foto_ktp_kepala_keluarga: kkForm.foto_ktp_kepala_keluarga,
+        },
+        rumah: {
+            perumahan: rumahForm.perumahan,
+            jalan: rumahForm.jalan,
+            blok: rumahForm.blok,
+            nomor: rumahForm.nomor,
+        },
     });
 
-    await submitForm.post(route('datawarga.store'), {
+    await submitForm.post(route('datawarga.storeMultiple'), {
         preserveScroll: true,
-        onSuccess: async () => {
-            // Simpan NIK kepala keluarga jika ada
-            const kepalaKeluarga = wargaList.value.find((w: Warga) => w.status === 'kepala keluarga');
-
-            if (isKepalaKeluarga.value && kepalaKeluarga) {
-                // Set NIK dari data warga kepala keluarga
-                kkForm.nik = kepalaKeluarga.nik;
-                rumahForm.nik = kepalaKeluarga.nik;
-
-                try {
-                    // Kirim data KK terlebih dahulu
-                    await kkForm.post(route('kartukeluarga.store'), {
-                        preserveScroll: true,
-                        onSuccess: async () => {
-                            await rumahForm.post(route('rumah.store'), {
-                                preserveScroll: true,
-                                onSuccess: () => {
-                                    rumahForm.reset();
-                                    kkForm.reset();
-                                    kkImagePreview.value = null;
-                                },
-                                onError: (errors) => {
-                                    console.error('Error menyimpan data Rumah:', errors);
-                                    alert('Error menyimpan data Rumah: ' + JSON.stringify(errors));
-                                },
-                            });
-                        },
-                        onError: (errors) => {
-                            console.error('Error menyimpan data KK:', errors);
-                            alert('Error menyimpan data KK: ' + JSON.stringify(errors));
-                            throw new Error('Error menyimpan data KK');
-                        },
-                    });
-                } catch (error) {
-                    console.error('Terjadi kesalahan:', error);
-                }
-            }
-
-            // Reset form warga
+        onSuccess: () => {
+            // Reset all forms
             submitForm.reset();
+            kkForm.reset();
+            rumahForm.reset();
+            kkImagePreview.value = null;
             wargaList.value = [
                 {
                     nik: '',
@@ -139,6 +119,7 @@ async function submit() {
                     tempat_lahir: '',
                     tanggal_lahir: '',
                     status: '',
+                    status_kependukan: '',
                     verification_status: 'pending',
                 },
             ];
@@ -223,6 +204,17 @@ async function submit() {
                                     { value: 'anak', label: 'Anak' },
                                 ]"
                                 placeholder="Pilih status"
+                            />
+
+                            <BaseSelect
+                                label="Status Kependukan"
+                                :name="`status_kependukan_${index}`"
+                                v-model:value="warga.status_kependukan"
+                                :options="[
+                                    { value: 'tetap', label: 'Tetap' },
+                                    { value: 'tidak tetap', label: 'Tidak Tetap' },
+                                ]"
+                                placeholder="Pilih status kependukan"
                             />
 
                             <div v-if="isKepalaKeluarga" class="mb-4">

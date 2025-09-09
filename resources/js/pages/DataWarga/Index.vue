@@ -13,6 +13,7 @@ interface Warga {
     tempat_lahir: string;
     tanggal_lahir: string;
     status: string;
+    status_kependukan: string;
     blok: Array<string>;
     verification_status: 'pending' | 'verified' | 'rejected';
 }
@@ -68,6 +69,7 @@ const confirmDelete = (nik: string) => {
                             <th scope="col" class="px-6 py-3">Tempat Lahir</th>
                             <th scope="col" class="px-6 py-3">Tanggal Lahir</th>
                             <th scope="col" class="px-6 py-3">Status</th>
+                            <th scope="col" class="px-6 py-3">Status Kependukan</th>
                             <th scope="col" class="px-6 py-3">Blok Rumah</th>
                             <th scope="col" class="px-6 py-3">Status Verifikasi</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
@@ -87,6 +89,11 @@ const confirmDelete = (nik: string) => {
                             <td class="px-6 py-4">
                                 <Badge>
                                     {{ warga.status }}
+                                </Badge>
+                            </td>
+                            <td class="px-6 py-4">
+                                <Badge>
+                                    {{ warga.status_kependukan }}
                                 </Badge>
                             </td>
                             <td class="px-6 py-4">{{ warga.blok }}</td>

@@ -8,6 +8,7 @@ import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { can } from '@/lib/can';
 
 interface KartuKeluarga {
+    foto_ktp_kepala_keluarga_url: any;
     no_kk: string;
     nik: string;
     jumlah_anggota: number;
@@ -82,8 +83,8 @@ const confirmDelete = (no_kk: string) => {
                             </td>
                             <td class="px-6 py-4">
                                 <img
-                                    v-if="kartuKeluarga.foto_ktp_kepala_keluarga"
-                                    :src="kartuKeluarga.foto_ktp_kepala_keluarga"
+                                    v-if="kartuKeluarga.foto_ktp_kepala_keluarga_url"
+                                    :src="kartuKeluarga.foto_ktp_kepala_keluarga_url"
                                     alt="Foto KTP"
                                     class="h-auto w-16 rounded object-cover"
                                 />
