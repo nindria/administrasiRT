@@ -48,7 +48,7 @@ function submit() {
     <Head title="Create Event" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Tambah Event</h1>
+            <h1 class="text-2xl font-bold">Tambah Data Event</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput

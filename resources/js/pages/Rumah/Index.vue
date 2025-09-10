@@ -2,10 +2,10 @@
 import Badge from '@/components/ui/badge/Badge.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { can } from '@/lib/can';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
-import { can } from '@/lib/can';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,7 +30,7 @@ const confirmDelete = (id: number) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Daftar Rumah</h1>
+            <h1 class="text-2xl font-bold">Daftar Data Rumah</h1>
             <div class="">
                 <Link
                     v-if="can('rumah.create')"

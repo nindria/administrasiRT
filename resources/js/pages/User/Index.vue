@@ -30,7 +30,7 @@ const confirmDelete = (id: number) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Daftar User</h1>
+            <h1 class="text-2xl font-bold">Daftar Data User</h1>
             <div class="">
                 <Link
                     v-if="can('users.create')"

@@ -2,10 +2,10 @@
 import Badge from '@/components/ui/badge/Badge.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { can } from '@/lib/can';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Eye, Pencil, Plus, Trash2 } from 'lucide-vue-next';
-import { can } from '@/lib/can';
 
 interface KartuKeluarga {
     foto_ktp_kepala_keluarga_url: any;
@@ -46,7 +46,7 @@ const confirmDelete = (no_kk: string) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Daftar Kartu Keluarga</h1>
+            <h1 class="text-2xl font-bold">Daftar Data KK</h1>
             <div class="">
                 <Link
                     v-if="can('kartukeluarga.create')"
@@ -55,7 +55,7 @@ const confirmDelete = (no_kk: string) => {
                     class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
                 >
                     <Plus :size="18" :stroke-width="2.5" class="mr-2" />
-                    Tambah Kartu Keluarga
+                    Tambah Data KK
                 </Link>
             </div>
             <div class="relative flex overflow-x-auto shadow-md sm:rounded-lg">
@@ -110,7 +110,12 @@ const confirmDelete = (no_kk: string) => {
                                         <Pencil class="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Button v-if="can('kartukeluarga.delete')" variant="destructive" size="sm" @click="confirmDelete(kartuKeluarga.no_kk)">
+                                <Button
+                                    v-if="can('kartukeluarga.delete')"
+                                    variant="destructive"
+                                    size="sm"
+                                    @click="confirmDelete(kartuKeluarga.no_kk)"
+                                >
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
                             </td>

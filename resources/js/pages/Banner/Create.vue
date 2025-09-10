@@ -45,11 +45,11 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Create Banner" />
+    <Head title="Tambah Data Banner" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Tambah Banner</h1>
+            <h1 class="text-2xl font-bold">Tambah Data Banner</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput

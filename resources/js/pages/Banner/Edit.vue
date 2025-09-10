@@ -56,11 +56,11 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Edit Banner" />
+    <Head title="Edit Data Banner" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Edit Banner</h1>
+            <h1 class="text-2xl font-bold">Edit Data Banner</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput

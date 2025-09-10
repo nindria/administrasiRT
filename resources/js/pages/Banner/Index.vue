@@ -29,7 +29,7 @@ const confirmDelete = (id: number) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Daftar Banner</h1>
+            <h1 class="text-2xl font-bold">Daftar Data Banner</h1>
             <div class="">
                 <Link
                     :href="route('banners.create')"

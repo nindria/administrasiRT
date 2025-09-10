@@ -22,7 +22,7 @@ defineProps<{
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl bg-white p-6 shadow-md">
-            <h1 class="text-2xl font-bold">Detail Role</h1>
+            <h1 class="text-2xl font-bold">Detail Peran</h1>
 
             <div class="grid gap-4">
                 <div>

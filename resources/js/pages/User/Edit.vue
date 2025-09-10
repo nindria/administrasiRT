@@ -27,28 +27,21 @@ const form = useForm({
     password: '',
     roles: props.userRoles || [],
 });
-
-
 </script>
 
 <template>
-    <Head title="Edit User" />
+    <Head title="Edit Data User" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Edit User</h1>
+            <h1 class="text-2xl font-bold">Edit Data User</h1>
 
             <form @submit.prevent="form.put(`/users/${props.user?.id}`)" class="grid gap-4">
                 <BaseInput label="Nama Anda" name="name" v-model:value="form.name" placeholder="Nama" :message="form.errors.name" />
                 <BaseInput label="Email Anda" name="email" v-model:value="form.email" placeholder="Email" :message="form.errors.email" />
                 <div>
                     <Label for="password" class="mb-2">Kata Sandi</Label>
-                    <PasswordInput
-                        id="password"
-                        v-model="form.password"
-                        placeholder="Kata Sandi"
-                        autocomplete="new-password"
-                    />
+                    <PasswordInput id="password" v-model="form.password" placeholder="Kata Sandi" autocomplete="new-password" />
                     <InputError :message="form.errors.password" />
                 </div>
 

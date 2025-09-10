@@ -10,7 +10,7 @@ import { ChevronLeft } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Buat User',
+        title: 'Tambah Data User',
         href: '/users',
     },
 ];
@@ -25,28 +25,21 @@ const form = useForm({
     password: '',
     roles: [],
 });
-
-
 </script>
 
 <template>
-    <Head title="Buat User" />
+    <Head title="Tambah Data User" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Buat User</h1>
+            <h1 class="text-2xl font-bold">Tambah Data User</h1>
 
             <form @submit.prevent="form.post('/users')" class="grid gap-4">
                 <BaseInput label="Nama Anda" name="name" v-model:value="form.name" placeholder="Nama" :message="form.errors.name" />
                 <BaseInput label="Email Anda" name="email" v-model:value="form.email" placeholder="Email" :message="form.errors.email" />
                 <div>
                     <Label for="password" class="mb-2">Kata Sandi</Label>
-                    <PasswordInput
-                        id="password"
-                        v-model="form.password"
-                        placeholder="Kata Sandi"
-                        autocomplete="new-password"
-                    />
+                    <PasswordInput id="password" v-model="form.password" placeholder="Kata Sandi" autocomplete="new-password" />
                     <InputError :message="form.errors.password" />
                 </div>
                 <div>
@@ -72,13 +65,13 @@ const form = useForm({
                         class="inline-flex w-24 items-center rounded-lg bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 px-4 py-2 text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800"
                     >
                         <ChevronLeft class="mr-1 h-4 w-4" />
-Kembali
+                        Kembali
                     </Link>
                     <button
                         type="submit"
                         class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     >
-Simpan
+                        Simpan
                     </button>
                 </div>
             </form>

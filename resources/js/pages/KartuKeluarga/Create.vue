@@ -61,7 +61,7 @@ function submit() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Tambah Kartu Keluarga</h1>
+            <h1 class="text-2xl font-bold">Tambah Data KK</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput
@@ -135,7 +135,7 @@ function submit() {
                                 type="button"
                             >
                                 <ChevronLeft class="h-4 w-4" />
-Kembali
+                                Kembali
                             </Button></Link
                         >
                         <Button class="w-24" type="submit" :disabled="form.processing">Simpan</Button>

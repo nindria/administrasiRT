@@ -28,7 +28,7 @@ const form = useForm({
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Create role</h1>
+            <h1 class="text-2xl font-bold">Tambah Data Peran</h1>
 
             <form @submit.prevent="form.post('/roles')" class="grid gap-4">
                 <BaseInput label="Name" name="name" v-model:value="form.name" placeholder="Name" :message="form.errors.name" />

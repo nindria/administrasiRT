@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,13 +25,14 @@ const props = defineProps({
     event: Array,
 });
 
-const event = props.event as Events[];
+const events = ref(props.event as Events[]);
 
 const confirmDelete = (id: number) => {
     if (confirm('Apakah Anda yakin ingin menghapus event ini?')) {
         router.delete(route('events.destroy', id), {
             onSuccess: () => {
-                // Data akan otomatis terupdate karena Inertia akan reload halaman
+                // Hapus item dari array lokal untuk update langsung
+                events.value = events.value.filter(event => event.id !== id);
             },
             onError: () => {
                 alert('Gagal menghapus event. Silakan coba lagi.');
@@ -45,7 +47,7 @@ const confirmDelete = (id: number) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Daftar Event</h1>
+            <h1 class="text-2xl font-bold">Daftar Data Event</h1>
             <div class="">
                 <Link
                     href="/events/create"
@@ -53,7 +55,7 @@ const confirmDelete = (id: number) => {
                     class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
                 >
                     <Plus :size="18" :stroke-width="2.5" class="mr-2" />
-                    Tambah Event
+                    Tambah Data Event
                 </Link>
             </div>
             <div class="relative flex overflow-x-auto shadow-md sm:rounded-lg">
@@ -68,7 +70,7 @@ const confirmDelete = (id: number) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="Events in event" :key="Events.id" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <tr v-for="Events in events" :key="Events.id" class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
                             <td class="px-6 py-4">
                                 <Badge variant="outline">
                                     {{ Events.id }}
