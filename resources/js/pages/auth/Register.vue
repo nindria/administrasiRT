@@ -118,8 +118,9 @@ const submit = () => {
             </div>
 
             <div class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
-                Already have an account?
-                <TextLink :href="route('login')" class="ml-1 font-medium text-primary hover:text-primary/80" :tabindex="7">Sign in</TextLink>
+
+Sudah punya akun?
+                <TextLink :href="route('login')" class="ml-1 font-medium text-primary hover:text-primary/80" :tabindex="7">Masuk</TextLink>
             </div>
         </form>
     </AuthBase>

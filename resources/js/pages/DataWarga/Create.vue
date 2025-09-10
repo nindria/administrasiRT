@@ -79,6 +79,13 @@ function handleKKImageChange(event: Event) {
     }
 }
 
+const jalanOptions = [
+    { value: 'CDN', label: 'Cendana' },
+    { value: 'J1', label: 'Jalan 1' },
+    { value: 'J2', label: 'Jalan 2' },
+    { value: 'J3', label: 'Jalan 3' },
+];
+
 const rumahForm = useForm({
     nik: '',
     perumahan: 'GBJ2',
@@ -270,11 +277,12 @@ async function submit() {
                                         :message="rumahForm.errors.perumahan"
                                         disabled
                                     />
-                                    <BaseInput
+                                    <BaseSelect
                                         label="Nama Jalan"
                                         :name="`jalan_${index}`"
                                         v-model:value="rumahForm.jalan"
-                                        placeholder="Ketik nama jalanmu"
+                                        :options="jalanOptions"
+                                        placeholder="Pilih nama jalan"
                                         :message="rumahForm.errors.jalan"
                                     />
                                     <BaseInput

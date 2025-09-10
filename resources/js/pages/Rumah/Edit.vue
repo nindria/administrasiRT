@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseInput from '@/components/form/BaseInput.vue';
+import BaseSelect from '@/components/form/BaseSelect.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
@@ -23,6 +24,13 @@ const props = defineProps<{
         nomor: string;
     };
 }>();
+
+const jalanOptions = [
+    { value: 'CDN', label: 'Cendana' },
+    { value: 'J1', label: 'Jalan 1' },
+    { value: 'J2', label: 'Jalan 2' },
+    { value: 'J3', label: 'Jalan 3' },
+];
 
 const form = useForm({
     perumahan: props.rumah.perumahan,
@@ -63,11 +71,12 @@ function submit() {
                         :message="form.errors.perumahan"
                     />
 
-                    <BaseInput
+                    <BaseSelect
                         label="Nama Jalan"
                         name="jalan"
                         v-model:value="form.jalan"
-                        placeholder="Ketik nama jalanmu"
+                        :options="jalanOptions"
+                        placeholder="Pilih nama jalan"
                         :message="form.errors.jalan"
                     />
                     <BaseInput label="Blok" name="blok" v-model:value="form.blok" placeholder="Ketik blok rumahmu" :message="form.errors.blok" />

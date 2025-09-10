@@ -49,6 +49,13 @@ const breadcrumbItems: BreadcrumbItem[] = [
 const page = usePage();
 const user = page.props.auth.user as User;
 
+const jalanOptions = [
+    { value: 'CDN', label: 'Cendana' },
+    { value: 'J1', label: 'Jalan 1' },
+    { value: 'J2', label: 'Jalan 2' },
+    { value: 'J3', label: 'Jalan 3' },
+];
+
 const form = useForm({
     name: user.name,
     email: user.email,
@@ -142,7 +149,7 @@ const submit = () => {
                     </div>
 
                     <!-- Warga Data Section -->
-                    <div v-if="user.roles?.some(role => role.name.toLowerCase() === 'warga')" class="space-y-6">
+                    <div v-if="user.roles?.some((role: any) => role.name.toLowerCase() === 'warga')" class="space-y-6">
                         <HeadingSmall title="Data Warga" description="Perbarui informasi data warga Anda" />
 
                         <div class="grid gap-2">
@@ -203,11 +210,11 @@ const submit = () => {
 
                             <div class="grid gap-2">
                                 <Label for="foto_ktp_kepala_keluarga">Foto KTP Kepala Keluarga</Label>
-                                <Input 
-                                    id="foto_ktp_kepala_keluarga" 
-                                    type="file" 
-                                    accept="image/*" 
-                                    class="mt-1 block w-full" 
+                                <Input
+                                    id="foto_ktp_kepala_keluarga"
+                                    type="file"
+                                    accept="image/*"
+                                    class="mt-1 block w-full"
                                     @input="form.kartuKeluargaData.foto_ktp_kepala_keluarga = ($event.target as HTMLInputElement)?.files?.[0] || null"
                                     @change="handleImageChange"
                                 />
@@ -231,7 +238,13 @@ const submit = () => {
 
                             <div class="grid gap-2">
                                 <Label for="jalan">Nama Jalan</Label>
-                                <Input id="jalan" class="mt-1 block w-full" v-model="form.rumahData.jalan" required placeholder="Nama jalan" />
+                                <BaseSelect
+                                    name="jalan"
+                                    v-model:value="form.rumahData.jalan"
+                                    :options="jalanOptions"
+                                    placeholder="Pilih nama jalan"
+                                    class="mt-1 block w-full"
+                                />
                                 <InputError class="mt-2" :message="form.errors['rumahData.jalan']" />
                             </div>
 
