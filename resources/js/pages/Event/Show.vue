@@ -70,7 +70,7 @@ const formattedDate = computed(() => {
                     <div class="mb-6">
                         <div class="mb-3 flex items-center gap-2">
                             <div class="h-1 w-12 rounded-full bg-primary"></div>
-                            <span class="text-sm font-medium tracking-wide text-primary uppercase">Event</span>
+                            <span class="text-sm font-medium tracking-wide text-primary uppercase">Acara</span>
                         </div>
                         <h2 class="mb-3 text-4xl leading-tight font-bold text-foreground">{{ event.title }}</h2>
                         <div class="flex items-center gap-2 text-muted-foreground">
@@ -103,7 +103,7 @@ const formattedDate = computed(() => {
                                     ></path>
                                 </svg>
                             </div>
-                            Event Information
+                            Informasi Acara
                         </h3>
                         <div class="grid grid-cols-1 gap-4">
                             <div class="flex items-center gap-3 rounded-lg bg-card/50 p-4">

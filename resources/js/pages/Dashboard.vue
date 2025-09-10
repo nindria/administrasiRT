@@ -74,27 +74,27 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </CardContent>
                 </Card>
 
-                <!-- Kartu Total Event -->
+                <!-- Kartu Total Acara -->
                 <Card>
                     <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle class="text-sm font-medium">Total Event</CardTitle>
+                        <CardTitle class="text-sm font-medium">Total Acara</CardTitle>
                         <Calendar class="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div class="text-2xl font-bold">{{ stats?.total_event || 0 }}</div>
-                        <p class="text-xs text-muted-foreground">Jumlah event terdaftar</p>
+                        <p class="text-xs text-muted-foreground">Jumlah acara terdaftar</p>
                     </CardContent>
                 </Card>
 
-                <!-- Kartu Total Banner -->
+                <!-- Kartu Total Spanduk -->
                 <Card>
                     <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle class="text-sm font-medium">Total Banner</CardTitle>
+                        <CardTitle class="text-sm font-medium">Total Spanduk</CardTitle>
                         <Image class="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div class="text-2xl font-bold">{{ stats?.total_banner || 0 }}</div>
-                        <p class="text-xs text-muted-foreground">Jumlah banner terdaftar</p>
+                        <p class="text-xs text-muted-foreground">Jumlah spanduk terdaftar</p>
                     </CardContent>
                 </Card>
 

@@ -55,29 +55,29 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Edit Data Event" />
+    <Head title="Edit Data Acara" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Edit Data Event</h1>
+            <h1 class="text-2xl font-bold">Edit Data Acara</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput
                         label="Title"
                         name="title"
                         v-model:value="form.title"
-                        placeholder="Masukkan judul event"
+                        placeholder="Masukkan judul acara"
                         :message="form.errors.title"
                     />
                     <BaseInput
                         label="Description"
                         name="description"
                         v-model:value="form.description"
-                        placeholder="Masukkan deskripsi event"
+                        placeholder="Masukkan deskripsi acara"
                         :message="form.errors.description"
                     />
                     <div class="grid">
-                        <Label class="mb-2" for="image">Event Image</Label>
+                        <Label class="mb-2" for="image">Gambar Acara</Label>
                         <Input
                             id="image"
                             name="image"

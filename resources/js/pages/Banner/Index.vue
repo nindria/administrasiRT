@@ -8,7 +8,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Banner',
+        title: 'Spanduk',
         href: '/banners',
     },
 ];
@@ -18,18 +18,18 @@ defineProps({
 });
 
 const confirmDelete = (id: number) => {
-    if (confirm('Apakah Anda yakin ingin menghapus banner ini?')) {
+    if (confirm('Apakah Anda yakin ingin menghapus spanduk ini?')) {
         router.delete(route('banners.destroy', id));
     }
 };
 </script>
 
 <template>
-    <Head title="Banner Management" />
+    <Head title="Managemen Spanduk" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Daftar Data Banner</h1>
+            <h1 class="text-2xl font-bold">Daftar Data Spanduk</h1>
             <div class="">
                 <Link
                     :href="route('banners.create')"
@@ -37,7 +37,7 @@ const confirmDelete = (id: number) => {
                     class="me-2 mb-2 inline-flex items-center rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 focus:outline-none dark:focus:ring-green-800"
                 >
                     <Plus :size="18" :stroke-width="2.5" class="mr-2" />
-                    Tambah Banner
+                    Tambah Spanduk
                 </Link>
             </div>
             <div class="relative flex overflow-x-auto shadow-md sm:rounded-lg">

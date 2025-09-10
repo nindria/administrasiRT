@@ -128,8 +128,11 @@ Route::resource('events', EventController::class)
     ->middleware('permission:events.delete');
 
 Route::resource('events', EventController::class)
-    ->only(['index', 'show'])
+    ->only(['index'])
     ->middleware('permission:events.view|events.create|events.edit|events.delete');
+
+Route::resource('events', EventController::class)
+    ->only(['show']);
 
 // Banners routes with permissions
 Route::resource('banners', BannerController::class)

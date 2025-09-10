@@ -73,7 +73,7 @@ function submit() {
                         :message="form.errors.nik"
                         :options="
                             wargas
-                                .filter((warga) => warga.status === 'kepala keluarga')
+                                .filter((warga) => warga.status === 'Kepala Keluarga')
                                 .map((warga) => ({ value: warga.nik, label: `${warga.nik} - ${warga.full_name}` }))
                         "
                         placeholder="Pilih Kepala Keluarga"

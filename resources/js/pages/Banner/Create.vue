@@ -45,25 +45,25 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Tambah Data Banner" />
+    <Head title="Tambah Data Spanduk" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Tambah Data Banner</h1>
+            <h1 class="text-2xl font-bold">Tambah Data Spanduk</h1>
             <form @submit.prevent="submit">
                 <div class="grid gap-4">
                     <BaseInput
                         label="Title"
                         name="title"
                         v-model:value="form.title"
-                        placeholder="Masukkan judul banner"
+                        placeholder="Masukkan judul spanduk"
                         :message="form.errors.title"
                     />
                     <BaseInput
                         label="Description"
                         name="description"
                         v-model:value="form.description"
-                        placeholder="Masukkan deskripsi banner"
+                        placeholder="Masukkan deskripsi spanduk"
                         :message="form.errors.description"
                     />
                     <div class="grid">
@@ -90,7 +90,7 @@ function submit() {
                             v-model="form.is_active"
                             class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
                         />
-                        <label for="is_active" class="cursor-pointer text-sm font-medium text-gray-700">Set as active banner</label>
+                        <label for="is_active" class="cursor-pointer text-sm font-medium text-gray-700">Tetapkan sebagai spanduk aktif</label>
                     </div>
                     <div v-if="form.errors.is_active" class="text-sm text-red-500">{{ form.errors.is_active }}</div>
 

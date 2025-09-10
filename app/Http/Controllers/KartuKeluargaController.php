@@ -105,10 +105,12 @@ class KartuKeluargaController extends Controller
     {
         $kartukeluarga = KartuKeluarga::findOrFail($id);
         $rumahs = Rumah::all();
+        $wargas = DataWarga::all();
 
         return Inertia::render('KartuKeluarga/Edit', [
             'kartukeluarga' => $kartukeluarga,
             'rumahs' => $rumahs,
+            'wargas' => $wargas,
         ]);
     }
 

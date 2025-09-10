@@ -42,19 +42,19 @@ const props = defineProps<{
             </div>
         </header>
 
-        <!-- Banner Section -->
+        <!-- Spanduk Section -->
         <section class="relative">
             <!-- Background image + overlay -->
             <div class="relative h-[500px] overflow-hidden">
-                <img v-if="props.banner?.image" :src="props.banner.image" alt="banner" class="h-full w-full object-cover brightness-90" />
-                <img v-else src="/images/hero.jpeg" alt="default banner" class="h-full w-full object-cover brightness-90" />
+                <img v-if="props.banner?.image" :src="props.banner.image" alt="spanduk" class="h-full w-full object-cover brightness-90" />
+                <img v-else src="/images/hero.jpeg" alt="default spanduk" class="h-full w-full object-cover brightness-90" />
                 <!-- Overlay for text readability -->
                 <div
                     aria-hidden
                     class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-blue-800/40 via-indigo-700/20 to-transparent mix-blend-screen"
                 ></div>
 
-                <!-- Banner content -->
+                <!-- Spanduk content -->
                 <div class="absolute inset-0 mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
                     <div class="max-w-2xl text-white">
                         <h1 class="text-4xl leading-tight font-bold drop-shadow-lg md:text-5xl">
@@ -71,7 +71,7 @@ const props = defineProps<{
         <!-- Events Section -->
         <section class="bg-gray-50 py-16 dark:bg-slate-800">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <h2 class="mb-10 text-center text-3xl font-bold text-gray-900 dark:text-white">Event yang Akan Datang</h2>
+                <h2 class="mb-10 text-center text-3xl font-bold text-gray-900 dark:text-white">Acara yang Akan Datang</h2>
 
                 <div v-if="props.events && props.events.length > 0" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     <Link
@@ -98,7 +98,7 @@ const props = defineProps<{
 
                 <div v-else class="py-10 text-center">
                     <div class="mb-4 text-5xl">📅</div>
-                    <p class="text-xl text-gray-600 dark:text-gray-300">Tidak ada event yang akan datang.</p>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">Tidak ada acara yang akan datang.</p>
                 </div>
             </div>
         </section>
