@@ -5,3 +5,11 @@
 *
 !data/
 !.gitignore
+
+*
+!data/
+!.gitignore
+
+*
+!data/
+!.gitignore
