@@ -95,21 +95,29 @@ const rumahForm = useForm({
 });
 
 async function submit() {
-    // Create a new form instance with the current wargaList data
-    const submitForm = useForm({
+    const payload: Record<string, any> = {
         wargas: [...wargaList.value],
-        kk: {
-            no_kk: kkForm.no_kk,
+    };
+
+    if (isKepalaKeluarga.value) {
+        payload.kk = {
+            no_kk: kkForm.no_kk?.toString() ?? '',
             jumlah_anggota: kkForm.jumlah_anggota,
             foto_ktp_kepala_keluarga: kkForm.foto_ktp_kepala_keluarga,
-        },
-        rumah: {
+        };
+
+        const jalanValue = typeof (rumahForm as any).jalan === 'object' && (rumahForm as any).jalan !== null ? (rumahForm as any).jalan.value : rumahForm.jalan;
+
+        payload.rumah = {
             perumahan: rumahForm.perumahan,
-            jalan: rumahForm.jalan,
-            blok: rumahForm.blok,
-            nomor: rumahForm.nomor,
-        },
-    });
+            jalan: jalanValue ?? '',
+            blok: rumahForm.blok?.toString() ?? '',
+            nomor: rumahForm.nomor?.toString() ?? '',
+        };
+    }
+
+    const submitForm = useForm(payload);
+    console.log(submitForm);
 
     await submitForm.post(route('datawarga.storeMultiple'), {
         preserveScroll: true,
@@ -314,7 +322,7 @@ async function submit() {
                                 type="button"
                             >
                                 <ChevronLeft class="h-4 w-4" />
-Kembali
+                                Kembali
                             </Button>
                         </Link>
                         <Button class="w-24" type="submit"> Simpan </Button>
